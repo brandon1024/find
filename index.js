@@ -1,8 +1,8 @@
 window.onload = function() {
-    document.getElementById('SearchNextBtn').onclick = searchText;
+    document.getElementById('searchNextBtn').onclick = searchText;
 };
 function searchText() {
-    var search = document.getElementById('SearchField').value;
+    var search = document.getElementById('searchField').value;
     if(search) {
         chrome.tabs.query({active:true,currentWindow:true},function(tabs) {
             window.alert('sup')
