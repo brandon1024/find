@@ -1,3 +1,7 @@
+body {
+    margin: 3px;
+}
+
 .searchPrevBtn {
     border-radius: 2px;
     width: 25px;
