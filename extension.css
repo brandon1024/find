@@ -1,0 +1,8 @@
+.searchField {
+    background-color: transparent;
+    border: 0px solid;
+}
+
+.searchField textarea:focus, input:focus{
+    outline: none;
+}
