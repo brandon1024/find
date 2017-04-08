@@ -1,0 +1,9 @@
+{
+  "name": "find+",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "A text find extension with regex functionality",
+  "browser_action": {
+    "default_icon": "icon.png"
+  }
+}
