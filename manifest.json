@@ -1,18 +1,33 @@
 {
   "name": "find+",
   "version": "1.0",
+  "author": ["Michael Walz", "Brandon Richardson"],
   "manifest_version": 2,
-  "description": "A text find extension with regex functionality",
+  "description": "A find-in-page extension with regex functionality",
   "icons":
   {
-    "128": "icon.png",
-    "16": "icon.png",
-    "48": "icon.png"
+    "128": "resources/icon.png",
+    "16": "resources/icon.png",
+    "48": "resources/icon.png"
   },
   "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "index.html"
+    "default_icon": "resources/icon.png",
+    "default_popup": "index/index.html"
   },
+  "background": {
+    "scripts": ["backend/backend.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "js": ["content/content.js"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "js": ["content/highlighter.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "permissions": [
     "tabs", "activeTab"
   ],
