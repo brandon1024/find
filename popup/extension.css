@@ -3,11 +3,11 @@ body {
     margin: 3px 6px 3px 6px;
 }
 
-div.popup-body {
+div#popup-body {
     width: 300px;
 }
 
-table.popup-body-table {
+table#popup-body-table {
     width: 100%;
     table-layout: fixed;
 }
@@ -23,15 +23,32 @@ input.field textarea:focus, input:focus {
     outline: none;
 }
 
+input.field#search-field {
+    width: 100%;
+}
+
+/* Index Text Style */
+td#index-text-cell {
+    width: 20%;
+}
+
+span#index-text {
+    color: #CCCCCC;
+    white-space: nowrap;
+    user-select: none;
+    cursor: default;
+    float: right;
+}
 
 /* Dividing Line Style */
-td.divide-line-cell {
+td#divide-line-cell {
     vertical-align: middle;
+    width: 2px;
     height: 100%;
     padding: 0 5px;
 }
 
-img.dividing-line-img {
+img#dividing-line-img {
     background: transparent no-repeat center;
 }
 
