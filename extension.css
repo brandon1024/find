@@ -2,86 +2,40 @@ body {
     margin: 3px 0px;
 }
 
-.searchPrevBtn {
+button {
     border-radius: 2px;
     width: 25px;
     height: 25px;
     border-width: 0px;
     background-color: transparent;
-    background-size: 17px;
+    background-size: 20px;
     background-position: 50%;
-    background-image: url(upArrow.png);
     background-repeat: no-repeat;
 }
 
-.searchPrevBtn:focus{
+button:focus {
     outline: none;
 }
 
-.searchPrevBtn:hover {
+button:hover {
     background-color: #eaeaea;
 }
 
-.searchPrevBtn:active {
+button:active {
     border-radius: 30px;
     background-color: #dadada;
+}
+
+.searchPrevBtn {
+    background-image: url(upArrow.png);
 }
 
 .searchNextBtn {
-    border-radius: 2px;
-    width: 25px;
-    height: 25px;
-    border-width: 0px;
-    background-color: transparent;
-    background-size: 17px;
-    background-position: 50%;
     background-image: url(downArrow.png);
-    background-repeat: no-repeat;
-}
-
-.searchNextBtn:focus{
-    outline: none;
-}
-
-.searchNextBtn:hover {
-    background-color: #eaeaea;
-}
-
-.searchNextBtn:active {
-    border-radius: 30px;
-    background-color: #dadada;
-}
-
-.divideLine {
-    background-size: 20px;
-    background-position: 50%;
-    background-image: url(line.png);
-    background-repeat: no-repeat;
 }
 
 .closeBtn {
-    border-radius: 2px;
-    width: 25px;
-    height: 25px;
-    border-width: 0px;
-    background-color: transparent;
-    background-size: 20px;
-    background-position: 50%;
     background-image: url(cross.png);
-    background-repeat: no-repeat;
-}
-
-.closeBtn:focus{
-    outline: none;
-}
-
-.closeBtn:hover {
-    background-color: #eaeaea;
-}
-
-.closeBtn:active {
-    border-radius: 30px;
-    background-color: #dadada;
 }
 
 .searchField {
@@ -91,4 +45,10 @@ body {
 
 .searchField textarea:focus, input:focus{
     outline: none;
+}
+
+.divideLine {
+    background-position: 50%;
+    background-image: url(line.png);
+    background-repeat: no-repeat;
 }
