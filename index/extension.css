@@ -27,15 +27,15 @@ button:active {
 }
 
 .searchPrevBtn {
-    background-image: url(upArrow.png);
+    background-image: url(/resources/upArrow.png);
 }
 
 .searchNextBtn {
-    background-image: url(downArrow.png);
+    background-image: url(/resources/downArrow.png);
 }
 
 .closeBtn {
-    background-image: url(cross.png);
+    background-image: url(/resources/cross.png);
 }
 
 .searchField {
@@ -49,6 +49,6 @@ button:active {
 
 .divideLine {
     background-position: 50%;
-    background-image: url(line.png);
+    background-image: url(/resources/line.png);
     background-repeat: no-repeat;
 }
