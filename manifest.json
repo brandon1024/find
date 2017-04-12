@@ -12,7 +12,7 @@
   },
   "browser_action": {
     "default_icon": "resources/icon.png",
-    "default_popup": "index/index.html"
+    "default_popup": "popup/popup.html"
   },
   "background": {
     "scripts": ["backend/backend.js"],
