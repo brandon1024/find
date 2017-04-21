@@ -1,7 +1,7 @@
 
 window.onload = function() {
     document.getElementById('closeBtn').onclick = closeExtension;
-    document.getElementById('searchField').addEventListener('keyup', updateLocalStorage);
+    document.getElementById('searchField').addEventListener('input', updateLocalStorage);
     retrieveLastSearch();
 };
 
