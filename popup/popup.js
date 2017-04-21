@@ -48,8 +48,6 @@ function retrieveLastSearch() {
  */
 function handleDataFromStorage(data) {
   var storagePayload = data.payload;
-
-  //grab data we want from payload
   var previousSearchText = storagePayload.previousSearch;
 
   changeSearchFieldText(previousSearchText);
