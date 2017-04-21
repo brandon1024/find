@@ -37,6 +37,9 @@ function storeDataToLocalStorage(payload) {
  */
 function retrieveLastSearch() {
   chrome.storage.local.get('payload', function(data) {
+    // LOGGING
+    console.log('Receiving Payload:', data, ' from local storage');
+
     handleDataFromStorage(data)
   });
 }
