@@ -1,9 +1,8 @@
 
 window.onload = function() {
-    retrieveLastSearch();
-
     document.getElementById('closeBtn').onclick = closeExtension;
-    document.getElementById('searchField').addEventListener('keyup', storeSearchEntry);
+    document.getElementById('searchField').addEventListener('keyup', updateLocalStorage);
+    retrieveLastSearch();
 };
 
 function closeExtension() {
@@ -11,35 +10,57 @@ function closeExtension() {
 }
 
 /**
- * retrieves current text from search field and stores it.
+ * Converts current search field text to JSON payload
+ * and send to storeDataToLocalStorage() to store.
  */
-function storeSearchEntry() {
-    var inputVal =  document.getElementById('searchField').value;
-
-    chrome.storage.sync.set({'previousSearch': inputVal}, function() {
-        console.log('Previous search: \"' + inputVal + '\" saved');
-    });
+function updateLocalStorage() {
+  //Create a JSON payload to send to local storage
+  var payload = {'previousSearch': document.getElementById('searchField').value};
+  storeDataToLocalStorage(payload);
 }
 
 /**
- * retrieves previous search term from storage and sets is as current
- * value for search field.
+ * Stores input payload in local storage
+ * @param payload JSON object to be stored
  */
-function retrieveLastSearch(callback) {
-    console.log("Attempting to retrieve last search field entry.");
-
-    chrome.storage.sync.get('previousSearch', function (obj) {
-        console.log(obj);
-        console.log('Setting input field value to: \"' + obj['previousSearch'] + '\"');
-        document.getElementById('searchField').value = obj['previousSearch'];
-        inputSelect();
-    });
+function storeDataToLocalStorage(payload) {
+  //update a value in storage.
+  chrome.storage.local.set({'payload': payload}, function callback() {
+    //LOGGING
+    console.log('Previous search: \"' + payload.previousSearch + '\" saved');
+  });
 }
 
 /**
- * selects the contects of the search field.
+ * Retrieve locally stored payload to be
+ * handled by handleDataFromStorage()
  */
-function inputSelect() {
-    console.log("Selecting contents of Search Field");
-    document.getElementById("searchField").select();
+function retrieveLastSearch() {
+  chrome.storage.local.get('payload', function(data) {
+    handleDataFromStorage(data)
+  });
+}
+
+/**
+ * Receives payload from storage and gets previousSearch JSON
+ * to be sent to changeSearchFieldText()
+ * @param data is received payload to parse
+ */
+function handleDataFromStorage(data) {
+  var storagePayload = data.payload;
+
+  //grab data we want from payload
+  var previousSearchText = storagePayload.previousSearch;
+
+  changeSearchFieldText(previousSearchText);
+}
+
+/**
+ * gets previous search text and sets it to search field text,
+ * then selects search field
+ * @param text to fill search field value
+ */
+function changeSearchFieldText(text) {
+  document.getElementById('searchField').value = text;
+  document.getElementById('searchField').select();
 }
