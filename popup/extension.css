@@ -27,15 +27,18 @@ button:active {
 }
 
 .searchPrevBtn {
-    background-image: url(/resources/upArrow.png);
+    background-image: url(/resources/chevron-up.svg);
+    background-size: 12px 12px;
 }
 
 .searchNextBtn {
-    background-image: url(/resources/downArrow.png);
+    background-image: url(/resources/chevron-down.svg);
+    background-size: 12px 12px;
 }
 
 .closeBtn {
-    background-image: url(/resources/cross.png);
+    background-image: url(/resources/cross.svg);
+    background-size: 10px 10px;
 }
 
 .searchField {
