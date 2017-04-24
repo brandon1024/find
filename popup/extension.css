@@ -1,5 +1,5 @@
 body {
-    margin: 3px 0 3px 6px;
+    margin: 3px 6px 3px 6px;
 }
 
 button {
@@ -29,16 +29,22 @@ button:active {
 .searchPrevBtn {
     background-image: url(/resources/chevron-up.svg);
     background-size: 12px 12px;
+    background-position: center;
+    padding: 0;
 }
 
 .searchNextBtn {
     background-image: url(/resources/chevron-down.svg);
     background-size: 12px 12px;
+    background-position: center;
+    padding: 0;
 }
 
 .closeBtn {
     background-image: url(/resources/cross.svg);
     background-size: 10px 10px;
+    background-position: center;
+    padding: 0;
 }
 
 .searchField {
