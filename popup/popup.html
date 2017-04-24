@@ -7,14 +7,24 @@
     <link rel="stylesheet" href="extension.css">
 </head>
 <body>
-    <div style="width:300px">
-        <table style="width:100%">
+    <div id="popup-body">
+        <table id="popup-body-table">
             <tr>
-                <td><input class="searchField" type="text" id="searchField" name="search"></td>
-                <td class="divideLine"></td>
-                <td><button class="searchPrevBtn" title="Previous" type="button" id="searchPrevBtn"></button></td>
-                <td><button class="searchNextBtn" title="Next" type="button" id="searchNextBtn"></button></td>
-                <td><button class="closeBtn" title="Close find+ bar" type="button" id="closeBtn"></button></td>
+                <td class="field-cell">
+                    <input class="field" id="search-field" type="text" name="search" title="Search Field"/>
+                </td>
+                <td class="divide-line-cell">
+                    <img id="dividing-line-img" src="/resources/line.png"/>
+                </td>
+                <td class="button-cell">
+                    <button class="controls-button" id="search-prev-button" title="Previous" type="button"/>
+                </td>
+                <td class="button-cell">
+                    <button class="controls-button" id="search-next-button" title="Next" type="button"/>
+                </td>
+                <td class="button-cell">
+                    <button class="controls-button" id="close-button" title="Close find+ bar" type="button"/>
+                </td>
             </tr>
         </table>
     </div>

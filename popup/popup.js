@@ -1,7 +1,7 @@
 
 window.onload = function() {
-    document.getElementById('closeBtn').onclick = closeExtension;
-    document.getElementById('searchField').addEventListener('input', updateLocalStorage);
+    document.getElementById('close-button').onclick = closeExtension;
+    document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     retrieveLastSearch();
 };
 
@@ -15,7 +15,7 @@ function closeExtension() {
  */
 function updateLocalStorage() {
   //Create a JSON payload to send to local storage
-  var payload = {'previousSearch': document.getElementById('searchField').value};
+  var payload = {'previousSearch': document.getElementById('search-field').value};
   storeDataToLocalStorage(payload);
 }
 
@@ -62,6 +62,6 @@ function handleDataFromStorage(data) {
  * @param text to fill search field value
  */
 function changeSearchFieldText(text) {
-  document.getElementById('searchField').value = text;
-  document.getElementById('searchField').select();
+  document.getElementById('search-field').value = text;
+  document.getElementById('search-field').select();
 }
