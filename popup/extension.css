@@ -1,63 +1,80 @@
+/* Popup Style */
 body {
     margin: 3px 6px 3px 6px;
 }
 
-button {
-    border-radius: 2px;
-    width: 25px;
-    height: 25px;
-    border-width: 0px;
-    background-color: transparent;
-    background-size: 20px;
-    background-position: 50%;
-    background-repeat: no-repeat;
+div.popup-body {
+    width: 300px;
 }
 
-button:focus {
+table.popup-body-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+
+/* Search Field Style */
+input.field {
+    background-color: transparent;
+    border: 0 solid;
+}
+
+input.field textarea:focus, input:focus {
     outline: none;
 }
 
-button:hover {
+
+/* Dividing Line Style */
+td.divide-line-cell {
+    vertical-align: middle;
+    height: 100%;
+    padding: 0 5px;
+}
+
+img.dividing-line-img {
+    background: transparent no-repeat center;
+}
+
+/* Button Style */
+td.button-cell {
+    width: 25px;
+    height: 25px;
+}
+
+button.controls-button {
+    background: transparent no-repeat center;
+    border-width: 0;
+    border-radius: 2px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    vertical-align: middle;
+}
+
+button.controls-button:focus {
+    outline: none;
+}
+
+button.controls-button:hover {
     background-color: #eaeaea;
 }
 
-button:active {
+button.controls-button:active {
     border-radius: 30px;
     background-color: #dadada;
 }
 
-.searchPrevBtn {
+button.controls-button#search-prev-button {
     background-image: url(/resources/chevron-up.svg);
     background-size: 12px 12px;
-    background-position: center;
-    padding: 0;
 }
 
-.searchNextBtn {
+button.controls-button#search-next-button {
     background-image: url(/resources/chevron-down.svg);
     background-size: 12px 12px;
-    background-position: center;
-    padding: 0;
 }
 
-.closeBtn {
+button.controls-button#close-button {
     background-image: url(/resources/cross.svg);
     background-size: 10px 10px;
-    background-position: center;
-    padding: 0;
-}
-
-.searchField {
-    background-color: transparent;
-    border: 0px solid;
-}
-
-.searchField textarea:focus, input:focus{
-    outline: none;
-}
-
-.divideLine {
-    background-position: 50%;
-    background-image: url(/resources/line.png);
-    background-repeat: no-repeat;
 }
