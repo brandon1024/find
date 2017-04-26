@@ -59,6 +59,7 @@ function actionUpdate(port, tabID, message) {
 
             regex = message.regex;
             regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex);
+            console.log(regexOccurrenceMap);
 
             console.group('OCCURRENCES');
             for(var key in regexOccurrenceMap) {
@@ -69,7 +70,7 @@ function actionUpdate(port, tabID, message) {
             console.groupCollapsed('Regex Update');
             console.log('Index:', index);
             console.log('Regex: \'' + regex + '\'');
-            port.postMessage({action: "index_update", index: index, total: regexOccurrenceMap.length});
+            port.postMessage({action: "index_update", index: index+1, total: regexOccurrenceMap.length});
         }
         catch(e) {
             console.error(e);
@@ -79,32 +80,46 @@ function actionUpdate(port, tabID, message) {
 }
 
 function actionNext(port, tabID) {
-    if(index == regexOccurrenceMap.length-1)
+    if(index >= regexOccurrenceMap.length-1)
         return;
 
-    var newOccurrenceUUIDs = regexOccurrenceMap[++index].uuids;
-    var oldOccurrenceUUIDs = regexOccurrenceMap[index].uuids;
-    chrome.tabs.sendMessage(tabID, {action: 'next', focus: newOccurrenceUUIDs, reset: oldOccurrenceUUIDs}, function (response) {
-        port.postMessage({action: "index_update", index: index, total: regexOccurrenceMap.length});
-    });
+    var prevInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
+    var prevOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
+    var prevOccurrenceUUIDs = regexOccurrenceMap[prevInternodalIndex].uuids;
+
+    index++;
+    var newInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
+    var newOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
+    var newOccurrenceUUIDs = regexOccurrenceMap[newInternodalIndex].uuids;
+
+    //chrome.tabs.sendMessage(tabID, {action: 'next', focus: newOccurrenceUUIDs, focusIndex: newOffsetIndex, reset: prevOccurrenceUUIDs, resetIndex: prevOffsetIndex}, function (response) {
+        port.postMessage({action: "index_update", index: index+1, total: regexOccurrenceMap.length});
+   // });
 }
 
 function actionPrevious(port, tabID) {
-    if(index == 0)
+    if(index <= 0)
         return;
 
-    var newOccurrenceUUIDs = regexOccurrenceMap[--index].uuids;
-    var oldOccurrenceUUIDs = regexOccurrenceMap[index].uuids;
-    chrome.tabs.sendMessage(tabID, {action: 'previous', focus: newOccurrenceUUIDs, reset: oldOccurrenceUUIDs}, function (response) {
-        port.postMessage({action: "index_update", index: index, total: regexOccurrenceMap.length});
-    });
+    var prevInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
+    var prevOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
+    var prevOccurrenceUUIDs = regexOccurrenceMap[prevInternodalIndex].uuids;
+
+    index--;
+    var newInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
+    var newOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
+    var newOccurrenceUUIDs = regexOccurrenceMap[newInternodalIndex].uuids;
+
+    //chrome.tabs.sendMessage(tabID, {action: 'previous', focus: newOccurrenceUUIDs, focusIndex: newOffsetIndex, reset: prevOccurrenceUUIDs, resetIndex: prevOffsetIndex}, function (response) {
+        port.postMessage({action: "index_update", index: index+1, total: regexOccurrenceMap.length});
+   // });
 }
 
 function buildOccurrenceMap(DOMModelObject, regex) {
-    regex = new RegExp(regex, 'gm'); //May need to change these modifiers (could introduce strange behavior with ^ and $ anchors)
-    var occurrenceMap = {};
+    regex = new RegExp(regex, 'gm');
+    var occurrenceMap = {occurrenceIndexMap: {}};
     var count = 0;
-    var occurrenceIndex = 0;
+    var groupIndex = 0;
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group;
         var textGroup = '';
@@ -119,7 +134,14 @@ function buildOccurrenceMap(DOMModelObject, regex) {
             continue;
 
         count += matches.length;
-        occurrenceMap[occurrenceIndex++] = {text: textGroup, uuids: uuids, count: matches.length};
+        occurrenceMap[groupIndex] = {text: textGroup, uuids: uuids, count: matches.length};
+
+        for(var index = 0; index < matches.length; index++) {
+            var occMapIndex = index + (count - matches.length);
+            occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: index};
+        }
+
+        groupIndex++;
     }
 
     occurrenceMap.length = count;
