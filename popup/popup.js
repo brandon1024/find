@@ -1,46 +1,15 @@
-console.log('Extension popup script started');
-
-console.group('Establishing port to background script', '(Message API)');
 var port = chrome.runtime.connect({name: "popup_to_backend_port"});
-console.log('Successfully opened port to background script');
-console.groupCollapsed('Details:');
-console.log('Port Name:', port.name);
-console.groupEnd();
-console.groupEnd();
 
 /**
  * Load event listeners for popup components
  */
 window.onload = function addListeners() {
-    console.group('Spawning extension popup event listeners');
-
     document.getElementById('search-next-button').addEventListener('click', nextHighlight);
     document.getElementById('search-prev-button').addEventListener('click', previousHighlight);
     document.getElementById('close-button').addEventListener('click', closeExtension);
     document.getElementById('search-field').addEventListener('input', updateHighlight);
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
-    console.log('Successfully spawned popup event listeners');
-
-    console.groupCollapsed('Details:');
-    console.groupCollapsed('Element ID: searchNextBtn');
-    console.log('Event Type: click event');
-    console.log('Action: next');
-    console.groupEnd();
-    console.groupCollapsed('Element ID: searchPrevBtn');
-    console.log('Event Type: click event');
-    console.log('Action: previous');
-    console.groupEnd();
-    console.groupCollapsed('Element ID: closeBtn');
-    console.log('Event Type: click event');
-    console.log('Action: close');
-    console.groupEnd();
-    console.groupCollapsed('Element ID: searchField');
-    console.log('Event Type: keypress event');
-    console.log('Action: update');
-    console.groupEnd();
-    console.groupEnd();
-    console.groupEnd();
 
     retrieveLastSearch();
 };
@@ -48,26 +17,23 @@ window.onload = function addListeners() {
 /**
  * Listen for messages from the background script
  */
-console.group('Spawning onMessage event listener from background script', '(Message API)');
 port.onMessage.addListener(function listener(response) {
-    console.group('Message Received', '(Message API)');
     if(response.action == 'index_update') {
-        console.groupCollapsed('Update:');
-        console.log('Index:', response.index);
-        console.log('Total:', response.total);
-        console.groupEnd();
         updateIndexText(response.index, response.total);
+        if(response.index == 0 && response.total == 0)
+            disableButtons();
+        else
+            enableButtons();
     }
     else if(response.action == 'invalid_regex') {
         updateIndexText();
+        disableButtons();
     }
     else {
         console.error('Unrecognized action:', response.action);
+        disableButtons();
     }
-    console.groupEnd();
 });
-console.log('Successfully spawned event listener');
-console.groupEnd();
 
 /**
  * Perform mass update
@@ -101,28 +67,14 @@ function previousHighlight() {
 }
 
 function invokeAction(params) {
-    console.groupCollapsed('Action Invoked:');
-
-    console.groupCollapsed('Details:');
-    console.log('Port:', port.name);
-    for(var key in params)
-        console.log(key + ': ' + params[key]);
-
     port.postMessage(params);
-    console.log('Message Sent', '(Message API)');
-    console.groupEnd();
-    console.groupEnd();
 }
 
 /**
  * Close the extension
  */
 function closeExtension() {
-    console.group('Closing port to background script', '(Message API)');
     port.disconnect();
-    console.log('Successfully closed port to background script');
-    console.groupEnd();
-    console.log('Suspending background script');
     window.close();
 }
 
@@ -157,9 +109,7 @@ function updateLocalStorage() {
  * @param payload JSON object to be stored
  */
 function storeDataToLocalStorage(payload) {
-    chrome.storage.local.set({'payload': payload}, function callback() {
-        console.log('Previous search: \"' + payload.previousSearch + '\" saved');
-    });
+    chrome.storage.local.set({'payload': payload});
 }
 
 /**
@@ -168,7 +118,6 @@ function storeDataToLocalStorage(payload) {
  */
 function retrieveLastSearch() {
     chrome.storage.local.get('payload', function(data) {
-        console.log('Receiving Payload:', data, ' from local storage');
         handleDataFromStorage(data)
     });
 }
@@ -209,13 +158,23 @@ function updateIndexText() {
     if(arguments.length == 0)
         document.getElementById('index-text').innerText = '';
     else if(arguments.length == 2)
-        document.getElementById('index-text').innerText = numberWithCommas(arguments[0]) + ' of ' + numberWithCommas(arguments[1]);
+        document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+}
+
+function enableButtons() {
+    document.getElementById('search-prev-button').disabled = false;
+    document.getElementById('search-next-button').disabled = false;
+}
+
+function disableButtons() {
+    document.getElementById('search-prev-button').disabled = true;
+    document.getElementById('search-next-button').disabled = true;
 }
 
 /**
  * Formats numbers to have thousands comma delimiters
  */
-function numberWithCommas(x) {
+function formatNumber(x) {
     var parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");

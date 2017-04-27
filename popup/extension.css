@@ -95,3 +95,7 @@ button.controls-button#close-button {
     background-image: url(/resources/cross.svg);
     background-size: 10px 10px;
 }
+
+button.controls-button:disabled {
+    background-color: transparent;
+}

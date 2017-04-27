@@ -1,5 +1,4 @@
 chrome.runtime.onMessage.addListener(function(message, _, sendResponse) {
-    console.log(message.action);
     if(message.action == 'init')
         sendResponse({model: buildDOMReferenceObject()});
     else if(message.action == 'update')
@@ -11,15 +10,13 @@ chrome.runtime.onMessage.addListener(function(message, _, sendResponse) {
 });
 
 //Build DOM Model Object, inject UUID references
-//NEED TO SKIP ELEMENT AND CHILDREN IF DISPLAY: NONE
+//NEED TO SKIP ELEMENT AND CHILDREN IF DISPLAY: HIDDEN/NONE
 //FIX AFTER F9 MERGES
 function buildDOMReferenceObject() {
     var DOMTreeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
     var DOMModelObject = {};
 
-    var end = false;
-    var groupIndex = 0;
-    var mostRecentBlockLevel = 0;
+    var end = false, groupIndex = 0, mostRecentBlockLevel = 0;
     while(!end) {
         var node = DOMTreeWalker.nextNode();
         var textGroup = {group: []};
@@ -137,8 +134,7 @@ function generateElementUUID() {
         return block;
     }
 
-    var uuid = '';
-    var blockSizes = [2,1,1,1,3];
+    var uuid = '', blockSizes = [2,1,1,1,3];
     for(var index = 0; index < blockSizes.length; index++)
         uuid += generateBlock(blockSizes[index]) + (index == blockSizes.length-1 ? '' : '-');
 
@@ -147,10 +143,6 @@ function generateElementUUID() {
 
 //Remove All Highlighting and Injected Markup
 function restoreWebPage(uuids) {
-    //remove highlighting within uuid classes
-    //TODO
-
-    //remove element uuid classes
     for(var index = 0; index < uuids.length; index++) {
         var elementClassUUID = '.' + uuids[index];
         $(elementClassUUID).removeClass(uuids[index]);
