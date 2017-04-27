@@ -20,6 +20,7 @@ window.onload = function addListeners() {
 port.onMessage.addListener(function listener(response) {
     if(response.action == 'index_update') {
         updateIndexText(response.index, response.total);
+
         if(response.index == 0 && response.total == 0)
             disableButtons();
         else

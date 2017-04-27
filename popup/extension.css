@@ -50,6 +50,7 @@ td#divide-line-cell {
 
 img#dividing-line-img {
     background: transparent no-repeat center;
+    user-select: none;
 }
 
 /* Button Style */
@@ -98,4 +99,5 @@ button.controls-button#close-button {
 
 button.controls-button:disabled {
     background-color: transparent;
+    opacity: 0.2;
 }

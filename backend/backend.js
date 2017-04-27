@@ -101,7 +101,7 @@ function buildOccurrenceMap(DOMModelObject, regex) {
     regex = new RegExp(regex, 'gm');
     var occurrenceMap = {occurrenceIndexMap: {}};
     var count = 0, groupIndex = 0;
-    
+
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group, textGroup = '', uuids = [];
         for(var index = 0; index < textNodes.length; index++) {
