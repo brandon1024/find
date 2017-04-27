@@ -49,6 +49,7 @@ td#divide-line-cell {
 }
 
 img#dividing-line-img {
+    vertical-align: middle;
     background: transparent no-repeat center;
     user-select: none;
 }
