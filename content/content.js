@@ -28,12 +28,12 @@ function buildDOMReferenceObject() {
             if(isElementNode(node)) {
                 if(isInlineLevelElement(node) && getNodeTreeDepth(node) <= mostRecentBlockLevel)
                     break;
-                else {
+                else if(!isInlineLevelElement(node)) {
                     mostRecentBlockLevel = getNodeTreeDepth(node);
                     break;
                 }
             }
-            else if(isTextNode(node) && !isNodeTextValueWhitespaceOnly(node)) {
+            else if(isTextNode(node)) {
                 var identifierUUID = generateElementUUID();
                 var nodeText = node.nodeValue;
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
@@ -53,7 +53,7 @@ function buildDOMReferenceObject() {
         DOMModelObject[groupIndex++] = textGroup;
     }
 
-    return DOMModelObject; //Needs to be JSON compatible (Message API only supports JSON)
+    return DOMModelObject;
 }
 
 //TreeWalker Filter, Allowing Element and Text Nodes
@@ -65,9 +65,7 @@ function nodeFilter(node) {
             return NodeFilter.FILTER_ACCEPT;
     }
     else if(isTextNode(node)) {
-        if(isNodeTextValueWhitespaceOnly(node))
-            return NodeFilter.FILTER_REJECT;
-        else
+        if(!isNodeTextValueWhitespaceOnly(node) || node.nodeValue.length == 1)
             return NodeFilter.FILTER_ACCEPT;
     }
 
