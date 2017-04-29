@@ -28,7 +28,7 @@ function buildDOMReferenceObject() {
             if(isElementNode(node)) {
                 if(isInlineLevelElement(node) && getNodeTreeDepth(node) <= mostRecentBlockLevel)
                     break;
-                else if(!isInlineLevelElement(node)) {
+                if(!isInlineLevelElement(node)) {
                     mostRecentBlockLevel = getNodeTreeDepth(node);
                     break;
                 }
@@ -103,11 +103,6 @@ function isInlineLevelElement(element) {
 //Check if a Text Node Value Contains only Whitespace
 function isNodeTextValueWhitespaceOnly(node) {
     return !(/[^\t\n\r ]/.test(node.nodeValue));
-}
-
-//Check if a Node Text Content Contains only Whitespace
-function isNodeContentValueWhitespaceOnly(node) {
-    return !(/[^\t\n\r ]/.test(node.textContent));
 }
 
 //Get Depth of Node in Tree
