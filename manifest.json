@@ -1,6 +1,6 @@
 {
   "name": "find+",
-  "version": "1.0",
+  "version": "0.1.0",
   "author": ["Michael Walz", "Brandon Richardson"],
   "manifest_version": 2,
   "description": "A find-in-page extension with regex functionality",
@@ -9,10 +9,7 @@
     "activeTab",
     "background",
     "storage",
-    "http://*/*",
-    "https://*/*",
-    "file://*/*",
-    "ftp://*/*"
+    "<all_urls>"
   ],
   "icons":
   {

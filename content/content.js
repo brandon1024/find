@@ -10,8 +10,6 @@ chrome.runtime.onMessage.addListener(function(message, _, sendResponse) {
 });
 
 //Build DOM Model Object, inject UUID references
-//NEED TO SKIP ELEMENT AND CHILDREN IF DISPLAY: HIDDEN/NONE
-//FIX AFTER F9 MERGES
 function buildDOMReferenceObject() {
     var DOMTreeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
     var DOMModelObject = {};

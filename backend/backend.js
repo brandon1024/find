@@ -18,6 +18,10 @@ chrome.runtime.onConnect.addListener(function(port) {
             var uuids = getUUIDsFromModelObject(DOMModelObject);
             chrome.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 
+            DOMModelObject = null;
+            regexOccurrenceMap = null;
+            index = null;
+            regex = null;
             this.close();
         });
     });
