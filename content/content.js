@@ -103,6 +103,19 @@ function isNodeTextValueWhitespaceOnly(node) {
     return !(/[^\t\n\r ]/.test(node.nodeValue));
 }
 
+function formatTextNodeValue(node) {
+    if(isElementNode(node))
+        return;
+
+    var parentElement = node.parentElement;
+    var nodeText = node.nodeValue;
+
+    if(parentElement.tagName == 'pre' || parentElement.style.whiteSpace == 'pre')
+        return nodeText;
+    else
+        return nodeText.replace(/[\t\n\r ]+/g,' ');
+}
+
 //Get Depth of Node in Tree
 function getNodeTreeDepth(node) {
     var depth = -1;

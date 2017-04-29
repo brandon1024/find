@@ -1,7 +1,7 @@
 var DOMModelObject;
-var regexOccurrenceMap;
-var index = 0;
-var regex;
+var regexOccurrenceMap = null;
+var index = null;
+var regex = null;
 
 chrome.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
