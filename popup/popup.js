@@ -57,6 +57,7 @@ function updateHighlight() {
 function nextHighlight() {
     var action = 'next';
     invokeAction({action: action});
+    document.getElementById('search-field').focus();
 }
 
 /**
@@ -65,6 +66,7 @@ function nextHighlight() {
 function previousHighlight() {
     var action = 'previous';
     invokeAction({action: action});
+    document.getElementById('search-field').focus();
 }
 
 function invokeAction(params) {
