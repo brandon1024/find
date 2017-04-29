@@ -2,11 +2,29 @@
 window.onload = function() {
     document.getElementById('close-button').onclick = closeExtension;
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
+    document.addEventListener('keyup', handleKeyPress, false);
     retrieveLastSearch();
 };
 
 function closeExtension() {
     window.close();
+}
+
+/**
+ * Handles keyboard shortcuts for proceeding to the previous occurrence,
+ * next occurrence, and for closing the extension.
+ * @param e the keypress event
+ */
+function handleKeyPress(e) {
+    if (e.keyCode == 13 && e.shiftKey) {
+        previousHighlight();
+    }
+    else if (e.keyCode == 13 && e.ctrlKey) {
+        closeExtension();
+    }
+    else if (e.keyCode == 13) {
+        nextHighlight();
+    }
 }
 
 /**
