@@ -2,7 +2,7 @@
 window.onload = function() {
     document.getElementById('close-button').onclick = closeExtension;
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
-    document.addEventListener('keyup', handleKeyPress, false);
+    document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
     retrieveLastSearch();
 };
 
