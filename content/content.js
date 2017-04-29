@@ -33,7 +33,7 @@ function buildDOMReferenceObject() {
             }
             else if(isTextNode(node)) {
                 var identifierUUID = generateElementUUID();
-                var nodeText = node.nodeValue;
+                var nodeText = formatTextNodeValue(node);
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
 
                 textGroup.group.push(textNodeInformation);
