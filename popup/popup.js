@@ -117,6 +117,13 @@ function handleKeyPress(e) {
     else if (e.keyCode == 13 && e.ctrlKey) {
         closeExtension();
     }
+    else if(e.keyCode == 79 && e.ctrlKey) {
+        var el = document.getElementById("regex-options");
+        if(el.style.display == 'none' || el.style.display == '')
+            el.style.display = 'initial';
+        else
+            el.style.display = 'none';
+    }
     else if (e.keyCode == 13) {
         nextHighlight();
     }
