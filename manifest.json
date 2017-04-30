@@ -30,7 +30,7 @@
       "matches": ["<all_urls>"],
       "all_frames": false,
       "run_at": "document_end",
-      "js": ["/lib/jQuery/jquery-3.2.0.min.js", "/content/content.js", "/content/highlighter.js", "/content/helper.js"]
+      "js": ["/lib/jQuery/jquery-3.2.0.min.js", "/content/content.js", "/content/highlighter.js"]
     }
   ],
   "commands": {
