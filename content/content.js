@@ -82,7 +82,7 @@ function formatTextNodeValue(node) {
     if(parentElement.tagName.toLowerCase() == 'pre' || parentElement.style.whiteSpace.toLowerCase() == 'pre')
         return nodeText;
     else
-        return nodeText.replace(/[\t\n\r ]+/g,' ').replace(/^[\t\n\r ]+/g, '').replace(/[\t\n\r ]+$/g, '');
+        return nodeText.replace(/[\t\n\r ]+/g,' ');
 }
 
 //Remove All Highlighting and Injected Markup

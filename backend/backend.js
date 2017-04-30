@@ -86,6 +86,8 @@ function actionPrevious(port, tabID) {
 }
 
 function buildOccurrenceMap(DOMModelObject, regex) {
+    console.groupCollapsed('Occurrences'); //FOR TESTING
+
     regex = new RegExp(regex, 'gm');
     var occurrenceMap = {occurrenceIndexMap: {}};
     var count = 0, groupIndex = 0;
@@ -104,6 +106,9 @@ function buildOccurrenceMap(DOMModelObject, regex) {
         count += matches.length;
         occurrenceMap[groupIndex] = {text: textGroup, uuids: uuids, count: matches.length};
 
+        console.log('Context:', extractContext(textGroup, regex)); //FOR TESTING
+        console.log('Count:', matches.length); //FOR TESTING
+
         for(var index = 0; index < matches.length; index++) {
             var occMapIndex = index + (count - matches.length);
             occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: index};
@@ -112,8 +117,18 @@ function buildOccurrenceMap(DOMModelObject, regex) {
         groupIndex++;
     }
 
+    console.groupEnd(); //FOR TESTING
+
     occurrenceMap.length = count;
     return occurrenceMap;
+}
+
+//FOR TESTING
+function extractContext(textGroup, regex) {
+    var regexPattern = '.{0,20}' + regex.source + '.{0,20}';
+    regex = new RegExp(regexPattern, 'gm');
+    var occurrences =  textGroup.match(regex);
+    return occurrences.join(" [...] ");
 }
 
 function getUUIDsFromModelObject(modelObject) {
