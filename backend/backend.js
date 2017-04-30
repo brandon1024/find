@@ -41,10 +41,13 @@ function actionUpdate(port, tabID, message) {
     var action = (!DOMModelObject ? 'init' : 'update');
     chrome.tabs.sendMessage(tabID, {action: action}, function (response) {
         try {
-            if(action == 'init') {
+            if(response && response.model) {
                 DOMModelObject = response.model;
                 index = 0;
             }
+
+            if(!DOMModelObject)
+                return;
 
             regex = message.regex;
             regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex);
