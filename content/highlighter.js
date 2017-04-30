@@ -5,8 +5,13 @@ var uuidOrange = generateElementUUID();
 chrome.runtime.onMessage.addListener(function(message, _, _) {
     if(message.action == 'highlight_update') {
         //unwrap all elements that have the uuidYellow/uuidOrange class
+        unwrapContentFromClass(uuidYellow);
+        unwrapContentFromClass(uuidOrange);
+
         //Add highlight markup to all text that matches the regex, with uuidYellow class
         //Add uuidOrange class to element at the specified index
+
+
         console.group('Action:', message.action);
         console.log('Occurrence Map:', message.occurrenceMap);
         console.log('Index:', message.index);
@@ -16,6 +21,7 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
     else if(message.action == 'highlight_next') {
         //Find and remove uuidOrange class from element
         //Add uuidOrange class to element at the specified index
+
         console.group('Action:', message.action);
         console.log('Occurrence Map:', message.occurrenceMap);
         console.log('Index:', message.index);
@@ -33,10 +39,19 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
     }
     else if(message.action == 'highlight_restore') {
         //unwrap all elements that have the uuidYellow/uuidOrange class
+        unwrapContentFromClass(uuidYellow);
+        unwrapContentFromClass(uuidOrange);
+
         console.group('Action:', message.action);
         console.groupEnd();
     }
 });
+
+function unwrapContentFromClass(className) {
+    var classSelector = '.' + className;
+    $(classSelector).contents().unwrap();
+}
+
 
 /**
  * This function highlights the targeted string in the regex search
