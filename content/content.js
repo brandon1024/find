@@ -77,7 +77,7 @@ function formatTextNodeValue(node) {
     var parentElement = node.parentElement;
     var nodeText = node.nodeValue;
 
-    if(parentElement.tagName == 'pre' || parentElement.style.whiteSpace == 'pre')
+    if(parentElement.tagName.toLowerCase() == 'pre' || parentElement.style.whiteSpace.toLowerCase() == 'pre')
         return nodeText;
     else
         return nodeText.replace(/[\t\n\r ]+/g,' ');
