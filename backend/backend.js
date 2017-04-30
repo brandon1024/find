@@ -55,6 +55,7 @@ function actionUpdate(port, tabID, message) {
                     index = regexOccurrenceMap.length-1;
             }
 
+            chrome.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
             var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
             port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
         }
@@ -69,38 +70,18 @@ function actionNext(port, tabID) {
     if(index >= regexOccurrenceMap.length-1)
         return;
 
-    var prevInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
-    var prevOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
-    var prevOccurrenceUUIDs = regexOccurrenceMap[prevInternodalIndex].uuids;
-
-    index++;
-    var newInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
-    var newOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
-    var newOccurrenceUUIDs = regexOccurrenceMap[newInternodalIndex].uuids;
-
-    //chrome.tabs.sendMessage(tabID, {action: 'next', focus: newOccurrenceUUIDs, focusIndex: newOffsetIndex, reset: prevOccurrenceUUIDs, resetIndex: prevOffsetIndex}, function (response) {
-    var userIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    port.postMessage({action: "index_update", index: userIndex, total: regexOccurrenceMap.length});
-   // });
+    chrome.tabs.sendMessage(tabID, {action: 'highlight_next', occurrenceMap: regexOccurrenceMap, index: ++index, regex: regex});
+    var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
+    port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
 }
 
 function actionPrevious(port, tabID) {
     if(index <= 0)
         return;
 
-    var prevInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
-    var prevOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
-    var prevOccurrenceUUIDs = regexOccurrenceMap[prevInternodalIndex].uuids;
-
-    index--;
-    var newInternodalIndex = regexOccurrenceMap.occurrenceIndexMap[index].groupIndex;
-    var newOffsetIndex = regexOccurrenceMap.occurrenceIndexMap[index].subIndex;
-    var newOccurrenceUUIDs = regexOccurrenceMap[newInternodalIndex].uuids;
-
-    //chrome.tabs.sendMessage(tabID, {action: 'previous', focus: newOccurrenceUUIDs, focusIndex: newOffsetIndex, reset: prevOccurrenceUUIDs, resetIndex: prevOffsetIndex}, function (response) {
-    var userIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    port.postMessage({action: "index_update", index: userIndex, total: regexOccurrenceMap.length});
-   // });
+    chrome.tabs.sendMessage(tabID, {action: 'highlight_previous', occurrenceMap: regexOccurrenceMap, index: --index, regex: regex});
+    var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
+    port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
 }
 
 function buildOccurrenceMap(DOMModelObject, regex) {

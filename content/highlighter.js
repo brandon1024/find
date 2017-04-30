@@ -1,10 +1,30 @@
-//==============================================================================
-//HIGHLIGHTER WILL REQUIRE MODIFICATIONS TO REFLECT WORKING CONTENT SCRIPT LOGIC
-//On update, will get passed list of UUIDs that will associate with elements in
-//the DOM.
-//==============================================================================
+//Uses helper methods from helper.js
+var uuidYellow = generateElementUUID();
+var uuidOrange = generateElementUUID();
 
-var uuid = "62ffb48f-be61-480d-9b32-afe9461fb6b5";
+chrome.runtime.onMessage.addListener(function(message, _, _) {
+    if(message.action == 'highlight_update') {
+        console.group('Action:', message.action);
+        console.log('Occurrence Map:', message.occurrenceMap);
+        console.log('Index:', message.index);
+        console.log('Regex:', message.regex);
+        console.groupEnd();
+    }
+    else if(message.action == 'highlight_next') {
+        console.group('Action:', message.action);
+        console.log('Occurrence Map:', message.occurrenceMap);
+        console.log('Index:', message.index);
+        console.log('Regex:', message.regex);
+        console.groupEnd();
+    }
+    if(message.action == 'highlight_previous') {
+        console.group('Action:', message.action);
+        console.log('Occurrence Map:', message.occurrenceMap);
+        console.log('Index:', message.index);
+        console.log('Regex:', message.regex);
+        console.groupEnd();
+    }
+});
 
 /**
  * This function highlights the targeted string in the regex search
