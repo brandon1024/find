@@ -15,6 +15,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         port.onDisconnect.addListener(function() {
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
             var uuids = getUUIDsFromModelObject(DOMModelObject);
             chrome.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 

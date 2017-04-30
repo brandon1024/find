@@ -4,6 +4,9 @@ var uuidOrange = generateElementUUID();
 
 chrome.runtime.onMessage.addListener(function(message, _, _) {
     if(message.action == 'highlight_update') {
+        //unwrap all elements that have the uuidYellow/uuidOrange class
+        //Add highlight markup to all text that matches the regex, with uuidYellow class
+        //Add uuidOrange class to element at the specified index
         console.group('Action:', message.action);
         console.log('Occurrence Map:', message.occurrenceMap);
         console.log('Index:', message.index);
@@ -11,17 +14,26 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
         console.groupEnd();
     }
     else if(message.action == 'highlight_next') {
+        //Find and remove uuidOrange class from element
+        //Add uuidOrange class to element at the specified index
         console.group('Action:', message.action);
         console.log('Occurrence Map:', message.occurrenceMap);
         console.log('Index:', message.index);
         console.log('Regex:', message.regex);
         console.groupEnd();
     }
-    if(message.action == 'highlight_previous') {
+    else if(message.action == 'highlight_previous') {
+        //Find and remove uuidOrange class from element
+        //Add uuidOrange class to element at the specified index
         console.group('Action:', message.action);
         console.log('Occurrence Map:', message.occurrenceMap);
         console.log('Index:', message.index);
         console.log('Regex:', message.regex);
+        console.groupEnd();
+    }
+    else if(message.action == 'highlight_restore') {
+        //unwrap all elements that have the uuidYellow/uuidOrange class
+        console.group('Action:', message.action);
         console.groupEnd();
     }
 });
