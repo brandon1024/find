@@ -186,7 +186,13 @@ hr {
     margin: 5px 0 0 0;
     padding: 0;
 }
-/* extension message style */
+
+div#regex-options {
+    background-color: #e5e5e5;
+    border-radius: 3px;
+    padding: 3px;
+    display: none;
+}/* extension message style */
 div#extension-message-body {
    display: none;
 }
