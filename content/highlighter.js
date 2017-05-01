@@ -9,6 +9,47 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
         unwrapContentFromClass(uuidOrange);
 
         //Add highlight markup to all text that matches the regex, with uuidYellow class
+        var occurrenceMap = message.occurrenceMap;
+        var index = message.index;
+        var count = 0;
+        var regex = message.regex;
+
+        for(var key in occurrenceMap) {
+            //Get Most Parent Element
+            var occurrenceGroup = occurrenceMap[key];
+            var uuids = occurrenceGroup.uuids;
+            var mostParentElement = {element: null, depth: null};
+
+            for(var index = 0; index < uuids.length; index++) {
+                var currentElement = document.getElementsByClassName(uuids[index])[0];
+                if(!currentElement)
+                    continue;
+
+                var currentElementDepth = getNodeTreeDepth(currentElement);
+
+                if(!mostParentElement || currentElementDepth > mostParentElement.depth) {
+                    mostParentElement.element = currentElement;
+                    mostParentElement.depth = currentElementDepth;
+                }
+            }
+
+            //Begin highlighting text group
+            var textNodeIndices = [];
+            var treeWalker = document.createTreeWalker(mostParentElement.element, NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
+            var node = treeWalker.root;
+            var stringIndex = 0;
+            while(node) {
+                if(node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre') {
+                    while(isTextNode(node = treeWalker.nextNode())) {
+
+                    }
+                }
+
+                textNodeIndices.push({startIndex: stringIndex, endIndex: stringIndex += string.count});
+                node = treeWalker.nextNode();
+            }
+        }
+
         //Add uuidOrange class to element at the specified index
 
 

@@ -17,13 +17,17 @@ function buildDOMReferenceObject() {
     var DOMModelObject = {};
 
     var end = false, groupIndex = 0, mostRecentBlockLevel = 0;
+    var node;
     while(!end) {
-        var node = DOMTreeWalker.nextNode();
-        var textGroup = {group: []};
+        if(!node)
+            node = DOMTreeWalker.root;
+        else
+            node = DOMTreeWalker.nextNode();
 
         if(!node)
             end = true;
 
+        var textGroup = {group: []};
         while(node) {
             if(isElementNode(node)) {
                 if(isInlineLevelElement(node) && getNodeTreeDepth(node) <= mostRecentBlockLevel)
