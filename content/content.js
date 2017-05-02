@@ -17,6 +17,7 @@ function buildDOMReferenceObject() {
     var DOMModelObject = {};
 
     var end = false, groupIndex = 0, mostRecentBlockLevel = 0;
+    var preformatted = {flag: false, index: null};
     var node;
     while(!end) {
         if(!node)
@@ -30,6 +31,15 @@ function buildDOMReferenceObject() {
         var textGroup = {group: []};
         while(node) {
             if(isElementNode(node)) {
+                if(!preformatted.flag && isPreformattedElement(node)) {
+                    preformatted.flag = true;
+                    preformatted.index = getNodeTreeDepth(node);
+                }
+                else if(preformatted.flag && getNodeTreeDepth(node) <= preformatted.index) {
+                    preformatted.flag = false;
+                    preformatted.index = null;
+                }
+
                 if(isInlineLevelElement(node) && getNodeTreeDepth(node) <= mostRecentBlockLevel)
                     break;
                 if(!isInlineLevelElement(node)) {
@@ -38,12 +48,14 @@ function buildDOMReferenceObject() {
                 }
             }
             else if(isTextNode(node)) {
-                var identifierUUID = generateElementUUID();
-                var nodeText = formatTextNodeValue(node);
-                var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
+                if(preformatted.flag || (isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length != 1)) {
+                    var identifierUUID = generateElementUUID();
+                    var nodeText = formatTextNodeValue(node, preformatted.flag);
+                    var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
 
-                textGroup.group.push(textNodeInformation);
-                $(node.parentElement).addClass(identifierUUID);
+                    textGroup.group.push(textNodeInformation);
+                    $(node.parentElement).addClass(identifierUUID);
+                }
             }
 
             node = DOMTreeWalker.nextNode();
@@ -68,25 +80,28 @@ function nodeFilter(node) {
         else
             return NodeFilter.FILTER_ACCEPT;
     }
-    else if(isTextNode(node)) {
-        if(!isNodeTextValueWhitespaceOnly(node) || node.nodeValue.length == 1)
-            return NodeFilter.FILTER_ACCEPT;
-    }
+    else if(isTextNode(node))
+        return NodeFilter.FILTER_ACCEPT;
 
     return NodeFilter.FILTER_REJECT;
 }
 
-function formatTextNodeValue(node) {
+function formatTextNodeValue(node, preformatted) {
     if(isElementNode(node))
         return;
 
-    var parentElement = node.parentElement;
     var nodeText = node.nodeValue;
-
-    if(parentElement.tagName.toLowerCase() == 'pre' || parentElement.style.whiteSpace.toLowerCase() == 'pre')
+    if(preformatted)
         return nodeText;
     else
         return nodeText.replace(/[\t\n\r ]+/g,' ');
+}
+
+function isPreformattedElement(node) {
+    if(!isElementNode(node))
+        return;
+
+    return node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre';
 }
 
 //Remove All Highlighting and Injected Markup
