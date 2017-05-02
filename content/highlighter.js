@@ -14,8 +14,8 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
         var count = 0;
         var regex = message.regex;
 
+        //Get Most Parent Element
         for(var key in occurrenceMap) {
-            //Get Most Parent Element
             var occurrenceGroup = occurrenceMap[key];
             var uuids = occurrenceGroup.uuids;
             var mostParentElement = {element: null, depth: null};
@@ -33,21 +33,7 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
                 }
             }
 
-            //Begin highlighting text group
-            var textNodeIndices = [];
-            var treeWalker = document.createTreeWalker(mostParentElement.element, NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
-            var node = treeWalker.root;
-            var stringIndex = 0;
-            while(node) {
-                if(node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre') {
-                    while(isTextNode(node = treeWalker.nextNode())) {
 
-                    }
-                }
-
-                textNodeIndices.push({startIndex: stringIndex, endIndex: stringIndex += string.count});
-                node = treeWalker.nextNode();
-            }
         }
 
         //Add uuidOrange class to element at the specified index

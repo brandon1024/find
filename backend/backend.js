@@ -65,7 +65,7 @@ function actionUpdate(port, tabID, message) {
         }
         catch(e) {
             console.error(e);
-            port.postMessage({action: "invalid_regex"});
+            port.postMessage({action: "invalid_regex", error: e.message});
         }
     });
 }
