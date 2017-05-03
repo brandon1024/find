@@ -30,16 +30,16 @@ function buildDOMReferenceObject() {
 
         var textGroup = {group: []};
         while(node) {
-            if(isElementNode(node)) {
-                if(!preformatted.flag && isPreformattedElement(node)) {
-                    preformatted.flag = true;
-                    preformatted.index = getNodeTreeDepth(node);
-                }
-                else if(preformatted.flag && getNodeTreeDepth(node) <= preformatted.index) {
-                    preformatted.flag = false;
-                    preformatted.index = null;
-                }
+            if(!preformatted.flag && isPreformattedElement(node)) {
+                preformatted.flag = true;
+                preformatted.index = getNodeTreeDepth(node);
+            }
+            else if(preformatted.flag && getNodeTreeDepth(node) <= preformatted.index) {
+                preformatted.flag = false;
+                preformatted.index = null;
+            }
 
+            if(isElementNode(node)) {
                 if(isInlineLevelElement(node) && getNodeTreeDepth(node) <= mostRecentBlockLevel)
                     break;
                 if(!isInlineLevelElement(node)) {
@@ -48,14 +48,17 @@ function buildDOMReferenceObject() {
                 }
             }
             else if(isTextNode(node)) {
-                if(preformatted.flag || (isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length != 1)) {
-                    var identifierUUID = generateElementUUID();
-                    var nodeText = formatTextNodeValue(node, preformatted.flag);
-                    var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
-
-                    textGroup.group.push(textNodeInformation);
-                    $(node.parentElement).addClass(identifierUUID);
+                if(!preformatted.flag && isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length != 1) {
+                    node = DOMTreeWalker.nextNode();
+                    continue;
                 }
+
+                var identifierUUID = generateElementUUID();
+                var nodeText = formatTextNodeValue(node, preformatted.flag);
+                var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
+
+                textGroup.group.push(textNodeInformation);
+                $(node.parentElement).addClass(identifierUUID);
             }
 
             node = DOMTreeWalker.nextNode();
@@ -69,6 +72,7 @@ function buildDOMReferenceObject() {
         DOMModelObject[groupIndex++] = textGroup;
     }
 
+    console.log(DOMModelObject);
     return DOMModelObject;
 }
 
