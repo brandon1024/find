@@ -92,7 +92,7 @@ function buildOccurrenceMap(DOMModelObject, regex) {
     console.groupCollapsed('Occurrences'); //FOR TESTING
 
     regex = new RegExp(regex, 'gm');
-    var occurrenceMap = {occurrenceIndexMap: {}};
+    var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
 
     for(var key in DOMModelObject) {
@@ -123,6 +123,7 @@ function buildOccurrenceMap(DOMModelObject, regex) {
     console.groupEnd(); //FOR TESTING
 
     occurrenceMap.length = count;
+    occurrenceMap.groups = groupIndex;
     return occurrenceMap;
 }
 

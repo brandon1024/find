@@ -15,15 +15,16 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
         var regex = message.regex;
 
         //Get Most Parent Element
-        for(var key in occurrenceMap) {
-            var occurrenceGroup = occurrenceMap[key];
+        for(var groupIndex = 0; groupIndex < occurrenceMap.groups; groupIndex++) {
+            console.log(occurrenceMap);
+            var occurrenceGroup = occurrenceMap[groupIndex];
             var uuids = occurrenceGroup.uuids;
             var mostParentElement = {element: null, depth: null};
 
-            for(var index = 0; index < uuids.length; index++) {
-                var currentElement = document.getElementsByClassName(uuids[index])[0];
+            for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
+                var currentElement = document.getElementsByClassName(uuids[uuidIndex])[0];
                 if(!currentElement)
-                    continue;
+                    continue; //Should not happen
 
                 var currentElementDepth = getNodeTreeDepth(currentElement);
 
