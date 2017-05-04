@@ -28,39 +28,41 @@ function buildDOMReferenceObject() {
         if(!node)
             end = true;
 
-        var textGroup = {group: []};
+        var textGroup = {group: [], preformatted: false};
         while(node) {
+            var nodeDepth = getNodeTreeDepth(node);
+
             if(!preformatted.flag && isPreformattedElement(node)) {
                 preformatted.flag = true;
-                preformatted.index = getNodeTreeDepth(node);
+                preformatted.index = nodeDepth;
             }
-            else if(preformatted.flag && getNodeTreeDepth(node) <= preformatted.index) {
+            else if(preformatted.flag && nodeDepth <= preformatted.index) {
                 preformatted.flag = false;
                 preformatted.index = null;
             }
 
             if(isElementNode(node)) {
-                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) {
-                    while(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1])
+                if(nodeDepth <= blockLevels[blockLevels.length-1]) {
+                    while(nodeDepth <= blockLevels[blockLevels.length-1])
                         blockLevels.pop();
 
                     if(!isInlineLevelElement(node))
-                        blockLevels.push(getNodeTreeDepth(node));
+                        blockLevels.push(nodeDepth);
 
                     elementBoundary = true;
                     break;
                 }
                 else {
                     if(!isInlineLevelElement(node)) {
-                        blockLevels.push(getNodeTreeDepth(node));
+                        blockLevels.push(nodeDepth);
                         elementBoundary = true;
                         break;
                     }
                 }
             }
             else if(isTextNode(node)) {
-                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) {
-                    while(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1])
+                if(nodeDepth <= blockLevels[blockLevels.length-1]) {
+                    while(nodeDepth <= blockLevels[blockLevels.length-1])
                         blockLevels.pop();
 
                     DOMTreeWalker.previousNode();
@@ -82,6 +84,7 @@ function buildDOMReferenceObject() {
 
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
                 textGroup.group.push(textNodeInformation);
+                textGroup.preformatted = preformatted.flag;
                 $(node.parentElement).addClass(identifierUUID);
             }
 

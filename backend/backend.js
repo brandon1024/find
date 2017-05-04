@@ -89,14 +89,13 @@ function actionPrevious(port, tabID) {
 }
 
 function buildOccurrenceMap(DOMModelObject, regex) {
-    console.groupCollapsed('Occurrences'); //FOR TESTING
-
     regex = new RegExp(regex, 'gm');
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
 
     for(var key in DOMModelObject) {
-        var textNodes = DOMModelObject[key].group, textGroup = '', uuids = [];
+        var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
+        var textGroup = '', uuids = [];
         for(var index = 0; index < textNodes.length; index++) {
             textGroup += textNodes[index].text;
             uuids.push(textNodes[index].elementUUID);
@@ -107,10 +106,7 @@ function buildOccurrenceMap(DOMModelObject, regex) {
             continue;
 
         count += matches.length;
-        occurrenceMap[groupIndex] = {text: textGroup, uuids: uuids, count: matches.length};
-
-        console.log('Context:', extractContext(textGroup, regex)); //FOR TESTING
-        console.log('Count:', matches.length); //FOR TESTING
+        occurrenceMap[groupIndex] = {text: textGroup, uuids: uuids, count: matches.length, preformatted: preformatted};
 
         for(var index = 0; index < matches.length; index++) {
             var occMapIndex = index + (count - matches.length);
@@ -119,8 +115,6 @@ function buildOccurrenceMap(DOMModelObject, regex) {
 
         groupIndex++;
     }
-
-    console.groupEnd(); //FOR TESTING
 
     occurrenceMap.length = count;
     occurrenceMap.groups = groupIndex;
