@@ -109,7 +109,8 @@ function nodeFilter(node) {
         else
             return NodeFilter.FILTER_ACCEPT;
     }
-    else if(isTextNode(node))
+
+    if(isTextNode(node))
         return NodeFilter.FILTER_ACCEPT;
 
     return NodeFilter.FILTER_REJECT;
@@ -122,13 +123,12 @@ function formatTextNodeValue(node, preformatted, elementBoundary) {
     var nodeText = node.nodeValue;
     if(preformatted)
         return nodeText;
-    else {
-        var text = nodeText.replace(/[\t\n\r ]+/g,' ');
-        if(elementBoundary)
-            text = text.replace(/^[\t\n\r ]+/g, '');
 
-        return text;
-    }
+    var text = nodeText.replace(/[\t\n\r ]+/g,' ');
+    if(elementBoundary)
+        text = text.replace(/^[\t\n\r ]+/g, '');
+
+    return text;
 }
 
 function isPreformattedElement(node) {
