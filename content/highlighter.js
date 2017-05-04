@@ -16,7 +16,6 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
 
         //Get Most Parent Element
         for(var groupIndex = 0; groupIndex < occurrenceMap.groups; groupIndex++) {
-            console.log(occurrenceMap);
             var occurrenceGroup = occurrenceMap[groupIndex];
             var uuids = occurrenceGroup.uuids;
             var mostParentElement = {element: null, depth: null};

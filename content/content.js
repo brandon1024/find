@@ -16,7 +16,7 @@ function buildDOMReferenceObject() {
     var DOMTreeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
     var DOMModelObject = {};
 
-    var end = false, groupIndex = 0, mostRecentBlockLevel = 0;
+    var end = false, groupIndex = 0, blockLevels = [];
     var preformatted = {flag: false, index: null};
     var node;
     while(!end) {
@@ -40,14 +40,31 @@ function buildDOMReferenceObject() {
             }
 
             if(isElementNode(node)) {
-                if(isInlineLevelElement(node) && getNodeTreeDepth(node) <= mostRecentBlockLevel)
+                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) { //if depth decreased
+                    while(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1])
+                        blockLevels.pop();
+
+                    if(!isInlineLevelElement(node))
+                        blockLevels.push(getNodeTreeDepth(node));
+
                     break;
-                if(!isInlineLevelElement(node)) {
-                    mostRecentBlockLevel = getNodeTreeDepth(node);
-                    break;
+                }
+                else {
+                    if(!isInlineLevelElement(node)) {
+                        blockLevels.push(getNodeTreeDepth(node));
+                        break;
+                    }
                 }
             }
             else if(isTextNode(node)) {
+                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) { //if depth decreased
+                    while(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1])
+                        blockLevels.pop();
+
+                    DOMTreeWalker.previousNode();
+                    break;
+                }
+
                 if(!preformatted.flag && isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length != 1) {
                     node = DOMTreeWalker.nextNode();
                     continue;
