@@ -75,8 +75,12 @@ function buildDOMReferenceObject() {
 
                 var identifierUUID = generateElementUUID();
                 var nodeText = formatTextNodeValue(node, preformatted.flag, elementBoundary);
-                var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
+                if(nodeText.length == 0) {
+                    node = DOMTreeWalker.nextNode();
+                    continue;
+                }
 
+                var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
                 textGroup.group.push(textNodeInformation);
                 $(node.parentElement).addClass(identifierUUID);
             }
