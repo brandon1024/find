@@ -16,7 +16,7 @@ function buildDOMReferenceObject() {
     var DOMTreeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
     var DOMModelObject = {};
 
-    var end = false, groupIndex = 0, blockLevels = [];
+    var end = false, groupIndex = 0, blockLevels = [], elementBoundary = false;
     var preformatted = {flag: false, index: null};
     var node;
     while(!end) {
@@ -40,28 +40,31 @@ function buildDOMReferenceObject() {
             }
 
             if(isElementNode(node)) {
-                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) { //if depth decreased
+                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) {
                     while(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1])
                         blockLevels.pop();
 
                     if(!isInlineLevelElement(node))
                         blockLevels.push(getNodeTreeDepth(node));
 
+                    elementBoundary = true;
                     break;
                 }
                 else {
                     if(!isInlineLevelElement(node)) {
                         blockLevels.push(getNodeTreeDepth(node));
+                        elementBoundary = true;
                         break;
                     }
                 }
             }
             else if(isTextNode(node)) {
-                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) { //if depth decreased
+                if(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1]) {
                     while(getNodeTreeDepth(node) <= blockLevels[blockLevels.length-1])
                         blockLevels.pop();
 
                     DOMTreeWalker.previousNode();
+                    elementBoundary = true;
                     break;
                 }
 
@@ -71,7 +74,7 @@ function buildDOMReferenceObject() {
                 }
 
                 var identifierUUID = generateElementUUID();
-                var nodeText = formatTextNodeValue(node, preformatted.flag);
+                var nodeText = formatTextNodeValue(node, preformatted.flag, elementBoundary);
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
 
                 textGroup.group.push(textNodeInformation);
@@ -79,6 +82,7 @@ function buildDOMReferenceObject() {
             }
 
             node = DOMTreeWalker.nextNode();
+            elementBoundary = false;
             if(!node)
                 end = true;
         }
@@ -107,15 +111,20 @@ function nodeFilter(node) {
     return NodeFilter.FILTER_REJECT;
 }
 
-function formatTextNodeValue(node, preformatted) {
+function formatTextNodeValue(node, preformatted, elementBoundary) {
     if(isElementNode(node))
         return;
 
     var nodeText = node.nodeValue;
     if(preformatted)
         return nodeText;
-    else
-        return nodeText.replace(/[\t\n\r ]+/g,' ');
+    else {
+        var text = nodeText.replace(/[\t\n\r ]+/g,' ');
+        if(elementBoundary)
+            text = text.replace(/^[\t\n\r ]+/g, '');
+
+        return text;
+    }
 }
 
 function isPreformattedElement(node) {
