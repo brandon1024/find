@@ -146,8 +146,10 @@ function highlightAll(occurrenceMap, regex) {
 function seekHighlight(index) {
     //TODO: Mike :)
     var occurence = generateOccurrenceIdentifier(index);
+    console.log(document.getElementsByClassName(occurence));
     $("." + occurence).addClass(uuidOrange);
-    $("." + occurence).css("background-color", "#cc9015");
+    $("." + occurence).css("background-color", "#cc7013");
+    console.log(document.getElementsByClassName(occurence));
 }
 
 //unwrap all elements that have the uuidYellow/uuidOrange class
@@ -175,7 +177,6 @@ function restore() {
 function restoreClass() {
     function removeClassFromElement(className) {
         var classSelector = '.' + className;
-        $(classSelector).css("background-color", "#ccbf00");
         $(classSelector).removeClass(className);
     }
 
