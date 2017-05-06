@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
 function highlightAll(occurrenceMap, regex) {
     var occIndex = 0;
     for(var index = 0; index < occurrenceMap.groups; index++) {
-        var occurrenceIdentifier = generateOccurrenceIdentifier(occIndex);
+        regex = new RegExp(regex);
         var uuids = occurrenceMap[index].uuids;
         var groupText = '', charMap = {}, charIndexMap = [];
 
@@ -44,24 +44,99 @@ function highlightAll(occurrenceMap, regex) {
         for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
             var $el = document.getElementById(uuids[uuidIndex]);
             var text = $el.childNodes[0].nodeValue;
-
-            $el.innerHTML = $el.childNodes[0].nodeValue.replace(regex, function(x) {
-                return "<span id='" + 'f2' + "' class='" + uuidYellow + "' style='background-color:#FFFF00'>" + x + "</span>";
-            });
-
             groupText += text;
 
             for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {
                 charIndexMap.push(count);
-                charMap[count++] = {char: text.charAt(stringIndex), nodeIndex: stringIndex, nodeUUID: uuids[uuidIndex], ignorable: false, matched: false};
+                charMap[count++] = {char: text.charAt(stringIndex), nodeUUID: uuids[uuidIndex], nodeIndex: stringIndex, ignorable: false, matched: false};
             }
         }
 
-        //TODO: Brandon: Format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
+        //format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
+        if(!occurrenceMap[index].preformatted) {
+            var info;
+            while(info = /[\t\n\r]/.exec(groupText)) {
+                charMap[charIndexMap[info.index]].ignorable = true;
+                groupText = groupText.replace(/[\t\n\r]/, ' ');
+            }
 
-        //TODO: Brandon: Perform complex regex search, updating charMap matched characters
+            var len, offset, currIndex;
+            while(info = / {2,}/.exec(groupText)) {
+                len = info[0].length;
+                offset = info.index;
 
-        //TODO: Brandon: Wrap matched characters in an element with ID="occurrenceIdentifier" and class uuidYellow
+                for(currIndex = 0; currIndex < len; currIndex++)
+                    charMap[charIndexMap[offset + currIndex]].ignorable = true;
+
+                for(currIndex = 0; currIndex < len-1; currIndex++)
+                    charIndexMap.splice(offset,1);
+
+                groupText = groupText.replace(/ {2,}/, ' ');
+            }
+
+            while(info = /^ | $/.exec(groupText)) {
+                len = info[0].length;
+                offset = info.index;
+
+                for(currIndex = 0; currIndex < len; currIndex++)
+                    charMap[charIndexMap[offset + currIndex]].ignorable = true;
+
+                for(currIndex = 0; currIndex < len; currIndex++)
+                    charIndexMap.splice(offset,1);
+
+                groupText = groupText.replace(/^ | $/, '');
+            }
+        }
+
+        //Perform complex regex search, updating charMap matched characters
+        while(info = regex.exec(groupText)) {
+            len = info[0].length;
+            offset = info.index;
+
+            var first = charIndexMap[offset];
+            var last = charIndexMap[offset + len - 1];
+            for(currIndex = first; currIndex <= last; currIndex++) {
+                charMap[currIndex].matched = true;
+            }
+
+            for(currIndex = 0; currIndex < offset+len; currIndex++)
+                charIndexMap.splice(0,1);
+
+            groupText = groupText.substring(offset+len);
+        }
+
+        //Wrap matched characters in an element with ID="occurrenceIdentifier" and class uuidYellow
+        var matchGroup = {text: '', groupUUID: null};
+        var inMatch = false;
+        var openingMarkup = '<span id="' + generateOccurrenceIdentifier(occIndex) +'" class="' + uuidYellow + '">';
+        var closingMarkup = '</span>';
+        for(var key in charMap) {
+            if(matchGroup.groupUUID == null)
+                matchGroup.groupUUID = charMap[key].nodeUUID;
+
+            if(matchGroup.groupUUID != charMap[key].nodeUUID) {
+                document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+                matchGroup.text = '';
+                matchGroup.groupUUID = charMap[key].nodeUUID;
+                occIndex++;
+            }
+
+            if(charMap[key].matched) {
+                if(!inMatch) {
+                    inMatch = charMap[key].matched;
+                    matchGroup.text += openingMarkup;
+                }
+            }
+            else {
+                if(inMatch) {
+                    inMatch = charMap[key].matched;
+                    matchGroup.text += closingMarkup;
+                }
+            }
+
+            matchGroup.text += charMap[key].char;
+        }
+        document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
     }
 }
 
@@ -79,7 +154,6 @@ function restore() {
             return;
 
         var $parent = $el.parent();
-        console.log($parent);
         $(classSelector).contents().unwrap();
 
         for(var index = 0; index < $parent.length; index++)

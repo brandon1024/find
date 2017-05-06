@@ -103,7 +103,6 @@ function buildDOMReferenceObject() {
         DOMModelObject[groupIndex++] = textGroup;
     }
 
-    console.log(DOMModelObject);
     return DOMModelObject;
 }
 
