@@ -119,7 +119,6 @@ function highlightAll(occurrenceMap, regex) {
                 document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
-                occIndex++;
             }
 
             if(charMap[key].matched) {
@@ -132,6 +131,7 @@ function highlightAll(occurrenceMap, regex) {
                 if(inMatch) {
                     inMatch = charMap[key].matched;
                     matchGroup.text += closingMarkup;
+                    occIndex++;
                 }
             }
 
