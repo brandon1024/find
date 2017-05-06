@@ -26,6 +26,10 @@ port.onMessage.addListener(function listener(response) {
         else
             enableButtons();
     }
+    else if(response.action == 'empty_regex') {
+        updateIndexText();
+        disableButtons();
+    }
     else if(response.action == 'invalid_regex') {
         updateIndexText();
         disableButtons();
@@ -41,12 +45,6 @@ port.onMessage.addListener(function listener(response) {
  */
 function updateHighlight() {
     var regex = getSearchFieldText();
-
-    if(regex.length == 0) {
-        updateIndexText();
-        return;
-    }
-
     var action = 'update';
     invokeAction({action: action, regex: regex});
 }

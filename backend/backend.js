@@ -50,8 +50,13 @@ function actionUpdate(port, tabID, message) {
                 return;
 
             regex = message.regex;
-            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex);
+            if(regex.length == 0) {
+                port.postMessage({action: "empty_regex"});
+                chrome.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+                return;
+            }
 
+            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex);
             if(index > regexOccurrenceMap.length-1) {
                 if(regexOccurrenceMap.length == 0)
                     index = 0;

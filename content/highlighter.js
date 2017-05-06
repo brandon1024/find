@@ -44,6 +44,11 @@ function highlightAll(occurrenceMap, regex) {
         for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
             var $el = document.getElementById(uuids[uuidIndex]);
             var text = $el.childNodes[0].nodeValue;
+
+            $el.innerHTML = $el.childNodes[0].nodeValue.replace(regex, function(x) {
+                return "<span id='" + 'f2' + "' class='" + uuidYellow + "' style='background-color:#FFFF00'>" + x + "</span>";
+            });
+
             groupText += text;
 
             for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {
@@ -52,9 +57,11 @@ function highlightAll(occurrenceMap, regex) {
             }
         }
 
-        //Perform Regex Match
+        //TODO: Brandon: Format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
 
-        //Wrap matched characters in an element with ID="occurrenceIdentifier" and class uuidOrange
+        //TODO: Brandon: Perform complex regex search, updating charMap matched characters
+
+        //TODO: Brandon: Wrap matched characters in an element with ID="occurrenceIdentifier" and class uuidYellow
     }
 }
 
@@ -66,7 +73,17 @@ function seekHighlight(index) {
 function restore() {
     function unwrapContentFromClass(className) {
         var classSelector = '.' + className;
+        var $el = $(classSelector);
+
+        if($el.length == 0)
+            return;
+
+        var $parent = $el.parent();
+        console.log($parent);
         $(classSelector).contents().unwrap();
+
+        for(var index = 0; index < $parent.length; index++)
+            $parent[index].normalize();
     }
 
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
