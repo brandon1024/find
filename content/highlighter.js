@@ -1,35 +1,29 @@
-var uuidYellow = "find-highlight-yellow";
-var uuidOrange = "find-highlight-orange";
+var yellowHighlightClass = "find-ext-highlight-yellow";
+var orangeHighlightClass = "find-ext-highlight-orange";
 
 chrome.runtime.onMessage.addListener(function(message, _, _) {
+    var index;
     if(message.action == 'highlight_update') {
-        restore(uuidYellow, uuidOrange);
-
         var occurrenceMap = message.occurrenceMap;
         var regex = message.regex;
-        var index = message.index;
+        index = message.index;
+        restore(yellowHighlightClass, orangeHighlightClass);
         highlightAll(occurrenceMap, regex);
         seekHighlight(index);
     }
     else if(message.action == 'highlight_next') {
-        //Find and remove uuidOrange class from element
-        restoreClass(uuidOrange);
-
-        //Add uuidOrange class to element at the specified index
-        var index = message.index;
+        index = message.index;
+        restoreClass(orangeHighlightClass);
         seekHighlight(index);
 
     }
     else if(message.action == 'highlight_previous') {
-        //Find and remove uuidOrange class from element
-        restoreClass(uuidOrange);
-
-        //Add uuidOrange class to element at the specified index
-        var index = message.index;
+        index = message.index;
+        restoreClass(orangeHighlightClass);
         seekHighlight(index);
     }
     else if(message.action == 'highlight_restore') {
-        restore(uuidYellow, uuidOrange);
+        restore(yellowHighlightClass, orangeHighlightClass);
     }
 });
 
@@ -105,11 +99,11 @@ function highlightAll(occurrenceMap, regex) {
             groupText = groupText.substring(offset+len);
         }
 
-        //Wrap matched characters in an element with class uuidYellow and occurrenceIdentifier
+        //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
         var matchGroup = {text: '', groupUUID: null};
         var inMatch = false;
         for(var key in charMap) {
-            var openingMarkup = '<span class="' + uuidYellow + ' ' + generateOccurrenceIdentifier(occIndex) + '">';
+            var openingMarkup = '<span class="' + yellowHighlightClass + ' ' + generateOccurrenceIdentifier(occIndex) + '">';
             var closingMarkup = '</span>';
 
             if(matchGroup.groupUUID == null)
@@ -142,12 +136,11 @@ function highlightAll(occurrenceMap, regex) {
 }
 
 function seekHighlight(index) {
-    //TODO: Mike :)
-    var occurence = generateOccurrenceIdentifier(index);
-    $('.' + occurence).addClass(uuidOrange);
+    var classSelector = '.' + generateOccurrenceIdentifier(index);
+    $(classSelector).addClass(orangeHighlightClass);
 }
 
-//unwrap all elements that have the uuidYellow/uuidOrange class
+//unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
 function restore() {
     function unwrapContentFromClass(className) {
         var classSelector = '.' + className;
