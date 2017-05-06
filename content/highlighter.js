@@ -1,7 +1,5 @@
-//Uses helper methods from helper.js
-var uuidYellow = generateElementUUID();
-//var uuidOrange = generateElementUUID();
-var uuidOrange = "uuidOrange";
+var uuidYellow = "find-highlight-yellow";
+var uuidOrange = "find-highlight-orange";
 
 chrome.runtime.onMessage.addListener(function(message, _, _) {
     if(message.action == 'highlight_update') {
@@ -111,7 +109,7 @@ function highlightAll(occurrenceMap, regex) {
         var matchGroup = {text: '', groupUUID: null};
         var inMatch = false;
         for(var key in charMap) {
-            var openingMarkup = '<span class="' + uuidYellow + ' ' + generateOccurrenceIdentifier(occIndex) + '" style="background-color: #ccbf00;">';
+            var openingMarkup = '<span class="' + uuidYellow + ' ' + generateOccurrenceIdentifier(occIndex) + '">';
             var closingMarkup = '</span>';
 
             if(matchGroup.groupUUID == null)
@@ -146,10 +144,7 @@ function highlightAll(occurrenceMap, regex) {
 function seekHighlight(index) {
     //TODO: Mike :)
     var occurence = generateOccurrenceIdentifier(index);
-    console.log(document.getElementsByClassName(occurence));
-    $("." + occurence).addClass(uuidOrange);
-    $("." + occurence).css("background-color", "#cc7013");
-    console.log(document.getElementsByClassName(occurence));
+    $('.' + occurence).addClass(uuidOrange);
 }
 
 //unwrap all elements that have the uuidYellow/uuidOrange class
