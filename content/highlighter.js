@@ -140,6 +140,11 @@ function highlightAll(occurrenceMap, regex) {
 function seekHighlight(index) {
     var classSelector = '.' + generateOccurrenceIdentifier(index);
     $(classSelector).addClass(orangeHighlightClass);
+    seekFocus(classSelector);
+}
+
+function seekFocus(classSelector) {
+    $(classSelector).focus();
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
