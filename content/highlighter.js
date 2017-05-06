@@ -27,6 +27,7 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
     }
 });
 
+//Highlight all occurrences on the page
 function highlightAll(occurrenceMap, regex) {
     var occIndex = 0;
     for(var index = 0; index < occurrenceMap.groups; index++) {
@@ -135,12 +136,13 @@ function highlightAll(occurrenceMap, regex) {
     }
 }
 
+//Seek darker highlight to specific occurrence index
 function seekHighlight(index) {
     var classSelector = '.' + generateOccurrenceIdentifier(index);
     $(classSelector).addClass(orangeHighlightClass);
 }
 
-//unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
+//Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
 function restore() {
     function unwrapContentFromClass(className) {
         var classSelector = '.' + className;
@@ -172,6 +174,7 @@ function restoreClass() {
         removeClassFromElement(arguments[argIndex]);
 }
 
+//Generate an occurrence identifier by the occurrenceIndex
 function generateOccurrenceIdentifier(occurrenceIndex) {
-    return 'Fnd-Occr' + occurrenceIndex;
+    return 'find-ext-occr' + occurrenceIndex;
 }

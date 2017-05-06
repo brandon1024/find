@@ -121,6 +121,7 @@ function nodeFilter(node) {
     return NodeFilter.FILTER_REJECT;
 }
 
+//Format text node value
 function formatTextNodeValue(node, preformatted, elementBoundary) {
     if(isElementNode(node))
         return;
@@ -136,6 +137,7 @@ function formatTextNodeValue(node, preformatted, elementBoundary) {
     return text;
 }
 
+//Check if element is <pre> or has style white-space:pre
 function isPreformattedElement(node) {
     if(!isElementNode(node))
         return;

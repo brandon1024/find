@@ -28,6 +28,7 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
 });
 
+//Dispatch action function
 function invokeAction(action, port, tabID, message) {
     if(action == 'update')
         actionUpdate(port, tabID, message);
@@ -37,6 +38,7 @@ function invokeAction(action, port, tabID, message) {
         actionPrevious(port, tabID);
 }
 
+//Action Update
 function actionUpdate(port, tabID, message) {
     var action = (!DOMModelObject ? 'init' : 'update');
     chrome.tabs.sendMessage(tabID, {action: action}, function (response) {
@@ -75,6 +77,7 @@ function actionUpdate(port, tabID, message) {
     });
 }
 
+//Action Next
 function actionNext(port, tabID) {
     if(index >= regexOccurrenceMap.length-1)
         return;
@@ -84,6 +87,7 @@ function actionNext(port, tabID) {
     port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
 }
 
+//Action Previous
 function actionPrevious(port, tabID) {
     if(index <= 0)
         return;
@@ -93,6 +97,7 @@ function actionPrevious(port, tabID) {
     port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
 }
 
+//Build occurrence map from DOM model and regex
 function buildOccurrenceMap(DOMModelObject, regex) {
     regex = new RegExp(regex, 'gm');
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
@@ -126,14 +131,7 @@ function buildOccurrenceMap(DOMModelObject, regex) {
     return occurrenceMap;
 }
 
-//FOR TESTING
-function extractContext(textGroup, regex) {
-    var regexPattern = '.{0,20}' + regex.source + '.{0,20}';
-    regex = new RegExp(regexPattern, 'gm');
-    var occurrences =  textGroup.match(regex);
-    return occurrences.join(" [...] ");
-}
-
+//Get all group uuids from model object
 function getUUIDsFromModelObject(modelObject) {
     var uuids = [];
 
