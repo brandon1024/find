@@ -1,6 +1,7 @@
 //Uses helper methods from helper.js
 var uuidYellow = generateElementUUID();
-var uuidOrange = generateElementUUID();
+//var uuidOrange = generateElementUUID();
+var uuidOrange = "uuidOrange";
 
 chrome.runtime.onMessage.addListener(function(message, _, _) {
     if(message.action == 'highlight_update') {
@@ -17,16 +18,17 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
         restoreClass(uuidOrange);
 
         //Add uuidOrange class to element at the specified index
-        //TODO: Mike, you got this :D Just find the span elements
-        //TODO: with class 'Fnd-Occr#' (using helper method), and add the class uuidOrange
+        var index = message.index;
+        seekHighlight(index);
+
     }
     else if(message.action == 'highlight_previous') {
         //Find and remove uuidOrange class from element
         restoreClass(uuidOrange);
 
         //Add uuidOrange class to element at the specified index
-        //TODO: You can also combine highlight_next and highlight_previous
-        //TODO: into a single action. Maybe call it highlight_seek or something, your call.
+        var index = message.index;
+        seekHighlight(index);
     }
     else if(message.action == 'highlight_restore') {
         restore(uuidYellow, uuidOrange);
@@ -143,6 +145,9 @@ function highlightAll(occurrenceMap, regex) {
 
 function seekHighlight(index) {
     //TODO: Mike :)
+    var occurence = generateOccurrenceIdentifier(index);
+    $("." + occurence).addClass(uuidOrange);
+    $("." + occurence).css("background-color", "#cc9015");
 }
 
 //unwrap all elements that have the uuidYellow/uuidOrange class
@@ -170,6 +175,7 @@ function restore() {
 function restoreClass() {
     function removeClassFromElement(className) {
         var classSelector = '.' + className;
+        $(classSelector).css("background-color", "#ccbf00");
         $(classSelector).removeClass(className);
     }
 
