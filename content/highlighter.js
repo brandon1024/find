@@ -105,12 +105,13 @@ function highlightAll(occurrenceMap, regex) {
             groupText = groupText.substring(offset+len);
         }
 
-        //Wrap matched characters in an element with ID="occurrenceIdentifier" and class uuidYellow
+        //Wrap matched characters in an element with class uuidYellow and occurrenceIdentifier
         var matchGroup = {text: '', groupUUID: null};
         var inMatch = false;
-        var openingMarkup = '<span id="' + generateOccurrenceIdentifier(occIndex) +'" class="' + uuidYellow + '">';
-        var closingMarkup = '</span>';
         for(var key in charMap) {
+            var openingMarkup = '<span class="' + uuidYellow + ' ' + generateOccurrenceIdentifier(occIndex) + '" style="background-color: #ccbf00;">';
+            var closingMarkup = '</span>';
+
             if(matchGroup.groupUUID == null)
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
