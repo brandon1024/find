@@ -4,115 +4,87 @@ var uuidOrange = generateElementUUID();
 
 chrome.runtime.onMessage.addListener(function(message, _, _) {
     if(message.action == 'highlight_update') {
-        //unwrap all elements that have the uuidYellow/uuidOrange class
-        unwrapContentFromClass(uuidYellow);
-        unwrapContentFromClass(uuidOrange);
+        restore(uuidYellow, uuidOrange);
 
-        //Add highlight markup to all text that matches the regex, with uuidYellow class
         var occurrenceMap = message.occurrenceMap;
-        var index = message.index;
-        var count = 0;
         var regex = message.regex;
-
-        //Get Most Parent Element
-        for(var groupIndex = 0; groupIndex < occurrenceMap.groups; groupIndex++) {
-            var occurrenceGroup = occurrenceMap[groupIndex];
-            var uuids = occurrenceGroup.uuids;
-            var mostParentElement = {element: null, depth: null};
-
-            for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
-                var currentElement = document.getElementsByClassName(uuids[uuidIndex])[0];
-                if(!currentElement)
-                    continue; //Should not happen
-
-                var currentElementDepth = getNodeTreeDepth(currentElement);
-
-                if(!mostParentElement || currentElementDepth > mostParentElement.depth) {
-                    mostParentElement.element = currentElement;
-                    mostParentElement.depth = currentElementDepth;
-                }
-            }
-
-
-        }
-
-        //Add uuidOrange class to element at the specified index
-
-
-        console.group('Action:', message.action);
-        console.log('Occurrence Map:', message.occurrenceMap);
-        console.log('Index:', message.index);
-        console.log('Regex:', message.regex);
-        console.groupEnd();
+        var index = message.index;
+        highlightAll(occurrenceMap, regex);
+        seekHighlight(index);
     }
     else if(message.action == 'highlight_next') {
         //Find and remove uuidOrange class from element
-        //Add uuidOrange class to element at the specified index
+        restoreClass(uuidOrange);
 
-        console.group('Action:', message.action);
-        console.log('Occurrence Map:', message.occurrenceMap);
-        console.log('Index:', message.index);
-        console.log('Regex:', message.regex);
-        console.groupEnd();
+        //Add uuidOrange class to element at the specified index
+        //TODO: Mike, you got this :D Just find the span elements
+        //TODO: with class 'Fnd-Occr#' (using helper method), and add the class uuidOrange
     }
     else if(message.action == 'highlight_previous') {
         //Find and remove uuidOrange class from element
+        restoreClass(uuidOrange);
+
         //Add uuidOrange class to element at the specified index
-        console.group('Action:', message.action);
-        console.log('Occurrence Map:', message.occurrenceMap);
-        console.log('Index:', message.index);
-        console.log('Regex:', message.regex);
-        console.groupEnd();
+        //TODO: You can also combine highlight_next and highlight_previous
+        //TODO: into a single action. Maybe call it highlight_seek or something, your call.
     }
     else if(message.action == 'highlight_restore') {
-        //unwrap all elements that have the uuidYellow/uuidOrange class
-        unwrapContentFromClass(uuidYellow);
-        unwrapContentFromClass(uuidOrange);
-
-        console.group('Action:', message.action);
-        console.groupEnd();
+        restore(uuidYellow, uuidOrange);
     }
 });
 
-function unwrapContentFromClass(className) {
-    var classSelector = '.' + className;
-    $(classSelector).contents().unwrap();
+function highlightAll(occurrenceMap, regex) {
+    var occIndex = 0;
+    for(var index = 0; index < occurrenceMap.groups; index++) {
+        var occurrenceIdentifier = generateOccurrenceIdentifier(occIndex);
+        var uuids = occurrenceMap[index].uuids;
+        var groupText = '', charMap = {}, charIndexMap = [];
+
+        var count = 0;
+        for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
+            var $el = document.getElementById(uuids[uuidIndex]);
+            var text = $el.childNodes[0].nodeValue;
+            groupText += text;
+
+            for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {
+                charIndexMap.push(count);
+                charMap[count++] = {char: text.charAt(stringIndex), nodeIndex: stringIndex, nodeUUID: uuids[uuidIndex], ignorable: false, matched: false};
+            }
+        }
+
+        //Perform Regex Match
+
+        //Wrap matched characters in an element with ID="occurrenceIdentifier" and class uuidOrange
+    }
+}
+
+function seekHighlight(index) {
+    //TODO: Mike :)
+}
+
+//unwrap all elements that have the uuidYellow/uuidOrange class
+function restore() {
+    function unwrapContentFromClass(className) {
+        var classSelector = '.' + className;
+        $(classSelector).contents().unwrap();
+    }
+
+    for(var argIndex = 0; argIndex < arguments.length; argIndex++)
+        unwrapContentFromClass(arguments[argIndex]);
 }
 
 
-/**
- * This function highlights the targeted string in the regex search
- * @param el is the DOM element
- * @param pat is the regex pattern entered in the search bar
- * @returns {void|string|XML} returns the DOM element with values highlighted
- */
-function highlightAllMatch(el, pat) {
-    return el.replace(pat, function (x){return "<span id='" + uuid + "' style='background-color:#FFFF00'>" + x + "</span>";});
+//Remove class from all element with that class
+function restoreClass() {
+    function removeClassFromElement(className) {
+        var classSelector = '.' + className;
+        $(classSelector).removeClass(className);
+    }
+
+    for(var argIndex = 0; argIndex < arguments.length; argIndex++)
+        removeClassFromElement(arguments[argIndex]);
 }
 
-/**
- * This function will highlight a marked DOM text selection in orange
- * @param el is the DOM element
- * @returns {string} returns the marked DOM element with orange highlighted
- */
-function setHighlightOrange(el) {
-    return el.getElementById(uuid).style.backgroundColor = "#FFA500";
-}
-
-/**
- * This function will highlight a marked DOM text selection in yellow
- * @param el is the DOM element
- * @returns {string} returns the marked DOM searchable text yellow highlighted
- */
-function setHighlightYellow(el) {
-    return el.getElementById(uuid).style.backgroundColor = "#FFFF00";
-}
-
-/**
- * This function removes all highlighting which contains specific find+ ID
- * @param el is the DOM element
- * @returns {*|jQuery} returns un-highlighted DOM element
- */
-function removeAllHighlight(el) {
-    return $(uuid, $(el).context).contents().unwrap();
+function generateOccurrenceIdentifier(occurrenceIndex) {
+    return 'Fnd-Occr' + occurrenceIndex;
 }

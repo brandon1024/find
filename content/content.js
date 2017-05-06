@@ -82,10 +82,13 @@ function buildDOMReferenceObject() {
                     continue;
                 }
 
+                var $wrapperElement = $(document.createElement('span'));
+                $wrapperElement.attr('id', identifierUUID);
+                $(node).wrap($wrapperElement);
+
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
                 textGroup.group.push(textNodeInformation);
                 textGroup.preformatted = preformatted.flag;
-                $(node.parentElement).addClass(identifierUUID);
             }
 
             node = DOMTreeWalker.nextNode();
@@ -144,8 +147,8 @@ function isPreformattedElement(node) {
 //Remove All Highlighting and Injected Markup
 function restoreWebPage(uuids) {
     for(var index = 0; index < uuids.length; index++) {
-        var elementClassUUID = '.' + uuids[index];
-        $(elementClassUUID).removeClass(uuids[index]);
+        var elementUUID = '#' + uuids[index];
+        $(elementUUID).contents().unwrap();
     }
 
     return true;
