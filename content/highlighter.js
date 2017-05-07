@@ -87,6 +87,9 @@ function highlightAll(occurrenceMap, regex) {
             len = info[0].length;
             offset = info.index;
 
+            if(len == 0)
+                break;
+
             var first = charIndexMap[offset];
             var last = charIndexMap[offset + len - 1];
             for(currIndex = first; currIndex <= last; currIndex++) {
@@ -144,7 +147,7 @@ function seekHighlight(index) {
 
 function seekFocus(classSelector) {
     $('html, body').animate({
-        scrollTop: $(classSelector).offset().top + 'px'
+        scrollTop: $(classSelector).offset().top - 25 + 'px'
     }, 'fast');
 }
 
