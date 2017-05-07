@@ -38,6 +38,10 @@ function highlightAll(occurrenceMap, regex) {
         for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
             var $el = document.getElementById(uuids[uuidIndex]);
             var text = $el.childNodes[0].nodeValue;
+
+            if(!text)
+                continue;
+
             groupText += text;
 
             for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {

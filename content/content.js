@@ -109,7 +109,7 @@ function buildDOMReferenceObject() {
 //TreeWalker Filter, Allowing Element and Text Nodes
 function nodeFilter(node) {
     if(isElementNode(node)) {
-        if(node.tagName.toLowerCase() == 'script')
+        if(node.tagName.toLowerCase() == 'script' || node.tagName.toLowerCase() == 'noscript')
             return NodeFilter.FILTER_REJECT;
         else
             return NodeFilter.FILTER_ACCEPT;
