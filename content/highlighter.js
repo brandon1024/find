@@ -15,7 +15,6 @@ chrome.runtime.onMessage.addListener(function(message, _, _) {
         index = message.index;
         restoreClass(orangeHighlightClass);
         seekHighlight(index);
-
     }
     else if(message.action == 'highlight_previous') {
         index = message.index;
@@ -144,7 +143,9 @@ function seekHighlight(index) {
 }
 
 function seekFocus(classSelector) {
-    $(classSelector).focus();
+    $('html, body').animate({
+        scrollTop: $(classSelector).offset().top + 'px'
+    }, 'fast');
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
