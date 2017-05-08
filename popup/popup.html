@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <title>popup.html</title>
     <script type="text/javascript" src="popup.js"></script>
-    <link rel="stylesheet" href="extension.css">
+    <script type="text/javascript" src="/lib/jQuery/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="/lib/jQuery/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="extension.css"/>
 </head>
 <body>
     <div id="popup-body">
         <table id="popup-body-table">
             <tr>
-                <td class="field-cell">
+                <td id="field-cell">
                     <input class="field" id="search-field" type="text" name="search" title="Search Field"/>
                 </td>
-                <td class="divide-line-cell">
+                <td id="index-text-cell">
+                    <span id="index-text"></span>
+                </td>
+                <td id="divide-line-cell">
                     <img id="dividing-line-img" src="/resources/line.png"/>
                 </td>
                 <td class="button-cell">
