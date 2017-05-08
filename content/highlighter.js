@@ -152,8 +152,10 @@ function seekHighlight(index) {
 }
 
 function seekFocus(classSelector) {
+    var offset = $(classSelector).offset();
     $('html, body').animate({
-        scrollTop: $(classSelector).offset().top - 50 + 'px'
+        scrollTop: offset.top - 50 + 'px',
+        scrollLeft: offset.left - 50 + 'px'
     }, 'fast');
 }
 
