@@ -1,3 +1,5 @@
+"use strict";
+
 var port = chrome.runtime.connect({name: "popup_to_backend_port"});
 
 /**
