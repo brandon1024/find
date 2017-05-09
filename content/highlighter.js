@@ -1,7 +1,9 @@
+"use strict";
+
 var yellowHighlightClass = "find-ext-highlight-yellow";
 var orangeHighlightClass = "find-ext-highlight-orange";
 
-chrome.runtime.onMessage.addListener(function(message, _, _) {
+chrome.runtime.onMessage.addListener(function(message, sender, response) {
     var index;
     if(message.action == 'highlight_update') {
         var occurrenceMap = message.occurrenceMap;
@@ -150,8 +152,10 @@ function seekHighlight(index) {
 }
 
 function seekFocus(classSelector) {
+    var offset = $(classSelector).offset();
     $('html, body').animate({
-        scrollTop: $(classSelector).offset().top - 25 + 'px'
+        scrollTop: offset.top - 50 + 'px',
+        scrollLeft: offset.left - 50 + 'px'
     }, 'fast');
 }
 

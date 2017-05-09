@@ -1,3 +1,5 @@
+"use strict";
+
 var DOMModelObject;
 var regexOccurrenceMap = null;
 var index = null;
@@ -23,7 +25,6 @@ chrome.runtime.onConnect.addListener(function(port) {
             regexOccurrenceMap = null;
             index = null;
             regex = null;
-            this.close();
         });
     });
 });

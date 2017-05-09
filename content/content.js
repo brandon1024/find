@@ -1,4 +1,6 @@
-chrome.runtime.onMessage.addListener(function(message, _, sendResponse) {
+"use strict";
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if(message.action == 'init')
         sendResponse({model: buildDOMReferenceObject()});
     else if(message.action == 'update')
