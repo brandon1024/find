@@ -80,20 +80,26 @@ function actionUpdate(port, tabID, message) {
 
 //Action Next
 function actionNext(port, tabID) {
-    if(index >= regexOccurrenceMap.length-1)
-        return;
+    if(index >= regexOccurrenceMap.length-1) {
+        index = 0;
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_next', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+    } else {
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_next', occurrenceMap: regexOccurrenceMap, index: ++index, regex: regex});
+    }
 
-    chrome.tabs.sendMessage(tabID, {action: 'highlight_next', occurrenceMap: regexOccurrenceMap, index: ++index, regex: regex});
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
 }
 
 //Action Previous
 function actionPrevious(port, tabID) {
-    if(index <= 0)
-        return;
+    if(index <= 0) {
+        index = regexOccurrenceMap.length-1;
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_previous', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+    } else {
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_previous', occurrenceMap: regexOccurrenceMap, index: --index, regex: regex});
+    }
 
-    chrome.tabs.sendMessage(tabID, {action: 'highlight_previous', occurrenceMap: regexOccurrenceMap, index: --index, regex: regex});
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
 }
