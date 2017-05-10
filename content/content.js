@@ -19,7 +19,7 @@ function buildDOMReferenceObject() {
     var DOMModelObject = {};
 
     var end = false, groupIndex = 0, blockLevels = [], elementBoundary = false;
-    var preformatted = {flag: false, index: null};
+    var preformatted = {flag: false, index: null}, hidden = {flag: false, index: null};
     var node;
     while(!end) {
         if(!node)
@@ -41,6 +41,20 @@ function buildDOMReferenceObject() {
             else if(preformatted.flag && nodeDepth <= preformatted.index) {
                 preformatted.flag = false;
                 preformatted.index = null;
+            }
+
+            if(!hidden.flag && isHiddenElement(node)) {
+                hidden.flag = true;
+                hidden.index = nodeDepth;
+            }
+            else if(hidden.flag && nodeDepth <= hidden.index) {
+                hidden.flag = false;
+                hidden.index = null;
+            }
+
+            if(hidden.flag) {
+                node = DOMTreeWalker.nextNode();
+                continue;
             }
 
             if(isElementNode(node)) {
@@ -145,6 +159,13 @@ function isPreformattedElement(node) {
         return;
 
     return node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre';
+}
+
+function isHiddenElement(node) {
+    if(!isElementNode(node))
+        return;
+
+    return node.style.display.toLowerCase() == 'none' || node.style.display.toLowerCase() == 'hidden';
 }
 
 //Remove All Highlighting and Injected Markup
