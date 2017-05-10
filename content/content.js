@@ -158,14 +158,27 @@ function isPreformattedElement(node) {
     if(!isElementNode(node))
         return;
 
-    return node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre';
+    if(node.tagName.toLowerCase() == 'pre')
+        return true;
+
+    var computedStyle = window.getComputedStyle(node);
+    if(computedStyle.getPropertyValue('whitespace').toLowerCase() == 'pre')
+        return true;
+
+    return false;
 }
 
 function isHiddenElement(node) {
     if(!isElementNode(node))
         return;
 
-    return node.style.display.toLowerCase() == 'none' || node.style.display.toLowerCase() == 'hidden';
+    var computedStyle = window.getComputedStyle(node);
+    if(computedStyle.getPropertyValue('display').toLowerCase() == 'none')
+        return true;
+    if(computedStyle.getPropertyValue('display').toLowerCase() == 'hidden')
+        return true;
+
+    return false;
 }
 
 //Remove All Highlighting and Injected Markup
