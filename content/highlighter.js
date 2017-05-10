@@ -144,19 +144,11 @@ function highlightAll(occurrenceMap, regex) {
     }
 }
 
-//Seek darker highlight to specific occurrence index
 function seekHighlight(index) {
     var classSelector = '.' + generateOccurrenceIdentifier(index);
-    $(classSelector).addClass(orangeHighlightClass);
-    seekFocus(classSelector);
-}
-
-function seekFocus(classSelector) {
-    var offset = $(classSelector).offset();
-    $('html, body').animate({
-        scrollTop: offset.top - 50 + 'px',
-        scrollLeft: offset.left - 50 + 'px'
-    }, 'fast');
+    var $el = $(classSelector);
+    $el.addClass(orangeHighlightClass);
+    $el.get(0).scrollIntoView(true);
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
