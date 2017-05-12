@@ -125,6 +125,9 @@ function highlightAll(occurrenceMap, regex) {
                 document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
+
+                if(inMatch)
+                    matchGroup.text += openingMarkup;
             }
 
             if(charMap[key].matched) {
