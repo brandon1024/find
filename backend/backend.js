@@ -108,6 +108,8 @@ function actionPrevious(port, tabID) {
 function buildOccurrenceMap(DOMModelObject, regex) {
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
+    regex = regex.replace(/ /g, '\\s');
+    regex = new RegExp(regex, 'gm');
 
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
@@ -117,8 +119,6 @@ function buildOccurrenceMap(DOMModelObject, regex) {
             uuids.push(textNodes[nodeIndex].elementUUID);
         }
 
-        regex = regex.replace(/ /g, '\s');
-        regex = new RegExp(regex, 'gm');
         var matches = textGroup.match(regex);
         if(!matches)
             continue;
