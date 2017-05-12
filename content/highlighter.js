@@ -32,7 +32,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 function highlightAll(occurrenceMap, regex) {
     var occIndex = 0;
     for(var index = 0; index < occurrenceMap.groups; index++) {
-        regex = new RegExp(regex);
+        regex = regex.replace(/ /g, '\s');
+        regex = new RegExp(regex, 'gm');
         var uuids = occurrenceMap[index].uuids;
         var groupText = '', charMap = {}, charIndexMap = [];
 
@@ -44,6 +45,7 @@ function highlightAll(occurrenceMap, regex) {
             if(!text)
                 continue;
 
+            text = decode(text);
             groupText += text;
 
             for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {
@@ -119,7 +121,7 @@ function highlightAll(occurrenceMap, regex) {
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
             if(matchGroup.groupUUID != charMap[key].nodeUUID) {
-                document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+                document.getElementById(matchGroup.groupUUID).innerHTML = encode(matchGroup.text);
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
             }
@@ -140,7 +142,7 @@ function highlightAll(occurrenceMap, regex) {
 
             matchGroup.text += charMap[key].char;
         }
-        document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+        document.getElementById(matchGroup.groupUUID).innerHTML = encode(matchGroup.text);
     }
 }
 
