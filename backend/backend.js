@@ -106,9 +106,10 @@ function actionPrevious(port, tabID) {
 
 //Build occurrence map from DOM model and regex
 function buildOccurrenceMap(DOMModelObject, regex) {
-    regex = new RegExp(regex, 'gm');
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
+    regex = regex.replace(/ /g, '\\s');
+    regex = new RegExp(regex, 'gm');
 
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;

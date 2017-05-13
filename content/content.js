@@ -142,7 +142,7 @@ function formatTextNodeValue(node, preformatted, elementBoundary) {
     if(isElementNode(node))
         return;
 
-    var nodeText = node.nodeValue;
+    var nodeText = decode(node.nodeValue);
     if(preformatted)
         return nodeText;
 
