@@ -10,7 +10,7 @@ Our principle is simple, to deliver a reliable, robust, repeatable, performant, 
 ## Motivation
 As a software developer, looking through lengthy stack traces, continuous integration build history, or large text files is something you do very regularly. The Chrome _Find-in-Page_ tool works well in most cases, but offers very little when looking for very specific (or very general) keywords.
 
-The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool. This extension has become a growing project aimed at giving developers better tools to simplify certain redundant tasks and to improve upon the functionally limited tools currently available.
+The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool. This extension has become a growing project aimed at giving developers better tools to simplify certain tasks and to improve upon the functionally-limited tools currently available.
 
 ## Getting Started
 The **{find+}** Chrome extension is still under development and thus not available through the Chrome Web Store at this time. Release to the Chrome Web Store will arrive before long, however in the meantime you can install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
