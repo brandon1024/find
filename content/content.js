@@ -158,7 +158,7 @@ function isPreformattedElement(node) {
     if(!isElementNode(node))
         return;
 
-    if(node.tagName.toLowerCase() == 'pre')
+    if(node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre')
         return true;
 
     var computedStyle = window.getComputedStyle(node);
@@ -171,6 +171,9 @@ function isPreformattedElement(node) {
 function isHiddenElement(node) {
     if(!isElementNode(node))
         return;
+
+    if(node.style.display == 'none' || node.style.display == 'hidden')
+        return false;
 
     var computedStyle = window.getComputedStyle(node);
     if(computedStyle.getPropertyValue('display').toLowerCase() == 'none')

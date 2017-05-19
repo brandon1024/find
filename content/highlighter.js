@@ -13,12 +13,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
         highlightAll(occurrenceMap, regex);
         seekHighlight(index);
     }
-    else if(message.action == 'highlight_next') {
-        index = message.index;
-        restoreClass(orangeHighlightClass);
-        seekHighlight(index);
-    }
-    else if(message.action == 'highlight_previous') {
+    else if(message.action == 'highlight_seek') {
         index = message.index;
         restoreClass(orangeHighlightClass);
         seekHighlight(index);
@@ -31,8 +26,14 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 //Highlight all occurrences on the page
 function highlightAll(occurrenceMap, regex) {
     var occIndex = 0;
+    var tags = {occIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
+        if(this.occIndex != index) {
+            this.occIndex = index;
+            this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+        }
+    }};
     regex = regex.replace(/ /g, '\\s');
-    regex = new RegExp(regex, 'gm');
+    regex = new RegExp(regex, 'm');
 
     for(var index = 0; index < occurrenceMap.groups; index++) {
         var uuids = occurrenceMap[index].uuids;
@@ -54,6 +55,7 @@ function highlightAll(occurrenceMap, regex) {
                 charMap[count++] = {char: text.charAt(stringIndex), nodeUUID: uuids[uuidIndex], nodeIndex: stringIndex, ignorable: false, matched: false};
             }
         }
+        charMap.length = count;
 
         //format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
         if(!occurrenceMap[index].preformatted) {
@@ -101,9 +103,8 @@ function highlightAll(occurrenceMap, regex) {
 
             var first = charIndexMap[offset];
             var last = charIndexMap[offset + len - 1];
-            for(currIndex = first; currIndex <= last; currIndex++) {
+            for(currIndex = first; currIndex <= last; currIndex++)
                 charMap[currIndex].matched = true;
-            }
 
             for(currIndex = 0; currIndex < offset+len; currIndex++)
                 charIndexMap.splice(0,1);
@@ -114,47 +115,64 @@ function highlightAll(occurrenceMap, regex) {
         //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
         var matchGroup = {text: '', groupUUID: null};
         var inMatch = false;
-        for(var key in charMap) {
-            var openingMarkup = '<span class="' + yellowHighlightClass + ' ' + generateOccurrenceIdentifier(occIndex) + '">';
-            var closingMarkup = '</span>';
+        for(var key = 0; key < charMap.length; key++) {
+            tags.update(occIndex);
 
+            //Performed Initially
             if(matchGroup.groupUUID == null)
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
+            //If Transitioning Into New Text Group
             if(matchGroup.groupUUID != charMap[key].nodeUUID) {
+                if(inMatch)
+                    matchGroup.text += tags.closingMarkup;
+
                 document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
                 if(inMatch)
-                    matchGroup.text += openingMarkup;
+                    matchGroup.text += tags.openingMarkup;
             }
 
+            //If Current Character is Matched
             if(charMap[key].matched) {
                 if(!inMatch) {
                     inMatch = charMap[key].matched;
-                    matchGroup.text += openingMarkup;
+                    matchGroup.text += tags.openingMarkup;
                 }
             }
             else {
                 if(inMatch) {
                     inMatch = charMap[key].matched;
-                    matchGroup.text += closingMarkup;
-                    occIndex++;
+                    matchGroup.text += tags.closingMarkup;
+
+                    if(key < charMap.length)
+                        occIndex++;
                 }
             }
 
             matchGroup.text += encode(charMap[key].char);
+
+            //If End of Map Reached
+            if(key == charMap.length-1) {
+                if(inMatch) {
+                    matchGroup.text += tags.closingMarkup;
+                    occIndex++;
+                }
+
+                document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+            }
         }
-        document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
     }
 }
 
 function seekHighlight(index) {
-    var classSelector = '.' + generateOccurrenceIdentifier(index);
+    var classSelector = '.find-ext-occr' + index;
     var $el = $(classSelector);
     $el.addClass(orangeHighlightClass);
     $el.get(0).scrollIntoView(true);
+    window.scrollBy(0,-100);
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
@@ -188,9 +206,4 @@ function restoreClass() {
 
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
         removeClassFromElement(arguments[argIndex]);
-}
-
-//Generate an occurrence identifier by the occurrenceIndex
-function generateOccurrenceIdentifier(occurrenceIndex) {
-    return 'find-ext-occr' + occurrenceIndex;
 }
