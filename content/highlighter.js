@@ -38,7 +38,7 @@ function highlightAll(occurrenceMap, regex) {
         }
     }};
     regex = regex.replace(/ /g, '\\s');
-    regex = new RegExp(regex, 'gm');
+    regex = new RegExp(regex, 'm');
 
     for(var index = 0; index < occurrenceMap.groups; index++) {
         var uuids = occurrenceMap[index].uuids;
@@ -108,9 +108,8 @@ function highlightAll(occurrenceMap, regex) {
 
             var first = charIndexMap[offset];
             var last = charIndexMap[offset + len - 1];
-            for(currIndex = first; currIndex <= last; currIndex++) {
+            for(currIndex = first; currIndex <= last; currIndex++)
                 charMap[currIndex].matched = true;
-            }
 
             for(currIndex = 0; currIndex < offset+len; currIndex++)
                 charIndexMap.splice(0,1);
