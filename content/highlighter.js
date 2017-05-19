@@ -167,7 +167,9 @@ function restore() {
             return;
 
         var $parent = $el.parent();
-        $(classSelector).contents().unwrap();
+        $el.replaceWith(function() {
+            return $(this).contents();
+        });
 
         for(var index = 0; index < $parent.length; index++)
             $parent[index].normalize();
@@ -176,7 +178,6 @@ function restore() {
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
         unwrapContentFromClass(arguments[argIndex]);
 }
-
 
 //Remove class from all element with that class
 function restoreClass() {
