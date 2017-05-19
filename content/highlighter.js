@@ -13,12 +13,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
         highlightAll(occurrenceMap, regex);
         seekHighlight(index);
     }
-    else if(message.action == 'highlight_next') {
-        index = message.index;
-        restoreClass(orangeHighlightClass);
-        seekHighlight(index);
-    }
-    else if(message.action == 'highlight_previous') {
+    else if(message.action == 'highlight_seek') {
         index = message.index;
         restoreClass(orangeHighlightClass);
         seekHighlight(index);
