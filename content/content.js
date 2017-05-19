@@ -183,10 +183,24 @@ function isHiddenElement(node) {
 
 //Remove All Highlighting and Injected Markup
 function restoreWebPage(uuids) {
-    for(var index = 0; index < uuids.length; index++) {
-        var elementUUID = '#' + uuids[index];
-        $(elementUUID).contents().unwrap();
+    function unwrapContentFromID(id) {
+        var idSelector = '#' + id;
+        var $el = $(idSelector);
+
+        if($el.length == 0)
+            return;
+
+        var $parent = $el.parent();
+        $el.replaceWith(function() {
+            return $(this).contents();
+        });
+
+        for(var index = 0; index < $parent.length; index++)
+            $parent[index].normalize();
     }
+
+    for(var index = 0; index < uuids.length; index++)
+        unwrapContentFromID(uuids[index]);
 
     return true;
 }
