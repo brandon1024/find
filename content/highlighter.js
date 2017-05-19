@@ -31,6 +31,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 //Highlight all occurrences on the page
 function highlightAll(occurrenceMap, regex) {
     var occIndex = 0;
+    var tags = {occIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
+        if(this.occIndex != index) {
+            this.occIndex = index;
+            this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+        }
+    }};
     regex = regex.replace(/ /g, '\\s');
     regex = new RegExp(regex, 'gm');
 
@@ -54,6 +60,7 @@ function highlightAll(occurrenceMap, regex) {
                 charMap[count++] = {char: text.charAt(stringIndex), nodeUUID: uuids[uuidIndex], nodeIndex: stringIndex, ignorable: false, matched: false};
             }
         }
+        charMap.length = count;
 
         //format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
         if(!occurrenceMap[index].preformatted) {
@@ -114,9 +121,8 @@ function highlightAll(occurrenceMap, regex) {
         //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
         var matchGroup = {text: '', groupUUID: null};
         var inMatch = false;
-        for(var key in charMap) {
-            var openingMarkup = '<span class="' + yellowHighlightClass + ' ' + generateOccurrenceIdentifier(occIndex) + '">';
-            var closingMarkup = '</span>';
+        for(var key = 0; key < charMap.length; key++) {
+            tags.update(occIndex);
 
             if(matchGroup.groupUUID == null)
                 matchGroup.groupUUID = charMap[key].nodeUUID;
@@ -127,34 +133,45 @@ function highlightAll(occurrenceMap, regex) {
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
                 if(inMatch)
-                    matchGroup.text += openingMarkup;
+                    matchGroup.text += tags.openingMarkup;
             }
 
             if(charMap[key].matched) {
                 if(!inMatch) {
                     inMatch = charMap[key].matched;
-                    matchGroup.text += openingMarkup;
+                    matchGroup.text += tags.openingMarkup;
                 }
             }
             else {
                 if(inMatch) {
                     inMatch = charMap[key].matched;
-                    matchGroup.text += closingMarkup;
-                    occIndex++;
+                    matchGroup.text += tags.closingMarkup;
+
+                    if(key < charMap.length)
+                        occIndex++;
                 }
             }
 
             matchGroup.text += encode(charMap[key].char);
+
+            if(key == charMap.length-1) {
+                if(inMatch) {
+                    matchGroup.text += tags.closingMarkup;
+                    occIndex++;
+                }
+
+                document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+            }
         }
-        document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
     }
 }
 
 function seekHighlight(index) {
-    var classSelector = '.' + generateOccurrenceIdentifier(index);
+    var classSelector = '.find-ext-occr' + index;
     var $el = $(classSelector);
     $el.addClass(orangeHighlightClass);
     $el.get(0).scrollIntoView(true);
+    window.scrollBy(0,-100);
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
@@ -177,7 +194,6 @@ function restore() {
         unwrapContentFromClass(arguments[argIndex]);
 }
 
-
 //Remove class from all element with that class
 function restoreClass() {
     function removeClassFromElement(className) {
@@ -187,9 +203,4 @@ function restoreClass() {
 
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
         removeClassFromElement(arguments[argIndex]);
-}
-
-//Generate an occurrence identifier by the occurrenceIndex
-function generateOccurrenceIdentifier(occurrenceIndex) {
-    return 'find-ext-occr' + occurrenceIndex;
 }
