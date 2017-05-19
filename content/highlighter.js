@@ -124,10 +124,15 @@ function highlightAll(occurrenceMap, regex) {
         for(var key = 0; key < charMap.length; key++) {
             tags.update(occIndex);
 
+            //Performed Initially
             if(matchGroup.groupUUID == null)
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
+            //If Transitioning Into New Text Group
             if(matchGroup.groupUUID != charMap[key].nodeUUID) {
+                if(inMatch)
+                    matchGroup.text += tags.closingMarkup;
+
                 document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
@@ -136,6 +141,7 @@ function highlightAll(occurrenceMap, regex) {
                     matchGroup.text += tags.openingMarkup;
             }
 
+            //If Current Character is Matched
             if(charMap[key].matched) {
                 if(!inMatch) {
                     inMatch = charMap[key].matched;
@@ -154,6 +160,7 @@ function highlightAll(occurrenceMap, regex) {
 
             matchGroup.text += encode(charMap[key].char);
 
+            //If End of Map Reached
             if(key == charMap.length-1) {
                 if(inMatch) {
                     matchGroup.text += tags.closingMarkup;
