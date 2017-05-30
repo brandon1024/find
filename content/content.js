@@ -98,9 +98,10 @@ function buildDOMReferenceObject() {
                     continue;
                 }
 
-                var $wrapperElement = $(document.createElement('span'));
-                $wrapperElement.attr('id', identifierUUID);
-                $(node).wrap($wrapperElement);
+                var $wrapperElement = document.createElement('span');
+                $wrapperElement.setAttribute('id', identifierUUID);
+                node.parentNode.insertBefore($wrapperElement, node);
+                $wrapperElement.appendChild(node);
 
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
                 textGroup.group.push(textNodeInformation);

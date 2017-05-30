@@ -27,6 +27,15 @@ chrome.runtime.onConnect.addListener(function(port) {
             regex = null;
         });
     });
+
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                index = 0;
+            }
+        });
+    });
 });
 
 //Dispatch action function
@@ -41,14 +50,8 @@ function invokeAction(action, port, tabID, message) {
 
 //Action Update
 function actionUpdate(port, tabID, message) {
-    var action = (!DOMModelObject ? 'init' : 'update');
-    chrome.tabs.sendMessage(tabID, {action: action}, function (response) {
+    chrome.tabs.sendMessage(tabID, {action: 'update'}, function (response) {
         try {
-            if(response && response.model) {
-                DOMModelObject = response.model;
-                index = 0;
-            }
-
             if(!DOMModelObject)
                 return;
 
