@@ -171,8 +171,12 @@ function seekHighlight(index) {
     var classSelector = '.find-ext-occr' + index;
     var $el = $(classSelector);
     $el.addClass(orangeHighlightClass);
+
     $el.get(0).scrollIntoView(true);
-    window.scrollBy(0,-100);
+    var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
+    var bottomScrollPos = window.pageYOffset + window.innerHeight;
+    if(bottomScrollPos + 100 < docHeight)
+        window.scrollBy(0,-100);
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
