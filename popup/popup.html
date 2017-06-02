@@ -53,28 +53,58 @@
     </div>
     <div id="regex-options">
         <table id="regex-options-table">
-            <tr id="regex-options-table-row-1">
-                <td class="regex-options-table-toggle-cell">
-                    <label class="switch">
-                        <input id="regex-option-case-insensitive-toggle" type="checkbox"/>
-                        <div class="slider"/>
-                    </label>
-                </td>
-                <td>
-                    <span id="regex-option-case-insensitive-text" class="options-text">Match Case Insensitive</span>
-                </td>
-            </tr>
-            <tr id="regex-options-table-row-2">
-                <td class="regex-options-table-toggle-cell">
-                    <label class="switch">
-                        <input id="regex-option-multiline-toggle" type="checkbox"/>
-                        <div class="slider"/>
-                    </label>
-                </td>
-                <td>
-                    <span id="regex-option-multiline-text" class="options-text">Match Multiline</span>
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <span id="regex-options-header" class="options-group-header">Search Options</span>
+                </tr>
+                <tr id="regex-options-table-row-1">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="regex-option-regex-disable-toggle" type="checkbox"/>
+                            <div class="slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="regex-option-regex-disable" class="options-text">Find by Regular Expression</span>
+                    </td>
+                </tr>
+                <tr id="regex-options-table-row-2">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="regex-option-case-insensitive-toggle" type="checkbox"/>
+                            <div class="slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="regex-option-case-insensitive-text" class="options-text">Match Case Insensitive</span>
+                    </td>
+                </tr>
+                <tr id="regex-options-table-row-3">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="regex-option-multiline-toggle" type="checkbox"/>
+                            <div class="slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="regex-option-multiline-text" class="options-text">Match Multiline</span>
+                    </td>
+                </tr>
+                <tr>
+                    <span id="UI-options-header" class="options-group-header">UI Options</span>
+                </tr>
+                <tr id="ui-options-table-row-1">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="ui-negative-highlight-toggle" type="checkbox"/>
+                            <div class="slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="ui-negative-highlight" class="options-text">Negative Highlight Color</span>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </body>

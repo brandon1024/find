@@ -12,9 +12,6 @@ table#popup-body-table {
     table-layout: fixed;
 }
 
-div#regex-options {
-}
-
 
 /* Search Field Style */
 input.field {
@@ -110,21 +107,18 @@ div#regex-options {
     display: none;
 }
 
-/* The switch - the box around the slider */
-.switch {
+label.switch {
     position: relative;
     display: inline-block;
     width: 30px;
     height: 17px;
 }
 
-/* Hide default HTML checkbox */
-.switch input {
+label.switch input {
     display:none;
 }
 
-/* The slider */
-.slider {
+div.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -136,7 +130,7 @@ div#regex-options {
     transition: .4s;
 }
 
-.slider:before {
+div.slider:before {
     position: absolute;
     content: "";
     height: 13px;
@@ -162,17 +156,16 @@ input:checked + .slider:before {
     transform: translateX(13px);
 }
 
-span.options-text {
+span.options-text, span.options-group-header {
     vertical-align: middle;
     font-family: "Arial", Arial, sans-serif;
-    color: black;
 }
 
 table#regex-options-table {
     width: 100%;
 }
 
-td.regex-options-table-toggle-cell {
+td.options-table-toggle-cell {
     width: 32px;
     height: 17px;
     padding: 0px;
