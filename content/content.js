@@ -169,6 +169,7 @@ function isPreformattedElement(node) {
     return false;
 }
 
+//Check if element is hidden, i.e. has display: none/hidden;
 function isHiddenElement(node) {
     if(!isElementNode(node))
         return;
