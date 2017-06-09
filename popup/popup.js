@@ -13,7 +13,18 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
 
-    retrieveLastSearch();
+    chrome.tabs.executeScript( {
+        code: "window.getSelection().toString();"
+    }, function(selection) {
+        
+        var selectedText = selection[0]
+        if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
+            retrieveLastSearch();
+        }
+        else {
+            changeSearchFieldText(selection[0]);
+        }
+    });
 };
 
 /**
