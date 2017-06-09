@@ -20,6 +20,7 @@ window.onload = function addListeners() {
         }
         else {
             changeSearchFieldText(selection[0]);
+            updateHighlight();
         }
     });
 };
