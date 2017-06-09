@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
     }
 });
 
-//Highlight all occurrences on the page
+//Highlight all occurrences of regular expression on the page
 function highlightAll(occurrenceMap, regex) {
     var occIndex = 0;
     var tags = {occIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
@@ -35,10 +35,12 @@ function highlightAll(occurrenceMap, regex) {
     regex = regex.replace(/ /g, '\\s');
     regex = new RegExp(regex, 'm');
 
+    //Iterate each text group
     for(var index = 0; index < occurrenceMap.groups; index++) {
         var uuids = occurrenceMap[index].uuids;
         var groupText = '', charMap = {}, charIndexMap = [];
 
+        //Build groupText, charMap and charIndexMap
         var count = 0;
         for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
             var $el = document.getElementById(uuids[uuidIndex]);
@@ -57,14 +59,17 @@ function highlightAll(occurrenceMap, regex) {
         }
         charMap.length = count;
 
-        //format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
+        //Format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
         if(!occurrenceMap[index].preformatted) {
             var info;
+
+            //Replace all whitespace characters (\t \n\r) with the space character
             while(info = /[\t\n\r]/.exec(groupText)) {
                 charMap[charIndexMap[info.index]].ignorable = true;
                 groupText = groupText.replace(/[\t\n\r]/, ' ');
             }
 
+            //Truncate consecutive whitespaces
             var len, offset, currIndex;
             while(info = / {2,}/.exec(groupText)) {
                 len = info[0].length;
@@ -79,6 +84,7 @@ function highlightAll(occurrenceMap, regex) {
                 groupText = groupText.replace(/ {2,}/, ' ');
             }
 
+            //Collapse leading or trailing whitespaces
             while(info = /^ | $/.exec(groupText)) {
                 len = info[0].length;
                 offset = info.index;
@@ -167,6 +173,7 @@ function highlightAll(occurrenceMap, regex) {
     }
 }
 
+//Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
     var classSelector = '.find-ext-occr' + index;
     var $el = $(classSelector);
