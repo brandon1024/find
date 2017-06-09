@@ -16,8 +16,7 @@ window.onload = function addListeners() {
     chrome.tabs.executeScript( {
         code: "window.getSelection().toString();"
     }, function(selection) {
-        
-        var selectedText = selection[0]
+        var selectedText = selection[0];
         if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
             retrieveLastSearch();
         }
