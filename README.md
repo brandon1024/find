@@ -1,14 +1,14 @@
 <img src="resources/icon.png" align="right" width="128" />
 
 # **{find+}**
-**{find+}** is a simple _Find-in-Page_ extension for Google Chrome hosting a the ability to search a web page or document by regular expression. It has been designed to look and behave much like the `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
+**{find+}** is a simple _Find-in-Page_ extension for Google Chrome and Mozilla Firefox, hosting a the ability to search a web page or document by regular expression. It has been designed to look and behave much like the `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
 
 Our principle is simple, to deliver a reliable, robust, repeatable, performant, and native-like tool for the software and web development industry. _Perfection is simply not good enough._
 
 <img src="screenshot.png"/>
 
 ## Motivation
-As a software developer, looking through lengthy stack traces, continuous integration build history, or large text files is something you do very regularly. The Chrome _Find-in-Page_ tool works well in most cases, but offers very little when looking for very specific (or very general) keywords.
+As a software developer, looking through lengthy stack traces, continuous integration build history, or large text files is something you do very regularly. The native _Find-in-Page_ tool works well in most cases, but offers very little when looking for very specific (or very general) keywords.
 
 The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool. This extension has become a growing project aimed at giving developers better tools to simplify certain tasks and to improve upon the functionally-limited tools currently available.
 
