@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "author": ["Michael Walz", "Brandon Richardson"],
   "manifest_version": 2,
-  "description": "A find-in-page extension for Google Chrome with support for regular expressions.",
+  "description": "A find-in-page extension for Mozilla Firefox with support for regular expressions.",
   "permissions": [
     "tabs",
     "activeTab",
