@@ -19,7 +19,7 @@ function buildDOMReferenceObject() {
     var DOMModelObject = {};
 
     var end = false, groupIndex = 0, blockLevels = [], elementBoundary = false;
-    var preformatted = {flag: false, index: null};
+    var preformatted = {flag: false, index: null}, hidden = {flag: false, index: null};
     var node;
     while(!end) {
         if(!node)
@@ -41,6 +41,20 @@ function buildDOMReferenceObject() {
             else if(preformatted.flag && nodeDepth <= preformatted.index) {
                 preformatted.flag = false;
                 preformatted.index = null;
+            }
+
+            if(!hidden.flag && isHiddenElement(node)) {
+                hidden.flag = true;
+                hidden.index = nodeDepth;
+            }
+            else if(hidden.flag && nodeDepth <= hidden.index) {
+                hidden.flag = false;
+                hidden.index = null;
+            }
+
+            if(hidden.flag) {
+                node = DOMTreeWalker.nextNode();
+                continue;
             }
 
             if(isElementNode(node)) {
@@ -84,9 +98,10 @@ function buildDOMReferenceObject() {
                     continue;
                 }
 
-                var $wrapperElement = $(document.createElement('span'));
-                $wrapperElement.attr('id', identifierUUID);
-                $(node).wrap($wrapperElement);
+                var $wrapperElement = document.createElement('span');
+                $wrapperElement.setAttribute('id', identifierUUID);
+                node.parentNode.insertBefore($wrapperElement, node);
+                $wrapperElement.appendChild(node);
 
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
                 textGroup.group.push(textNodeInformation);
@@ -128,7 +143,7 @@ function formatTextNodeValue(node, preformatted, elementBoundary) {
     if(isElementNode(node))
         return;
 
-    var nodeText = node.nodeValue;
+    var nodeText = decode(node.nodeValue);
     if(preformatted)
         return nodeText;
 
@@ -144,15 +159,53 @@ function isPreformattedElement(node) {
     if(!isElementNode(node))
         return;
 
-    return node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre';
+    if(node.tagName.toLowerCase() == 'pre' || node.style.whiteSpace.toLowerCase() == 'pre')
+        return true;
+
+    var computedStyle = window.getComputedStyle(node);
+    if(computedStyle.getPropertyValue('whitespace').toLowerCase() == 'pre')
+        return true;
+
+    return false;
+}
+
+//Check if element is hidden, i.e. has display: none/hidden;
+function isHiddenElement(node) {
+    if(!isElementNode(node))
+        return;
+
+    if(node.style.display == 'none' || node.style.display == 'hidden')
+        return false;
+
+    var computedStyle = window.getComputedStyle(node);
+    if(computedStyle.getPropertyValue('display').toLowerCase() == 'none')
+        return true;
+    if(computedStyle.getPropertyValue('display').toLowerCase() == 'hidden')
+        return true;
+
+    return false;
 }
 
 //Remove All Highlighting and Injected Markup
 function restoreWebPage(uuids) {
-    for(var index = 0; index < uuids.length; index++) {
-        var elementUUID = '#' + uuids[index];
-        $(elementUUID).contents().unwrap();
+    function unwrapContentFromID(id) {
+        var idSelector = '#' + id;
+        var $el = $(idSelector);
+
+        if($el.length == 0)
+            return;
+
+        var $parent = $el.parent();
+        $el.replaceWith(function() {
+            return $(this).contents();
+        });
+
+        for(var index = 0; index < $parent.length; index++)
+            $parent[index].normalize();
     }
+
+    for(var index = 0; index < uuids.length; index++)
+        unwrapContentFromID(uuids[index]);
 
     return true;
 }

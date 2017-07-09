@@ -27,6 +27,15 @@ chrome.runtime.onConnect.addListener(function(port) {
             regex = null;
         });
     });
+
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                index = 0;
+            }
+        });
+    });
 });
 
 //Dispatch action function
@@ -41,14 +50,8 @@ function invokeAction(action, port, tabID, message) {
 
 //Action Update
 function actionUpdate(port, tabID, message) {
-    var action = (!DOMModelObject ? 'init' : 'update');
-    chrome.tabs.sendMessage(tabID, {action: action}, function (response) {
+    chrome.tabs.sendMessage(tabID, {action: 'update'}, function (response) {
         try {
-            if(response && response.model) {
-                DOMModelObject = response.model;
-                index = 0;
-            }
-
             if(!DOMModelObject)
                 return;
 
@@ -82,9 +85,9 @@ function actionUpdate(port, tabID, message) {
 function actionNext(port, tabID) {
     if(index >= regexOccurrenceMap.length-1) {
         index = 0;
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_next', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
     } else {
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_next', occurrenceMap: regexOccurrenceMap, index: ++index, regex: regex});
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: ++index, regex: regex});
     }
 
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
@@ -95,9 +98,9 @@ function actionNext(port, tabID) {
 function actionPrevious(port, tabID) {
     if(index <= 0) {
         index = regexOccurrenceMap.length-1;
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_previous', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
     } else {
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_previous', occurrenceMap: regexOccurrenceMap, index: --index, regex: regex});
+        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: --index, regex: regex});
     }
 
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
@@ -106,9 +109,10 @@ function actionPrevious(port, tabID) {
 
 //Build occurrence map from DOM model and regex
 function buildOccurrenceMap(DOMModelObject, regex) {
-    regex = new RegExp(regex, 'gm');
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
+    regex = regex.replace(/ /g, '\\s');
+    regex = new RegExp(regex, 'gm');
 
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
