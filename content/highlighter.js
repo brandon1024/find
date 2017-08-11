@@ -13,12 +13,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
         highlightAll(occurrenceMap, regex);
         seekHighlight(index);
     }
-    else if(message.action == 'highlight_next') {
-        index = message.index;
-        restoreClass(orangeHighlightClass);
-        seekHighlight(index);
-    }
-    else if(message.action == 'highlight_previous') {
+    else if(message.action == 'highlight_seek') {
         index = message.index;
         restoreClass(orangeHighlightClass);
         seekHighlight(index);
@@ -28,14 +23,24 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
     }
 });
 
-//Highlight all occurrences on the page
+//Highlight all occurrences of regular expression on the page
 function highlightAll(occurrenceMap, regex) {
     var occIndex = 0;
+    var tags = {occIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
+        if(this.occIndex != index) {
+            this.occIndex = index;
+            this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+        }
+    }};
+    regex = regex.replace(/ /g, '\\s');
+    regex = new RegExp(regex, 'm');
+
+    //Iterate each text group
     for(var index = 0; index < occurrenceMap.groups; index++) {
-        regex = new RegExp(regex);
         var uuids = occurrenceMap[index].uuids;
         var groupText = '', charMap = {}, charIndexMap = [];
 
+        //Build groupText, charMap and charIndexMap
         var count = 0;
         for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
             var $el = document.getElementById(uuids[uuidIndex]);
@@ -44,6 +49,7 @@ function highlightAll(occurrenceMap, regex) {
             if(!text)
                 continue;
 
+            text = decode(text);
             groupText += text;
 
             for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {
@@ -51,15 +57,19 @@ function highlightAll(occurrenceMap, regex) {
                 charMap[count++] = {char: text.charAt(stringIndex), nodeUUID: uuids[uuidIndex], nodeIndex: stringIndex, ignorable: false, matched: false};
             }
         }
+        charMap.length = count;
 
-        //format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
+        //Format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
         if(!occurrenceMap[index].preformatted) {
             var info;
+
+            //Replace all whitespace characters (\t \n\r) with the space character
             while(info = /[\t\n\r]/.exec(groupText)) {
                 charMap[charIndexMap[info.index]].ignorable = true;
                 groupText = groupText.replace(/[\t\n\r]/, ' ');
             }
 
+            //Truncate consecutive whitespaces
             var len, offset, currIndex;
             while(info = / {2,}/.exec(groupText)) {
                 len = info[0].length;
@@ -74,6 +84,7 @@ function highlightAll(occurrenceMap, regex) {
                 groupText = groupText.replace(/ {2,}/, ' ');
             }
 
+            //Collapse leading or trailing whitespaces
             while(info = /^ | $/.exec(groupText)) {
                 len = info[0].length;
                 offset = info.index;
@@ -98,9 +109,8 @@ function highlightAll(occurrenceMap, regex) {
 
             var first = charIndexMap[offset];
             var last = charIndexMap[offset + len - 1];
-            for(currIndex = first; currIndex <= last; currIndex++) {
+            for(currIndex = first; currIndex <= last; currIndex++)
                 charMap[currIndex].matched = true;
-            }
 
             for(currIndex = 0; currIndex < offset+len; currIndex++)
                 charIndexMap.splice(0,1);
@@ -111,52 +121,69 @@ function highlightAll(occurrenceMap, regex) {
         //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
         var matchGroup = {text: '', groupUUID: null};
         var inMatch = false;
-        for(var key in charMap) {
-            var openingMarkup = '<span class="' + yellowHighlightClass + ' ' + generateOccurrenceIdentifier(occIndex) + '">';
-            var closingMarkup = '</span>';
+        for(var key = 0; key < charMap.length; key++) {
+            tags.update(occIndex);
 
+            //Performed Initially
             if(matchGroup.groupUUID == null)
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
+            //If Transitioning Into New Text Group
             if(matchGroup.groupUUID != charMap[key].nodeUUID) {
+                if(inMatch)
+                    matchGroup.text += tags.closingMarkup;
+
                 document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
+
+                if(inMatch)
+                    matchGroup.text += tags.openingMarkup;
             }
 
+            //If Current Character is Matched
             if(charMap[key].matched) {
                 if(!inMatch) {
                     inMatch = charMap[key].matched;
-                    matchGroup.text += openingMarkup;
+                    matchGroup.text += tags.openingMarkup;
                 }
             }
             else {
                 if(inMatch) {
                     inMatch = charMap[key].matched;
-                    matchGroup.text += closingMarkup;
-                    occIndex++;
+                    matchGroup.text += tags.closingMarkup;
+
+                    if(key < charMap.length)
+                        occIndex++;
                 }
             }
 
-            matchGroup.text += charMap[key].char;
+            matchGroup.text += encode(charMap[key].char);
+
+            //If End of Map Reached
+            if(key == charMap.length-1) {
+                if(inMatch) {
+                    matchGroup.text += tags.closingMarkup;
+                    occIndex++;
+                }
+
+                document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+            }
         }
-        document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
     }
 }
 
-//Seek darker highlight to specific occurrence index
+//Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
-    var classSelector = '.' + generateOccurrenceIdentifier(index);
-    $(classSelector).addClass(orangeHighlightClass);
-    seekFocus(classSelector);
-}
+    var classSelector = '.find-ext-occr' + index;
+    var $el = $(classSelector);
+    $el.addClass(orangeHighlightClass);
 
-function seekFocus(classSelector) {
-    var offset = $(classSelector).offset();
-    $('html, body').animate({
-        scrollTop: offset.top - 50 + 'px',
-        scrollLeft: offset.left - 50 + 'px'
-    }, 'fast');
+    $el.get(0).scrollIntoView(true);
+    var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
+    var bottomScrollPos = window.pageYOffset + window.innerHeight;
+    if(bottomScrollPos + 100 < docHeight)
+        window.scrollBy(0,-100);
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
@@ -169,7 +196,9 @@ function restore() {
             return;
 
         var $parent = $el.parent();
-        $(classSelector).contents().unwrap();
+        $el.replaceWith(function() {
+            return $(this).contents();
+        });
 
         for(var index = 0; index < $parent.length; index++)
             $parent[index].normalize();
@@ -178,7 +207,6 @@ function restore() {
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
         unwrapContentFromClass(arguments[argIndex]);
 }
-
 
 //Remove class from all element with that class
 function restoreClass() {
@@ -189,9 +217,4 @@ function restoreClass() {
 
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
         removeClassFromElement(arguments[argIndex]);
-}
-
-//Generate an occurrence identifier by the occurrenceIndex
-function generateOccurrenceIdentifier(occurrenceIndex) {
-    return 'find-ext-occr' + occurrenceIndex;
 }
