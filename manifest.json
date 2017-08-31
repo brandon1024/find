@@ -44,5 +44,6 @@
         "mac": "Ctrl+Shift+F"
       }
     }
-  }
+  },
+  "offline_enabled": true
 }
