@@ -1,6 +1,6 @@
 {
   "name": "find+",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": ["Michael Walz", "Brandon Richardson"],
   "manifest_version": 2,
   "description": "A find-in-page extension for Google Chrome with support for regular expressions.",
@@ -44,5 +44,6 @@
         "mac": "Ctrl+Shift+F"
       }
     }
-  }
+  },
+  "offline_enabled": true
 }

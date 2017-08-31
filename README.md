@@ -8,12 +8,14 @@ Our principle is simple, to deliver a reliable, robust, repeatable, performant, 
 <img src="screenshot.png"/>
 
 ## Motivation
-As a software developer, looking through lengthy stack traces, continuous integration build history, or large text files is something you do very regularly. The Chrome _Find-in-Page_ tool works well in most cases, but offers very little when looking for very specific (or very general) keywords.
+As a software developer, looking through lengthy stack traces, continuous integration build history, or large text files is something we do very regularly. The Chrome _Find-in-Page_ tool works well in most cases, but offers very little when looking for very specific (or very general) keywords.
 
 The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool. This extension has become a growing project aimed at giving developers better tools to simplify certain tasks and to improve upon the functionally-limited tools currently available.
 
 ## Getting Started
-The **{find+}** Chrome extension is still under development and thus not available through the Chrome Web Store at this time. Release to the Chrome Web Store will arrive before long, however in the meantime you can install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
+The **{find+}** Chrome extension has recently transitioned to public beta and has become available in the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions). You can install the extension [here](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
+
+Feeling bold? You can also install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
 
 Before you begin, ensure that you install the extension from the `master` branch. All other branches are under active development, which may not be stable.
 
@@ -32,7 +34,7 @@ To install the extension in Chrome, navigate to the Settings page in Chrome and 
 <img src="installation.png"/>
 
 ## A Small Notice
-Since **{find+}** is still in beta and has not yet been released, you will likely experience bugs or issues while using the extension. We are hard at work fixing these issues, but we encourage you to continue using our extension in the meantime. You can keep an eye on current issues in progress by monitoring our GitHub page.
+Since **{find+}** is still in beta and has not yet been released, you may experience bugs or issues while using the extension. We are hard at work fixing these issues, but we encourage you to continue using our extension in the meantime. You can keep an eye on current issues in progress by monitoring our GitHub page.
 
 See an issue we may have missed, or an idea for a new feature? Log an issue! We love to hear your feedback, it helps us make this project better.
 
