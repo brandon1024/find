@@ -17,7 +17,7 @@ window.onload = function addListeners() {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
-        else if(url.match(/https:\/\/chrome.google.com\/webstore\/category\/extensions.*/)) {
+        else if(url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-web-store-text').style.display = 'initial';
         }
