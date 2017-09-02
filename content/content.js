@@ -48,8 +48,12 @@ function buildDOMReferenceObject() {
                 hidden.index = nodeDepth;
             }
             else if(hidden.flag && nodeDepth <= hidden.index) {
-                hidden.flag = false;
-                hidden.index = null;
+                if(!isHiddenElement(node)) {
+                    hidden.flag = false;
+                    hidden.index = null;
+                }
+                else
+                    hidden.index = nodeDepth;
             }
 
             if(hidden.flag) {
@@ -126,7 +130,7 @@ function buildDOMReferenceObject() {
 //TreeWalker Filter, Allowing Element and Text Nodes
 function nodeFilter(node) {
     if(isElementNode(node)) {
-        if(node.tagName.toLowerCase() == 'script' || node.tagName.toLowerCase() == 'noscript')
+        if(node.tagName.toLowerCase() == 'script' || node.tagName.toLowerCase() == 'noscript' || node.tagName.toLowerCase() == 'style')
             return NodeFilter.FILTER_REJECT;
         else
             return NodeFilter.FILTER_ACCEPT;
@@ -175,7 +179,7 @@ function isHiddenElement(node) {
         return;
 
     if(node.style.display == 'none' || node.style.display == 'hidden')
-        return false;
+        return true;
 
     var computedStyle = window.getComputedStyle(node);
     if(computedStyle.getPropertyValue('display').toLowerCase() == 'none')
