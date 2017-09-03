@@ -11,16 +11,30 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
 
-    chrome.tabs.executeScript( {
-        code: "window.getSelection().toString();"
-    }, function(selection) {
-        var selectedText = selection[0];
-        if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
-            retrieveLastSearch();
+    chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
+        var url = tabs[0].url;
+        if(url.match(/chrome:\/\/.*/)) {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
-        else {
-            changeSearchFieldText(selection[0]);
-            updateHighlight();
+        else if(url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-limitation-web-store-text').style.display = 'initial';
+        }
+        else
+        {
+            chrome.tabs.executeScript( {
+                code: "window.getSelection().toString();"
+            }, function(selection) {
+                var selectedText = selection[0];
+                if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
+                    retrieveLastSearch();
+                }
+                else {
+                    changeSearchFieldText(selection[0]);
+                    updateHighlight();
+                }
+            });
         }
     });
 };

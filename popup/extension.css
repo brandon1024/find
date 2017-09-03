@@ -102,3 +102,26 @@ button.controls-button:disabled {
     background-color: transparent;
     opacity: 0.2;
 }
+
+/* extension message style */
+div#extension-message-body {
+   display: none;
+}
+
+table#message-table {
+    background-color: #e5e5e5;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+span#extension-limitation-web-store-text,
+span#extension-limitation-chrome-settings-text {
+    color: #FF0000;
+    display: none;
+}
+
+img#exclamation-icon {
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+}

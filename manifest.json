@@ -1,6 +1,7 @@
 {
-  "name": "find+",
-  "version": "1.2.1",
+  "name": "find+ | Regex Find-in-Page Tool",
+  "short_name": "find+",
+  "version": "1.2.2",
   "author": ["Michael Walz", "Brandon Richardson"],
   "manifest_version": 2,
   "description": "A find-in-page extension for Google Chrome with support for regular expressions.",
