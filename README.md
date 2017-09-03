@@ -34,7 +34,7 @@ To install the extension in Chrome, navigate to the Settings page in Chrome and 
 <img src="installation.png"/>
 
 ## A Small Notice
-Since **{find+}** is still in beta and has not yet been released, you may experience bugs or issues while using the extension. We are hard at work fixing these issues, but we encourage you to continue using our extension in the meantime. You can keep an eye on current issues in progress by monitoring our GitHub page.
+Since **{find+}** is still in beta, you may experience bugs or issues while using the extension. We are hard at work fixing these issues, but we encourage you to continue using our extension in the meantime. You can keep an eye on current issues in progress by monitoring our GitHub page.
 
 See an issue we may have missed, or an idea for a new feature? Log an issue! We love to hear your feedback, it helps us make this project better.
 
