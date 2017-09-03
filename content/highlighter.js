@@ -54,7 +54,7 @@ function highlightAll(occurrenceMap, regex) {
 
             for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {
                 charIndexMap.push(count);
-                charMap[count++] = {char: text.charAt(stringIndex), nodeUUID: uuids[uuidIndex], nodeIndex: stringIndex, ignorable: false, matched: false};
+                charMap[count++] = {char: text.charAt(stringIndex), nodeUUID: uuids[uuidIndex], nodeIndex: stringIndex, ignorable: false, matched: false, boundary: false};
             }
         }
         charMap.length = count;
@@ -109,8 +109,11 @@ function highlightAll(occurrenceMap, regex) {
 
             var first = charIndexMap[offset];
             var last = charIndexMap[offset + len - 1];
-            for(currIndex = first; currIndex <= last; currIndex++)
+            for(currIndex = first; currIndex <= last; currIndex++) {
                 charMap[currIndex].matched = true;
+                if(currIndex == last)
+                    charMap[currIndex].boundary = true;
+            }
 
             for(currIndex = 0; currIndex < offset+len; currIndex++)
                 charIndexMap.splice(0,1);
@@ -119,14 +122,10 @@ function highlightAll(occurrenceMap, regex) {
         }
 
         //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
-        var matchGroup = {text: '', groupUUID: null};
+        var matchGroup = {text: '', groupUUID: charMap[0].nodeUUID};
         var inMatch = false;
         for(var key = 0; key < charMap.length; key++) {
             tags.update(occIndex);
-
-            //Performed Initially
-            if(matchGroup.groupUUID == null)
-                matchGroup.groupUUID = charMap[key].nodeUUID;
 
             //If Transitioning Into New Text Group
             if(matchGroup.groupUUID != charMap[key].nodeUUID) {
@@ -159,6 +158,13 @@ function highlightAll(occurrenceMap, regex) {
             }
 
             matchGroup.text += encode(charMap[key].char);
+
+            if(charMap[key].boundary) {
+                inMatch = false;
+                matchGroup.text += tags.closingMarkup;
+                if(key < charMap.length)
+                    occIndex++;
+            }
 
             //If End of Map Reached
             if(key == charMap.length-1) {
