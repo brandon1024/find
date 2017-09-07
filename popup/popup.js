@@ -42,6 +42,7 @@ window.onload = function addListeners() {
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {
     if(response.action == 'index_update') {
+        showMalformedRegexIcon(false);
         updateIndexText(response.index, response.total);
 
         if(response.index == 0 && response.total == 0)
@@ -56,6 +57,7 @@ port.onMessage.addListener(function listener(response) {
     else if(response.action == 'invalid_regex') {
         updateIndexText();
         disableButtons();
+        showMalformedRegexIcon(true);
     }
     else {
         console.error('Unrecognized action:', response.action);
@@ -150,6 +152,14 @@ function updateIndexText() {
         document.getElementById('index-text').innerText = '';
     else if(arguments.length == 2)
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+}
+
+//Show or hide red exclamation icon in the extension popup
+function showMalformedRegexIcon(flag) {
+    if(flag)
+        document.getElementById('invalid-regex-icon').style.display = 'initial';
+    else
+        document.getElementById('invalid-regex-icon').style.display = 'none';
 }
 
 //Enable next and previous buttons
