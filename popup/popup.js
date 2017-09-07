@@ -13,13 +13,9 @@ window.onload = function addListeners() {
 
     chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
-        if(url.match(/chrome:\/\/.*/)) {
+        if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
-        }
-        else if(url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
-            document.getElementById('extension-message-body').style.display = 'initial';
-            document.getElementById('extension-limitation-web-store-text').style.display = 'initial';
         }
         else
         {
@@ -42,6 +38,7 @@ window.onload = function addListeners() {
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {
     if(response.action == 'index_update') {
+        showMalformedRegexIcon(false);
         updateIndexText(response.index, response.total);
 
         if(response.index == 0 && response.total == 0)
@@ -50,12 +47,14 @@ port.onMessage.addListener(function listener(response) {
             enableButtons();
     }
     else if(response.action == 'empty_regex') {
+        showMalformedRegexIcon(false);
         updateIndexText();
         disableButtons();
     }
     else if(response.action == 'invalid_regex') {
         updateIndexText();
         disableButtons();
+        showMalformedRegexIcon(true);
     }
     else {
         console.error('Unrecognized action:', response.action);
@@ -150,6 +149,14 @@ function updateIndexText() {
         document.getElementById('index-text').innerText = '';
     else if(arguments.length == 2)
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+}
+
+//Show or hide red exclamation icon in the extension popup
+function showMalformedRegexIcon(flag) {
+    if(flag)
+        document.getElementById('invalid-regex-icon').style.display = 'initial';
+    else
+        document.getElementById('invalid-regex-icon').style.display = 'none';
 }
 
 //Enable next and previous buttons
