@@ -17,8 +17,7 @@ window.onload = function addListeners() {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
-        else
-        {
+        else {
             chrome.tabs.executeScript( {
                 code: "window.getSelection().toString();"
             }, function(selection) {
@@ -120,7 +119,7 @@ function storeDataToLocalStorage(payload) {
 //Retrieve locally stored payload to be handled by handleDataFromStorage()
 function retrieveLastSearch() {
     chrome.storage.local.get('payload', function(data) {
-        handleDataFromStorage(data)
+        handleDataFromStorage(data);
     });
 }
 
@@ -130,6 +129,8 @@ function handleDataFromStorage(data) {
     var previousSearchText = storagePayload.previousSearch;
 
     changeSearchFieldText(previousSearchText);
+    if(previousSearchText.length > 0)
+        enableButtons();
 }
 
 //gets previous search text and sets it to search field text, then selects search field
