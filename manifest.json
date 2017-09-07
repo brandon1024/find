@@ -31,7 +31,7 @@
       "matches": ["<all_urls>"],
       "all_frames": false,
       "run_at": "document_end",
-      "js": ["/lib/jQuery/jquery-3.2.0.min.js",
+      "js": ["/lib/jQuery/jquery-3.2.1.min.js",
         "/lib/html-entity-handler/entityhandler.js",
         "/content/content.js",
         "/content/highlighter.js"],
