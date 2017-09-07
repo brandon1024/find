@@ -1,6 +1,7 @@
 "use strict";
 
 var port = chrome.runtime.connect({name: "popup_to_backend_port"});
+var initialized = false;
 
 //Load event listeners for popup components
 window.onload = function addListeners() {
@@ -17,8 +18,7 @@ window.onload = function addListeners() {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
-        else
-        {
+        else {
             chrome.tabs.executeScript( {
                 code: "window.getSelection().toString();"
             }, function(selection) {
@@ -64,6 +64,8 @@ port.onMessage.addListener(function listener(response) {
 
 //Perform update action
 function updateHighlight() {
+    initialized = true;
+    
     var regex = getSearchFieldText();
     var action = 'update';
     invokeAction({action: action, regex: regex});
@@ -71,6 +73,11 @@ function updateHighlight() {
 
 //Highlight next occurrence of regex
 function nextHighlight() {
+    if(!initialized) {
+        updateHighlight();
+        return;
+    }
+
     var action = 'next';
     invokeAction({action: action});
     document.getElementById('search-field').focus();
@@ -78,6 +85,11 @@ function nextHighlight() {
 
 //Highlight previous occurrence of regex
 function previousHighlight() {
+    if(!initialized) {
+        updateHighlight();
+        return;
+    }
+
     var action = 'previous';
     invokeAction({action: action});
     document.getElementById('search-field').focus();
@@ -120,7 +132,7 @@ function storeDataToLocalStorage(payload) {
 //Retrieve locally stored payload to be handled by handleDataFromStorage()
 function retrieveLastSearch() {
     chrome.storage.local.get('payload', function(data) {
-        handleDataFromStorage(data)
+        handleDataFromStorage(data);
     });
 }
 
@@ -130,6 +142,8 @@ function handleDataFromStorage(data) {
     var previousSearchText = storagePayload.previousSearch;
 
     changeSearchFieldText(previousSearchText);
+    if(previousSearchText.length > 0)
+        enableButtons();
 }
 
 //gets previous search text and sets it to search field text, then selects search field
