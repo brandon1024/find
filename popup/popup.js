@@ -1,6 +1,7 @@
 "use strict";
 
 var port = chrome.runtime.connect({name: "popup_to_backend_port"});
+var initialized = false;
 
 //Load event listeners for popup components
 window.onload = function addListeners() {
@@ -63,6 +64,8 @@ port.onMessage.addListener(function listener(response) {
 
 //Perform update action
 function updateHighlight() {
+    initialized = true;
+    
     var regex = getSearchFieldText();
     var action = 'update';
     invokeAction({action: action, regex: regex});
@@ -70,6 +73,11 @@ function updateHighlight() {
 
 //Highlight next occurrence of regex
 function nextHighlight() {
+    if(!initialized) {
+        updateHighlight();
+        return;
+    }
+
     var action = 'next';
     invokeAction({action: action});
     document.getElementById('search-field').focus();
@@ -77,6 +85,11 @@ function nextHighlight() {
 
 //Highlight previous occurrence of regex
 function previousHighlight() {
+    if(!initialized) {
+        updateHighlight();
+        return;
+    }
+
     var action = 'previous';
     invokeAction({action: action});
     document.getElementById('search-field').focus();
