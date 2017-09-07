@@ -41,8 +41,8 @@ window.onload = function addListeners() {
 
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {
+    showMalformedRegexIcon(false);
     if(response.action == 'index_update') {
-        showMalformedRegexIcon(false);
         updateIndexText(response.index, response.total);
 
         if(response.index == 0 && response.total == 0)
