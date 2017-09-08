@@ -11,6 +11,7 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('input', updateHighlight);
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
+    document.getElementsByClassName('max-results-slider')[0].addEventListener('input', updateMaxHighlights);
 
     document.body.addEventListener('click', function(){
         document.getElementById('search-field').focus();
@@ -177,6 +178,10 @@ function updateIndexText() {
         document.getElementById('index-text').innerText = '';
     else if(arguments.length == 2)
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+}
+
+function updateMaxHighlights() {
+    document.getElementsByClassName('max-results-slider-value')[0].innerText = document.getElementsByClassName('max-results-slider')[0].value;
 }
 
 //Show or hide red exclamation icon in the extension popup

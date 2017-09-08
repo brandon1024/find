@@ -156,13 +156,73 @@ input:checked + .slider:before {
     transform: translateX(13px);
 }
 
+/* Slider CSS */
+.max-results-slider {
+    -webkit-appearance: none;
+    width: calc(100% - (73px));
+    height: 6px;
+    border-radius: 5px;
+    background: #2196F3;
+    outline: none;
+    padding: 0;
+    margin: 5px 5px 10px 5px;
+}
+
+.max-results-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #466178;
+    cursor: pointer;
+    -webkit-transition: background .15s ease-in-out;
+    transition: background .15s ease-in-out;
+}
+
+.max-results-slider::-webkit-slider-thumb:hover {
+    background: #1abc9c;
+}
+
+.max-results-slider:active::-webkit-slider-thumb {
+    background: #1abc9c;
+}
+
+.max-results-slider-value {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    color: #fff;
+    line-height: 10px;
+    text-align: center;
+    border-radius: 3px;
+    background: #2196F3;
+    padding: 5px 10px;
+    margin-left: 8px;
+}
+
+.max-results-slider-value:after {
+    position: absolute;
+    top: 5px;
+    left: -5px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-right: 5px solid #2196F3;
+    border-bottom: 5px solid transparent;
+    content: '';
+}
+
+/* Options CSS */
 span.options-text, span.options-group-header {
     vertical-align: middle;
     font-family: "Arial", Arial, sans-serif;
+    display: block;
 }
 
 table#regex-options-table {
     width: 100%;
+    padding-bottom: 5px;
 }
 
 td.options-table-toggle-cell {
@@ -185,7 +245,9 @@ div#regex-options {
     border-radius: 3px;
     padding: 3px;
     display: none;
-}/* extension message style */
+}
+
+/* extension message style */
 div#extension-message-body {
    display: none;
 }
