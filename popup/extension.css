@@ -118,7 +118,7 @@ label.switch input {
     display:none;
 }
 
-div.slider {
+div.toggle-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -130,7 +130,7 @@ div.slider {
     transition: .4s;
 }
 
-div.slider:before {
+div.toggle-slider:before {
     position: absolute;
     content: "";
     height: 13px;
@@ -142,22 +142,22 @@ div.slider:before {
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked + .toggle-slider {
     background-color: #2196F3;
 }
 
-input:focus + .slider {
+input:focus + .toggle-slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked + .toggle-slider:before {
     -webkit-transform: translateX(13px);
     -ms-transform: translateX(13px);
     transform: translateX(13px);
 }
 
 /* Slider CSS */
-.max-results-slider {
+.slider {
     -webkit-appearance: none;
     width: calc(100% - (73px));
     height: 6px;
@@ -168,7 +168,7 @@ input:checked + .slider:before {
     margin: 5px 5px 10px 5px;
 }
 
-.max-results-slider::-webkit-slider-thumb {
+.slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 10px;
@@ -180,15 +180,15 @@ input:checked + .slider:before {
     transition: background .15s ease-in-out;
 }
 
-.max-results-slider::-webkit-slider-thumb:hover {
+.slider::-webkit-slider-thumb:hover {
     background: #1abc9c;
 }
 
-.max-results-slider:active::-webkit-slider-thumb {
+.slider:active::-webkit-slider-thumb {
     background: #1abc9c;
 }
 
-.max-results-slider-value {
+.slider-value {
     display: inline-block;
     position: relative;
     width: 20px;
@@ -201,7 +201,7 @@ input:checked + .slider:before {
     margin-left: 8px;
 }
 
-.max-results-slider-value:after {
+.slider-value:after {
     position: absolute;
     top: 5px;
     left: -5px;

@@ -61,7 +61,7 @@
                     <td class="options-table-toggle-cell">
                         <label class="switch">
                             <input id="regex-option-regex-disable-toggle" type="checkbox"/>
-                            <div class="slider"/>
+                            <div class="toggle-slider"/>
                         </label>
                     </td>
                     <td>
@@ -72,19 +72,19 @@
                     <td class="options-table-toggle-cell">
                         <label class="switch">
                             <input id="regex-option-case-insensitive-toggle" type="checkbox"/>
-                            <div class="slider"/>
+                            <div class="toggle-slider"/>
                         </label>
                     </td>
                     <td>
-                        <span id="regex-option-case-insensitive-text" class="options-text">Match Case Insensitive</span>
+                        <span id="regex-option-case-insensitive-text" class="options-text">Case Insensitive Match</span>
                     </td>
                 </tr>
             </tbody>
         </table>
         <div id="regex-options-max-results-container">
             <span id="regex-option-max-results-text" class="options-text">Max Highlighted Results</span>
-            <input class="max-results-slider" type="range" value="500" min="0" max="500" step="50"/>
-            <span class="max-results-slider-value">0</span>
+            <input id="max-results-slider" class="slider" type="range" value="10" min="0" max="10" step="1"/>
+            <span id="max-results-slider-value" class="slider-value">∞</span>
         </div>
     </div>
 </body>

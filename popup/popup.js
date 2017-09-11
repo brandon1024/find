@@ -1,6 +1,7 @@
 "use strict";
 
 var port = chrome.runtime.connect({name: "popup_to_backend_port"});
+var options = {'find_by_regex': true, 'match_case': true, 'max_results': 0};
 var initialized = false;
 
 //Load event listeners for popup components
@@ -9,8 +10,10 @@ window.onload = function addListeners() {
     document.getElementById('search-prev-button').addEventListener('click', previousHighlight);
     document.getElementById('close-button').addEventListener('click', closeExtension);
     document.getElementById('search-field').addEventListener('input', updateHighlight);
-    document.getElementById('search-field').addEventListener('input', updateLocalStorage);
-    document.getElementsByClassName('max-results-slider')[0].addEventListener('input', updateMaxHighlights);
+    document.getElementById('search-field').addEventListener('input', updateSavedPreviousSearch);
+    document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', updateOptions);
+    document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
+    document.getElementById('max-results-slider').addEventListener('input', updateOptions);
 
     document.body.addEventListener('click', function(){
         document.getElementById('search-field').focus();
@@ -31,6 +34,8 @@ window.onload = function addListeners() {
                 el.style.display = 'none';
         }
     }, true);
+
+    retrieveSavedOptions();
 };
 
 chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
@@ -45,10 +50,10 @@ chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         }, function(selection) {
             var selectedText = selection[0];
             if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
-                retrieveLastSearch();
+                retrieveSavedLastSearch();
             }
             else {
-                changeSearchFieldText(selection[0]);
+                setSearchFieldText(selection[0]);
                 updateHighlight();
             }
         });
@@ -121,59 +126,64 @@ function closeExtension() {
     window.close();
 }
 
-//Converts current search field text to JSON payload and send to storeDataToLocalStorage() to store
-function updateLocalStorage() {
-    var payload = {'previousSearch': getSearchFieldText()};
-    storeDataToLocalStorage(payload);
+function updateSavedOptions() {
+    chrome.storage.local.set({'options': options});
 }
 
-//Stores input payload in local storage
-function storeDataToLocalStorage(payload) {
-    chrome.storage.local.set({'payload': payload});
+function updateSavedPreviousSearch() {
+    var payload = {'previousSearch': getSearchFieldText()};
+    chrome.storage.local.set(payload);
 }
 
 //Retrieve locally stored payload to be handled by handleDataFromStorage()
-function retrieveLastSearch() {
-    chrome.storage.local.get('payload', function(data) {
-        handleDataFromStorage(data);
+function retrieveSavedLastSearch() {
+    chrome.storage.local.get('previousSearch', function(data) {
+        var previousSearchText = data.previousSearch;
+        if(previousSearchText == null || previousSearchText == undefined)
+            return;
+
+        setSearchFieldText(previousSearchText);
+        if(previousSearchText.length > 0)
+            enableButtons();
     });
 }
 
-//Receives payload from storage and gets previousSearch JSON to be sent to changeSearchFieldText()
-function handleDataFromStorage(data) {
-    if(!data.payload)
-        return;
+function retrieveSavedOptions() {
+    chrome.storage.local.get('options', function(data) {
+        if(data.options == null || data.options == undefined) {
+            updateSavedOptions();
+            return;
+        }
 
-    var storagePayload = data.payload;
-    var previousSearchText = storagePayload.previousSearch;
+        options = data.options;
 
-    changeSearchFieldText(previousSearchText);
-    if(previousSearchText.length > 0)
-        enableButtons();
+        document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
+        document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
+
+        var rangeValues = [1,50,100,150,200,250,300,350,400,450,0];
+        if(options.max_results == 0)
+            document.getElementById('max-results-slider-value').innerText = '∞';
+        else
+            document.getElementById('max-results-slider-value').innerText = options.max_results.toString();
+
+        document.getElementById('max-results-slider').value = rangeValues.indexOf(options.max_results);
+    });
 }
 
-//gets previous search text and sets it to search field text, then selects search field
-function changeSearchFieldText(text) {
-    document.getElementById('search-field').value = text;
-    document.getElementById('search-field').select();
-}
+function updateOptions() {
+    options.find_by_regex = document.getElementById('regex-option-regex-disable-toggle').checked;
+    options.match_case = document.getElementById('regex-option-case-insensitive-toggle').checked;
 
-//Retrieve search field text
-function getSearchFieldText() {
-    return document.getElementById('search-field').value;
-}
+    var rangeValues = [1,50,100,150,200,250,300,350,400,450,0];
+    var rangeIndex = document.getElementById('max-results-slider').value;
+    if(rangeValues[rangeIndex] == 0)
+        document.getElementById('max-results-slider-value').innerText = '∞';
+    else
+        document.getElementById('max-results-slider-value').innerText = rangeValues[rangeIndex].toString();
 
-//Update index text
-function updateIndexText() {
-    if(arguments.length == 0)
-        document.getElementById('index-text').innerText = '';
-    else if(arguments.length == 2)
-        document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
-}
+    options.max_results = rangeValues[rangeIndex];
 
-function updateMaxHighlights() {
-    var rangeValue = document.getElementsByClassName('max-results-slider')[0].value;
-    document.getElementsByClassName('max-results-slider-value')[0].innerText = rangeValue == 500 ? '∞' : rangeValue;
+    updateSavedOptions();
 }
 
 //Show or hide red exclamation icon in the extension popup
@@ -191,6 +201,25 @@ function enableButtons() {
 
     document.getElementById('search-prev-button').disabled = false;
     document.getElementById('search-next-button').disabled = false;
+}
+
+//Update index text
+function updateIndexText() {
+    if(arguments.length == 0)
+        document.getElementById('index-text').innerText = '';
+    else if(arguments.length == 2)
+        document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+}
+
+//gets previous search text and sets it to search field text, then selects search field
+function setSearchFieldText(text) {
+    document.getElementById('search-field').value = text;
+    document.getElementById('search-field').select();
+}
+
+//Retrieve search field text
+function getSearchFieldText() {
+    return document.getElementById('search-field').value;
 }
 
 //Formats numbers to have thousands comma delimiters
