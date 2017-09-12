@@ -276,3 +276,8 @@ img#invalid-regex-icon {
     float: right;
     display: none;
 }
+
+img.information-hover-icon {
+    width: 10px;
+    height: 10px;
+}
