@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-var port = chrome.runtime.connect({name: "popup_to_backend_port"});
+var port = chrome.runtime.connect({name: 'popup_to_backend_port'});
 var options = {'find_by_regex': true, 'match_case': true, 'max_results': 0};
 var initialized = false;
 
@@ -27,11 +27,11 @@ window.onload = function addListeners() {
         else if (e.keyCode == 13)
             nextHighlight();
         else if(e.keyCode == 79 && e.ctrlKey) {
-            var el = document.getElementById("regex-options");
-            if(el.style.display == 'none' || el.style.display == '')
-                el.style.display = 'inherit';
+            var $el = document.getElementById('regex-options');
+            if($el.style.display == 'none' || $el.style.display == '')
+                $el.style.display = 'inherit';
             else
-                el.style.display = 'none';
+                $el.style.display = 'none';
         }
     }, true);
 
@@ -126,20 +126,22 @@ function closeExtension() {
     window.close();
 }
 
+//Commit options in memory to local storage
 function updateSavedOptions() {
     chrome.storage.local.set({'options': options});
 }
 
+//Commit text in search field to local storage
 function updateSavedPreviousSearch() {
     var payload = {'previousSearch': getSearchFieldText()};
     chrome.storage.local.set(payload);
 }
 
-//Retrieve locally stored payload to be handled by handleDataFromStorage()
+//Retrieve last search from local storage, set the search field text, and enable buttons if text length > 0
 function retrieveSavedLastSearch() {
     chrome.storage.local.get('previousSearch', function(data) {
         var previousSearchText = data.previousSearch;
-        if(previousSearchText == null || previousSearchText == undefined)
+        if(previousSearchText == null)
             return;
 
         setSearchFieldText(previousSearchText);
@@ -148,9 +150,10 @@ function retrieveSavedLastSearch() {
     });
 }
 
+//Retrieve saved options from local storage and update options panel
 function retrieveSavedOptions() {
     chrome.storage.local.get('options', function(data) {
-        if(data.options == null || data.options == undefined) {
+        if(data.options == null) {
             updateSavedOptions();
             return;
         }
@@ -170,6 +173,7 @@ function retrieveSavedOptions() {
     });
 }
 
+//Update options in memory with data from options panel
 function updateOptions() {
     options.find_by_regex = document.getElementById('regex-option-regex-disable-toggle').checked;
     options.match_case = document.getElementById('regex-option-case-insensitive-toggle').checked;
@@ -224,7 +228,7 @@ function getSearchFieldText() {
 
 //Formats numbers to have thousands comma delimiters
 function formatNumber(x) {
-    var parts = x.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return parts.join(".");
+    var parts = x.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
 }
