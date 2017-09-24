@@ -111,12 +111,20 @@ button.controls-button:disabled {
 }
 
 /* extension message style */
-div#extension-message-body {
+div#extension-message-body,
+div#extension-message-welcome,
+div#extension-message-disallowed-url {
    display: none;
 }
 
-table#message-table {
+table#disallowed-url-message-table {
     background-color: #e5e5e5;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+table#welcome-message-table {
+    background-color: #ffd7a5;
     border-radius: 3px;
     padding: 3px;
 }
@@ -126,9 +134,15 @@ span#extension-limitation-chrome-settings-text,
 span#extension-limitation-pdf-fileview-text{
     color: #FF0000;
     display: none;
+    font-weight: lighter;
 }
 
-img#exclamation-icon {
+span.welcome-text {
+    font-weight: lighter;
+}
+
+img#exclamation-icon,
+img#party-icon {
     width: 20px;
     height: 20px;
     padding: 10px;

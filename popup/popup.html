@@ -35,24 +35,48 @@
         </table>
     </div>
     <div id="extension-message-body">
-        <table id="message-table">
-            <tr>
-                <td id="exclamation-icon-cell">
-                    <img id="exclamation-icon" src="/resources/exclamation.svg"/>
-                </td>
-                <td>
-                    <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
-                    Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection
-                    of code. This is a security limitation across all Chrome extensions.</span>
-                    <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
-                    use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing
-                    here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.</span>
-                    <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the extension in a
-                    PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF.
-                    We recommend using the native tool instead.</span>
-                </td>
-            </tr>
-        </table>
+        <div id="extension-message-welcome">
+            <table id="welcome-message-table">
+                <tr id="welcome-message-table-header">
+                    <td id="party-icon-cell">
+                        <img id="party-icon" src="/resources/party.png"/>
+                    </td>
+                    <td>
+                        <span class="welcome-text">Hi there! Thank you very much for installing our extension! To help you out, here are some things to get you started.<br></span>
+                    </td>
+                </tr>
+                <tr id="welcome-message-table-key-shortcuts">
+                    <td colspan="2">
+                        <ul style="margin: 0;">
+                            <li><span class="welcome-text">CTRL-SHIFT-F Open extension</span></li>
+                            <li><span class="welcome-text">ENTER Advance to next occurrence</span></li>
+                            <li><span class="welcome-text">SHIFT-ENTER Return to previous occurrence</span></li>
+                            <li><span class="welcome-text">CTRL-ENTER Close extension</span></li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="extension-message-disallowed-url">
+            <table id="disallowed-url-message-table">
+                <tr>
+                    <td id="exclamation-icon-cell">
+                        <img id="exclamation-icon" src="/resources/exclamation.svg"/>
+                    </td>
+                    <td>
+                        <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
+                        Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection
+                        of code. This is a security limitation across all Chrome extensions.</span>
+                        <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
+                        use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing
+                        here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.</span>
+                        <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the extension in a
+                        PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF.
+                        We recommend using the native tool instead.</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>

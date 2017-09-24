@@ -20,10 +20,20 @@ window.onload = function addListeners() {
         document.getElementById('search-field').focus();
     });
 
+    document.getElementById('extension-message-body').style.display = 'initial';
+    document.getElementById('extension-message-welcome').style.display = 'initial';
+    chrome.runtime.onInstalled.addListener(function(details){
+        if(details.reason == "install") {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-message-welcome').style.display = 'initial';
+        } else if(details.reason == "update") {}
+    });
+
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
         if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
             document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-message-disallowed-url').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
         else if(url.match(/.*\.pdf$/i)) {
