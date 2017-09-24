@@ -12,6 +12,10 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
 
+    document.body.addEventListener('click', function(){
+        document.getElementById('search-field').focus();
+    });
+
     chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
         if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
