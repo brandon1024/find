@@ -142,6 +142,9 @@ function retrieveLastSearch() {
 
 //Receives payload from storage and gets previousSearch JSON to be sent to changeSearchFieldText()
 function handleDataFromStorage(data) {
+    if(!data.payload)
+        return;
+
     var storagePayload = data.payload;
     var previousSearchText = storagePayload.previousSearch;
 
