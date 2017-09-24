@@ -18,7 +18,7 @@ window.onload = function addListeners() {
 
     chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
-        if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
+        if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
