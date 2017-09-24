@@ -75,14 +75,19 @@ function actionUpdate(port, tabID, message) {
             if(!DOMModelObject)
                 return;
 
+            var options = message.options;
             regex = message.regex;
+
+            if(!options.find_by_regex)
+                regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+
             if(regex.length == 0) {
                 port.postMessage({action: "empty_regex"});
                 chrome.tabs.sendMessage(tabID, {action: 'highlight_restore'});
                 return;
             }
 
-            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex);
+            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, options);
             if(index > regexOccurrenceMap.length-1) {
                 if(regexOccurrenceMap.length == 0)
                     index = 0;
@@ -90,7 +95,7 @@ function actionUpdate(port, tabID, message) {
                     index = regexOccurrenceMap.length-1;
             }
 
-            chrome.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+            chrome.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
             var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
             port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
         }
@@ -128,11 +133,15 @@ function actionPrevious(port, tabID) {
 }
 
 //Build occurrence map from DOM model and regex
-function buildOccurrenceMap(DOMModelObject, regex) {
+function buildOccurrenceMap(DOMModelObject, regex, options) {
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
     regex = regex.replace(/ /g, '\\s');
-    regex = new RegExp(regex, 'gm');
+
+    if(options.match_case)
+        regex = new RegExp(regex, 'gm');
+    else
+        regex = new RegExp(regex, 'gmi');
 
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
@@ -155,6 +164,9 @@ function buildOccurrenceMap(DOMModelObject, regex) {
         }
 
         groupIndex++;
+
+        if(options.max_results != 0 && count >= options.max_results)
+            break;
     }
 
     occurrenceMap.length = count;

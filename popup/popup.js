@@ -93,7 +93,7 @@ function updateHighlight() {
     
     var regex = getSearchFieldText();
     var action = 'update';
-    port.postMessage({action: action, regex: regex});
+    port.postMessage({action: action, regex: regex, options: options});
 }
 
 //Highlight next occurrence of regex
@@ -188,6 +188,7 @@ function updateOptions() {
     options.max_results = rangeValues[rangeIndex];
 
     updateSavedOptions();
+    updateHighlight();
 }
 
 //Show or hide red exclamation icon in the extension popup
