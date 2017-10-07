@@ -20,14 +20,18 @@ window.onload = function addListeners() {
         document.getElementById('search-field').focus();
     });
 
+    document.getElementById('faq-link').addEventListener('click', function(){
+        chrome.tabs.create({url: 'https://github.com/brandon1024/find/wiki/FAQ-:-General'});
+        return false;
+    });
+
+    document.getElementById('welcome-dismiss-text').addEventListener('click', function(){
+        document.getElementById('extension-message-welcome').style.display = 'none';
+        document.getElementById('extension-message-body').style.display = 'none';
+    });
+
     document.getElementById('extension-message-body').style.display = 'initial';
     document.getElementById('extension-message-welcome').style.display = 'initial';
-    chrome.runtime.onInstalled.addListener(function(details){
-        if(details.reason == "install") {
-            document.getElementById('extension-message-body').style.display = 'initial';
-            document.getElementById('extension-message-welcome').style.display = 'initial';
-        } else if(details.reason == "update") {}
-    });
 
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
@@ -56,6 +60,13 @@ window.onload = function addListeners() {
         }
     });
 };
+
+chrome.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "install") {
+        document.getElementById('extension-message-body').style.display = 'initial';
+        document.getElementById('extension-message-welcome').style.display = 'initial';
+    } else if(details.reason == "update") {}
+});
 
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {

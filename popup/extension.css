@@ -118,7 +118,7 @@ div#extension-message-disallowed-url {
 }
 
 table#disallowed-url-message-table {
-    background-color: #e5e5e5;
+    background-color: #e4efff;
     border-radius: 3px;
     padding: 3px;
 }
@@ -139,6 +139,14 @@ span#extension-limitation-pdf-fileview-text{
 
 span.welcome-text {
     font-weight: lighter;
+}
+
+a#welcome-dismiss-text {
+    float: right;
+    font-weight: lighter;
+    color: #5d5d5d;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 img#exclamation-icon,
