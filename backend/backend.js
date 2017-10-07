@@ -5,6 +5,26 @@ var regexOccurrenceMap = null;
 var index = null;
 var regex = null;
 
+chrome.runtime.onInstalled.addListener(function(details) {
+    var manifest = chrome.runtime.getManifest();
+    var scripts = manifest.content_scripts[0].js;
+    var css = manifest.content_scripts[0].css;
+
+    chrome.tabs.query({}, function (tabs) {
+        for(var tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+            var url = tabs[tabIndex].url;
+            if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)))
+                continue;
+
+            for (var i = 0; i < scripts.length; i++)
+                chrome.tabs.executeScript(tabs[tabIndex].id, {file: scripts[i]});
+
+            for (i = 0; i < css.length; i++)
+                chrome.tabs.insertCSS(tabs[tabIndex].id, {file: css[i]});
+        }
+    });
+});
+
 chrome.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
