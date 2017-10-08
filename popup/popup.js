@@ -1,6 +1,7 @@
 "use strict";
 
 var port = chrome.runtime.connect({name: "popup_to_backend_port"});
+var initialized = false;
 
 //Load event listeners for popup components
 window.onload = function addListeners() {
@@ -11,18 +12,17 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
 
+    document.body.addEventListener('click', function(){
+        document.getElementById('search-field').focus();
+    });
+
     chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
-        if(url.match(/chrome:\/\/.*/)) {
+        if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
-        else if(url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
-            document.getElementById('extension-message-body').style.display = 'initial';
-            document.getElementById('extension-limitation-web-store-text').style.display = 'initial';
-        }
-        else
-        {
+        else {
             chrome.tabs.executeScript( {
                 code: "window.getSelection().toString();"
             }, function(selection) {
@@ -42,6 +42,7 @@ window.onload = function addListeners() {
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {
     if(response.action == 'index_update') {
+        showMalformedRegexIcon(false);
         updateIndexText(response.index, response.total);
 
         if(response.index == 0 && response.total == 0)
@@ -50,12 +51,14 @@ port.onMessage.addListener(function listener(response) {
             enableButtons();
     }
     else if(response.action == 'empty_regex') {
+        showMalformedRegexIcon(false);
         updateIndexText();
         disableButtons();
     }
     else if(response.action == 'invalid_regex') {
         updateIndexText();
         disableButtons();
+        showMalformedRegexIcon(true);
     }
     else {
         console.error('Unrecognized action:', response.action);
@@ -65,6 +68,8 @@ port.onMessage.addListener(function listener(response) {
 
 //Perform update action
 function updateHighlight() {
+    initialized = true;
+    
     var regex = getSearchFieldText();
     var action = 'update';
     invokeAction({action: action, regex: regex});
@@ -72,6 +77,11 @@ function updateHighlight() {
 
 //Highlight next occurrence of regex
 function nextHighlight() {
+    if(!initialized) {
+        updateHighlight();
+        return;
+    }
+
     var action = 'next';
     invokeAction({action: action});
     document.getElementById('search-field').focus();
@@ -79,6 +89,11 @@ function nextHighlight() {
 
 //Highlight previous occurrence of regex
 function previousHighlight() {
+    if(!initialized) {
+        updateHighlight();
+        return;
+    }
+
     var action = 'previous';
     invokeAction({action: action});
     document.getElementById('search-field').focus();
@@ -121,16 +136,21 @@ function storeDataToLocalStorage(payload) {
 //Retrieve locally stored payload to be handled by handleDataFromStorage()
 function retrieveLastSearch() {
     chrome.storage.local.get('payload', function(data) {
-        handleDataFromStorage(data)
+        handleDataFromStorage(data);
     });
 }
 
 //Receives payload from storage and gets previousSearch JSON to be sent to changeSearchFieldText()
 function handleDataFromStorage(data) {
+    if(!data.payload)
+        return;
+
     var storagePayload = data.payload;
     var previousSearchText = storagePayload.previousSearch;
 
     changeSearchFieldText(previousSearchText);
+    if(previousSearchText.length > 0)
+        enableButtons();
 }
 
 //gets previous search text and sets it to search field text, then selects search field
@@ -150,6 +170,14 @@ function updateIndexText() {
         document.getElementById('index-text').innerText = '';
     else if(arguments.length == 2)
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+}
+
+//Show or hide red exclamation icon in the extension popup
+function showMalformedRegexIcon(flag) {
+    if(flag)
+        document.getElementById('invalid-regex-icon').style.display = 'initial';
+    else
+        document.getElementById('invalid-regex-icon').style.display = 'none';
 }
 
 //Enable next and previous buttons
