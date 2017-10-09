@@ -97,7 +97,7 @@ function actionUpdate(port, tabID, message) {
 
             chrome.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
             var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-            var viewableTotal = ((options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+            var viewableTotal = ((options.max_results != 0 && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
             port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
         }
         catch(e) {
@@ -110,8 +110,9 @@ function actionUpdate(port, tabID, message) {
 //Action Next
 function actionNext(port, tabID, message) {
     var options = message.options;
+    var indexCap = options.max_results != 0;
 
-    if(index >= regexOccurrenceMap.length-1 || (options.max_results != 0 && index >= options.max_results-1))
+    if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1))
         index = 0;
     else
         index++;
@@ -119,16 +120,17 @@ function actionNext(port, tabID, message) {
     chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
 
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    var viewableTotal = ((options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
 }
 
 //Action Previous
 function actionPrevious(port, tabID, message) {
     var options = message.options;
+    var indexCap = options.max_results != 0;
 
     if(index <= 0) {
-        if(options.max_results != 0 && options.max_results <= regexOccurrenceMap.length)
+        if(indexCap && options.max_results <= regexOccurrenceMap.length)
             index = options.max_results-1;
         else
             index = regexOccurrenceMap.length-1;
@@ -139,7 +141,7 @@ function actionPrevious(port, tabID, message) {
     chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
 
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    var viewableTotal = ((options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
 }
 

@@ -163,7 +163,7 @@ function retrieveSavedOptions() {
         document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
         document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
 
-        var rangeValues = [1,50,100,150,200,250,300,350,400,450,0];
+        var rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
         if(options.max_results == 0)
             document.getElementById('max-results-slider-value').innerText = '∞';
         else
@@ -178,7 +178,7 @@ function updateOptions() {
     options.find_by_regex = document.getElementById('regex-option-regex-disable-toggle').checked;
     options.match_case = document.getElementById('regex-option-case-insensitive-toggle').checked;
 
-    var rangeValues = [1,50,100,150,200,250,300,350,400,450,0];
+    var rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
     var rangeIndex = document.getElementById('max-results-slider').value;
     if(rangeValues[rangeIndex] == 0)
         document.getElementById('max-results-slider-value').innerText = '∞';
