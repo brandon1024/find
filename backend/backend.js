@@ -5,6 +5,7 @@ var regexOccurrenceMap = null;
 var index = null;
 var regex = null;
 
+//Inject content scripts into pages on installed (not performed automatically)
 chrome.runtime.onInstalled.addListener(function(details) {
     var manifest = chrome.runtime.getManifest();
     var scripts = manifest.content_scripts[0].js;
@@ -29,12 +30,14 @@ chrome.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
 
+    //Listen to port to popup.js for action
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         port.onMessage.addListener(function (message) {
             invokeAction(message.action, port, tabs[0].id, message);
         });
     });
 
+    //Handle extension close
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         port.onDisconnect.addListener(function() {
             chrome.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
@@ -48,6 +51,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         });
     });
 
+    //perform init action
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
             if(response && response.model) {
@@ -78,15 +82,18 @@ function actionUpdate(port, tabID, message) {
             var options = message.options;
             regex = message.regex;
 
+            //If searching by string, escape all regex metacharacters
             if(!options.find_by_regex)
                 regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
+            //Ensure non-empty search
             if(regex.length == 0) {
                 port.postMessage({action: "empty_regex"});
                 chrome.tabs.sendMessage(tabID, {action: 'highlight_restore'});
                 return;
             }
 
+            //Build occurrence map, reposition index if necessary
             regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, options);
             if(index > regexOccurrenceMap.length-1) {
                 if(regexOccurrenceMap.length == 0)
@@ -95,6 +102,7 @@ function actionUpdate(port, tabID, message) {
                     index = regexOccurrenceMap.length-1;
             }
 
+            //Invoke highlight_update action, index_update action
             chrome.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
             var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
             var viewableTotal = ((options.max_results != 0 && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
@@ -112,13 +120,14 @@ function actionNext(port, tabID, message) {
     var options = message.options;
     var indexCap = options.max_results != 0;
 
+    //If reached end, reset index
     if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1))
         index = 0;
     else
         index++;
 
+    //Invoke highlight_seek action, index_update action
     chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
@@ -129,6 +138,7 @@ function actionPrevious(port, tabID, message) {
     var options = message.options;
     var indexCap = options.max_results != 0;
 
+    //If reached start, set index to last occurrence
     if(index <= 0) {
         if(indexCap && options.max_results <= regexOccurrenceMap.length)
             index = options.max_results-1;
@@ -138,8 +148,8 @@ function actionPrevious(port, tabID, message) {
     else
         index--;
 
+    //Invoke highlight_seek action, index_update action
     chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
@@ -156,6 +166,7 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
     else
         regex = new RegExp(regex, 'gmi');
 
+    //Loop over all text nodes in DOMModelObject
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
         var textGroup = '', uuids = [];
@@ -178,6 +189,7 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
 
         groupIndex++;
 
+        //If reached maxIndex, exit
         if(options.max_results != 0 && count >= options.max_results)
             break;
     }

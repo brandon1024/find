@@ -4,8 +4,8 @@ var port = chrome.runtime.connect({name: 'popup_to_backend_port'});
 var options = {'find_by_regex': true, 'match_case': true, 'max_results': 0};
 var initialized = false;
 
-//Load event listeners for popup components
 window.onload = function addListeners() {
+    //Load event listeners for popup components
     document.getElementById('search-next-button').addEventListener('click', nextHighlight);
     document.getElementById('search-prev-button').addEventListener('click', previousHighlight);
     document.getElementById('close-button').addEventListener('click', closeExtension);
@@ -36,15 +36,14 @@ window.onload = function addListeners() {
     }, true);
 
     chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
+        //Ensure valid url, then get text selected on page or retrieve last search
         var url = tabs[0].url;
         if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
         else {
-            chrome.tabs.executeScript( {
-                code: "window.getSelection().toString();"
-            }, function(selection) {
+            chrome.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
                 var selectedText = selection[0];
                 if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
                     retrieveSavedLastSearch();
@@ -77,9 +76,9 @@ port.onMessage.addListener(function listener(response) {
         enableButtons(false);
     }
     else if(response.action == 'invalid_regex') {
+        showMalformedRegexIcon(true);
         updateIndexText();
         enableButtons(false);
-        showMalformedRegexIcon(true);
     }
     else {
         console.error('Unrecognized action:', response.action);
