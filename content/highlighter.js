@@ -27,13 +27,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 //Highlight all occurrences of regular expression on the page
 function highlightAll(occurrenceMap, regex, options) {
     var occIndex = 0;
-    var tags = {occIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
+    var tags = {occIndex: null, maxIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
         if(this.occIndex != index) {
             this.occIndex = index;
-            this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+
+            //If reached max number of occurrences to show, don't highlight text
+            if(this.maxIndex == 0 || this.occIndex <= this.maxIndex)
+                this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+            else
+                this.openingMarkup = '<span>';
         }
     }};
 
+    tags.maxIndex = options.max_results - 1;
     regex = regex.replace(/ /g, '\\s');
     if(options.match_case)
         regex = new RegExp(regex, 'm');
@@ -129,21 +135,19 @@ function highlightAll(occurrenceMap, regex, options) {
         //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
         var matchGroup = {text: '', groupUUID: charMap[0].nodeUUID};
         var inMatch = false;
-        var cutoff = false;
         for(var key = 0; key < charMap.length; key++) {
             tags.update(occIndex);
-            cutoff = options.max_results != 0 && occIndex >= 5;
 
             //If Transitioning Into New Text Group
             if(matchGroup.groupUUID != charMap[key].nodeUUID) {
-                if(inMatch && !cutoff)
+                if(inMatch)
                     matchGroup.text += tags.closingMarkup;
 
                 document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
-                if(inMatch && !cutoff)
+                if(inMatch)
                     matchGroup.text += tags.openingMarkup;
             }
 
@@ -151,17 +155,13 @@ function highlightAll(occurrenceMap, regex, options) {
             if(charMap[key].matched) {
                 if(!inMatch) {
                     inMatch = charMap[key].matched;
-
-                    if(!cutoff)
-                        matchGroup.text += tags.openingMarkup;
+                    matchGroup.text += tags.openingMarkup;
                 }
             }
             else {
                 if(inMatch) {
                     inMatch = charMap[key].matched;
-
-                    if(!cutoff)
-                        matchGroup.text += tags.closingMarkup;
+                    matchGroup.text += tags.closingMarkup;
 
                     if(key < charMap.length)
                         occIndex++;
@@ -172,9 +172,7 @@ function highlightAll(occurrenceMap, regex, options) {
 
             if(charMap[key].boundary) {
                 inMatch = false;
-
-                if(!cutoff)
-                    matchGroup.text += tags.closingMarkup;
+                matchGroup.text += tags.closingMarkup;
                 if(key < charMap.length)
                     occIndex++;
             }
@@ -182,8 +180,7 @@ function highlightAll(occurrenceMap, regex, options) {
             //If End of Map Reached
             if(key == charMap.length-1) {
                 if(inMatch) {
-                    if(!cutoff)
-                        matchGroup.text += tags.closingMarkup;
+                    matchGroup.text += tags.closingMarkup;
                     occIndex++;
                 }
 

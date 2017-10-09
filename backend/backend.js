@@ -63,9 +63,9 @@ function invokeAction(action, port, tabID, message) {
     if(action == 'update')
         actionUpdate(port, tabID, message);
     else if(action == 'next')
-        actionNext(port, tabID);
+        actionNext(port, tabID, message);
     else if(action == 'previous')
-        actionPrevious(port, tabID);
+        actionPrevious(port, tabID, message);
 }
 
 //Action Update
@@ -97,7 +97,8 @@ function actionUpdate(port, tabID, message) {
 
             chrome.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
             var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-            port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
+            var viewableTotal = ((options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+            port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
         }
         catch(e) {
             console.error(e);
@@ -107,29 +108,39 @@ function actionUpdate(port, tabID, message) {
 }
 
 //Action Next
-function actionNext(port, tabID) {
-    if(index >= regexOccurrenceMap.length-1) {
+function actionNext(port, tabID, message) {
+    var options = message.options;
+
+    if(index >= regexOccurrenceMap.length-1 || (options.max_results != 0 && index >= options.max_results-1))
         index = 0;
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-    } else {
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: ++index, regex: regex});
-    }
+    else
+        index++;
+
+    chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
 
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
+    var viewableTotal = ((options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
 }
 
 //Action Previous
-function actionPrevious(port, tabID) {
+function actionPrevious(port, tabID, message) {
+    var options = message.options;
+
     if(index <= 0) {
-        index = regexOccurrenceMap.length-1;
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-    } else {
-        chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: --index, regex: regex});
+        if(options.max_results != 0 && options.max_results <= regexOccurrenceMap.length)
+            index = options.max_results-1;
+        else
+            index = regexOccurrenceMap.length-1;
     }
+    else
+        index--;
+
+    chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
 
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
+    var viewableTotal = ((options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
 }
 
 //Build occurrence map from DOM model and regex

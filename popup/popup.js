@@ -104,7 +104,7 @@ function nextHighlight() {
     }
 
     var action = 'next';
-    port.postMessage({action: action});
+    port.postMessage({action: action, options: options});
     document.getElementById('search-field').focus();
 }
 
@@ -116,7 +116,7 @@ function previousHighlight() {
     }
 
     var action = 'previous';
-    port.postMessage({action: action});
+    port.postMessage({action: action, options: options});
     document.getElementById('search-field').focus();
 }
 
