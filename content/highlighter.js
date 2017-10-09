@@ -32,14 +32,14 @@ function highlightAll(occurrenceMap, regex, options) {
             this.occIndex = index;
 
             //If reached max number of occurrences to show, don't highlight text
-            if(this.maxIndex == 0 || this.occIndex <= this.maxIndex)
+            if(this.maxIndex == null || this.occIndex <= this.maxIndex)
                 this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
             else
                 this.openingMarkup = '<span>';
         }
     }};
 
-    tags.maxIndex = options.max_results - 1;
+    tags.maxIndex = options.max_results == 0 ? null : options.max_results - 1;
     regex = regex.replace(/ /g, '\\s');
     if(options.match_case)
         regex = new RegExp(regex, 'm');

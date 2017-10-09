@@ -15,7 +15,7 @@ window.onload = function addListeners() {
     document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
     document.getElementById('max-results-slider').addEventListener('input', updateOptions);
 
-    document.body.addEventListener('click', function(){
+    document.getElementById('popup-body').addEventListener('click', function(){
         document.getElementById('search-field').focus();
     });
 
