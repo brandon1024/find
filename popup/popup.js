@@ -35,30 +35,30 @@ window.onload = function addListeners() {
         }
     }, true);
 
+    chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
+        var url = tabs[0].url;
+        if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
+        }
+        else {
+            chrome.tabs.executeScript( {
+                code: "window.getSelection().toString();"
+            }, function(selection) {
+                var selectedText = selection[0];
+                if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
+                    retrieveSavedLastSearch();
+                }
+                else {
+                    setSearchFieldText(selection[0]);
+                    updateHighlight();
+                }
+            });
+        }
+    });
+
     retrieveSavedOptions();
 };
-
-chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
-    var url = tabs[0].url;
-    if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
-        document.getElementById('extension-message-body').style.display = 'initial';
-        document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
-    }
-    else {
-        chrome.tabs.executeScript( {
-            code: "window.getSelection().toString();"
-        }, function(selection) {
-            var selectedText = selection[0];
-            if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
-                retrieveSavedLastSearch();
-            }
-            else {
-                setSearchFieldText(selection[0]);
-                updateHighlight();
-            }
-        });
-    }
-});
 
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {
