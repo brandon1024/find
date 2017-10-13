@@ -1,6 +1,10 @@
 "use strict";
 
-var port = chrome.runtime.connect({name: "popup_to_backend_port"});
+window.browser = (function () {
+    return window.chrome || window.browser;
+})();
+
+var port = browser.runtime.connect({name: "popup_to_backend_port"});
 var initialized = false;
 
 //Load event listeners for popup components
@@ -16,14 +20,14 @@ window.onload = function addListeners() {
         document.getElementById('search-field').focus();
     });
 
-    chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
+    browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
         if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
         else {
-            chrome.tabs.executeScript( {
+            browser.tabs.executeScript( {
                 code: "window.getSelection().toString();"
             }, function(selection) {
                 var selectedText = selection[0];
@@ -130,12 +134,12 @@ function updateLocalStorage() {
 
 //Stores input payload in local storage
 function storeDataToLocalStorage(payload) {
-    chrome.storage.local.set({'payload': payload});
+    browser.storage.local.set({'payload': payload});
 }
 
 //Retrieve locally stored payload to be handled by handleDataFromStorage()
 function retrieveLastSearch() {
-    chrome.storage.local.get('payload', function(data) {
+    browser.storage.local.get('payload', function(data) {
         handleDataFromStorage(data);
     });
 }
