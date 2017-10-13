@@ -22,6 +22,10 @@ window.onload = function addListeners() {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
+        else if(url.match(/.*\.pdf$/i)) {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-limitation-pdf-fileview-text').style.display = 'initial';
+        }
         else {
             chrome.tabs.executeScript( {
                 code: "window.getSelection().toString();"
