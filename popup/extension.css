@@ -3,6 +3,11 @@ body {
     margin: 3px 3px 3px 3px;
 }
 
+.def-font {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 75%;
+}
+
 div#popup-body {
     width: 300px;
 }

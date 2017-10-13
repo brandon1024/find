@@ -1,0 +1,47 @@
+{
+  "name": "find+ | Regex Find-in-Page Tool",
+  "short_name": "find+",
+  "version": "1.2.3",
+  "author": "Brandon Richardson, Michael Walz",
+  "manifest_version": 2,
+  "description": "A find-in-page extension for Google Chrome with support for regular expressions.",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage",
+    "<all_urls>"
+  ],
+  "icons":
+  {
+    "128": "resources/icon.png",
+    "16": "resources/icon.png",
+    "48": "resources/icon.png"
+  },
+  "browser_action": {
+    "default_icon": "resources/icon.png",
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "scripts": ["/backend/backend.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "all_frames": false,
+      "run_at": "document_end",
+      "js": ["/lib/jQuery/jquery-3.2.1.min.js",
+        "/lib/html-entity-handler/entityhandler.js",
+        "/content/content.js",
+        "/content/highlighter.js"],
+      "css": ["/content/highlighter.css"]
+    }
+  ],
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "Ctrl+Shift+F"
+      }
+    }
+  }
+}
