@@ -30,6 +30,7 @@ window.onload = function addListeners() {
         document.getElementById('extension-message-body').style.display = 'none';
     });
 
+    //for testing
     document.getElementById('extension-message-body').style.display = 'initial';
     document.getElementById('extension-message-welcome').style.display = 'initial';
 

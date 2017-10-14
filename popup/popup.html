@@ -36,7 +36,7 @@
     </div>
     <div id="extension-message-body">
         <div id="extension-message-welcome">
-            <table id="welcome-message-table">
+            <table id="welcome-message-table" style="background: linear-gradient(45deg, #6190e8, #a7bfe8);">
                 <tr id="welcome-message-table-header">
                     <td id="party-icon-cell">
                         <img id="party-icon" src="/resources/party.png"/>
@@ -45,23 +45,72 @@
                         <span class="welcome-text">Hi there! Thank you very much for installing our extension! To help you out, here are some things to get you started.</span>
                     </td>
                 </tr>
-                <tr id="welcome-message-table-key-shortcuts">
-                    <td colspan="2">
-                        <ul style="margin: 0;">
-                            <li><span class="welcome-text">CTRL-SHIFT-F Open extension</span></li>
-                            <li><span class="welcome-text">ENTER Advance to next occurrence</span></li>
-                            <li><span class="welcome-text">SHIFT-ENTER Return to previous occurrence</span></li>
-                            <li><span class="welcome-text">CTRL-ENTER Close extension</span></li>
-                        </ul>
-                    </td>
+            </table>
+        </div>
+        <div id="extension-help-body">
+            <table id="extension-help-shortcuts-table" style="margin: 0;width:100%;background: linear-gradient(45deg, #6190e8, #a7bfe8);">
+                <tr>
+                    <td colspan="2"><span class="welcome-text" style="font-weight:500;">Keyboard Shortcuts:</span></td>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                    <td><span class="welcome-text">CTRL+SHIFT+F</span></td>
+                    <td style="text-align: center"><span class="welcome-text">Open extension</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text">ENTER</span></td>
+                    <td style="text-align: center"><span class="welcome-text">Advance to next occurrence</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text">SHIFT+ENTER</span></td>
+                    <td style="text-align: center"><span class="welcome-text">Return to previous occurrence</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text">CTRL+ENTER or ESC</span></td>
+                    <td style="text-align: center"><span class="welcome-text">Close extension</span></td>
+                </tr>
+            </table>
+            <table style="background: linear-gradient(45deg, #6190e8, #a7bfe8);margin: 0;width:100%;">
+                <tr>
+                    <td colspan="5"><span class="welcome-text" style="font-weight:500;">Regex Metacharacters:</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;width:20%;"><code>*</code></td>
+                    <td style="text-align:center;width:20%;"><code>{n}</code></td>
+                    <td style="text-align:center;width:20%;"><code>^</code></td>
+                    <td style="text-align:center;width:20%;"><code>(x)</code></td>
+                    <td style="text-align:center;width:20%;"><code>\d</code></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;width:20%;"><code>+</code></td>
+                    <td style="text-align:center;width:20%;"><code>{n,}</code></td>
+                    <td style="text-align:center;width:20%;"><code>$</code></td>
+                    <td style="text-align:center;width:20%;"><code>(?:x)</code></td>
+                    <td style="text-align:center;width:20%;"><code>\w</code></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;width:20%;"><code>?</code></td>
+                    <td style="text-align:center;width:20%;"><code>{n,m}</code></td>
+                    <td style="text-align:center;width:20%;"><code>[xyz]</code></td>
+                    <td style="text-align:center;width:20%;"><code>x(?!y)</code></td>
+                    <td style="text-align:center;width:20%;"><code>\s</code></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;width:20%;"><code>\</code></td>
+                    <td style="text-align:center;width:20%;"><code>x|y</code></td>
+                    <td style="text-align:center;width:20%;"><code>[^xyz]</code></td>
+                    <td style="text-align:center;width:20%;"><code>x(?=y)</code></td>
+                    <td style="text-align:center;width:20%;"><code>\b</code></td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: right;">
+                        <sub>* This is not an exhaustive list.</sub>
+                    </td>
+                </tr>
+            </table>
+            <table id="extension-help-table-further-help">
+                <tr>
+                    <td>
                         <span class="welcome-text">Need help with something? <a id="faq-link" href="https://github.com/brandon1024/find/wiki/FAQ-:-General">Check out our Wiki!</a></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
                         <a id="welcome-dismiss-text">Dismiss</a>
                     </td>
                 </tr>
