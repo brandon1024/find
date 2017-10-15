@@ -125,3 +125,7 @@
 .pos-abs {
     position: absolute;
 }
+
+.t-align-center {
+    text-align: center;
+}

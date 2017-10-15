@@ -36,9 +36,9 @@
     </div>
     <div id="extension-message-body">
         <div id="extension-message-welcome">
-            <table id="welcome-message-table" style="background: linear-gradient(45deg, #6190e8, #a7bfe8);">
-                <tr id="welcome-message-table-header">
-                    <td id="party-icon-cell">
+            <table id="welcome-message-table">
+                <tr>
+                    <td>
                         <img id="party-icon" src="/resources/party.png"/>
                     </td>
                     <td>
@@ -48,9 +48,9 @@
             </table>
         </div>
         <div id="extension-help-body">
-            <table id="extension-help-shortcuts-table" style="margin: 0;width:100%;background: linear-gradient(45deg, #6190e8, #a7bfe8);">
+            <table id="extension-help-shortcuts-table">
                 <tr>
-                    <td colspan="2"><span class="welcome-text" style="font-weight:500;">Keyboard Shortcuts:</span></td>
+                    <td colspan="2"><span class="extension-help-header-text">Keyboard Shortcuts:</span></td>
                 </tr>
                 <tr>
                     <td><span class="welcome-text">CTRL+SHIFT+F</span></td>
@@ -69,37 +69,40 @@
                     <td style="text-align: center"><span class="welcome-text">Close extension</span></td>
                 </tr>
             </table>
-            <table style="background: linear-gradient(45deg, #6190e8, #a7bfe8);margin: 0;width:100%;">
+            <table id="extension-help-regex-metacharacters-table">
                 <tr>
-                    <td colspan="5"><span class="welcome-text" style="font-weight:500;">Regex Metacharacters:</span></td>
+                    <td colspan="5"><span class="extension-help-header-text">Regex Metacharacters:</span></td>
                 </tr>
                 <tr>
-                    <td style="text-align:center;width:20%;"><code>*</code></td>
-                    <td style="text-align:center;width:20%;"><code>{n}</code></td>
-                    <td style="text-align:center;width:20%;"><code>^</code></td>
-                    <td style="text-align:center;width:20%;"><code>(x)</code></td>
-                    <td style="text-align:center;width:20%;"><code>\d</code></td>
+                    <td colspan="5"><span class="welcome-text" style="position:relative;bottom:5px;">Hover for more information.</span></td>
                 </tr>
-                <tr>
-                    <td style="text-align:center;width:20%;"><code>+</code></td>
-                    <td style="text-align:center;width:20%;"><code>{n,}</code></td>
-                    <td style="text-align:center;width:20%;"><code>$</code></td>
-                    <td style="text-align:center;width:20%;"><code>(?:x)</code></td>
-                    <td style="text-align:center;width:20%;"><code>\w</code></td>
+                <tr class="regex-metacharacters">
+                    <td title="Matches the preceding expression 0 or more times."><code>*</code></td>
+                    <td title="Matches the preceding expression exactly n times."><code>{n}</code></td>
+                    <td title="Match the beginning of the string."><code>^</code></td>
+                    <td title="Matches x and remembers the match. Called a capturing group."><code>(x)</code></td>
+                    <td title="Matches any decimal digit character."><code>\d</code></td>
                 </tr>
-                <tr>
-                    <td style="text-align:center;width:20%;"><code>?</code></td>
-                    <td style="text-align:center;width:20%;"><code>{n,m}</code></td>
-                    <td style="text-align:center;width:20%;"><code>[xyz]</code></td>
-                    <td style="text-align:center;width:20%;"><code>x(?!y)</code></td>
-                    <td style="text-align:center;width:20%;"><code>\s</code></td>
+                <tr class="regex-metacharacters">
+                    <td title="Matches the preceding expression 1 or more times."><code>+</code></td>
+                    <td title="Matches the preceding expression n or more times."><code>{n,}</code></td>
+                    <td title="Match the end of a string."><code>$</code></td>
+                    <td title="Match x, but does not remember the match. Called a non-capturing group."><code>(?:x)</code></td>
+                    <td title="Match any non-word character. Equivalent to [^a-Za-z0-9_]."><code>\w</code></td>
                 </tr>
-                <tr>
-                    <td style="text-align:center;width:20%;"><code>\</code></td>
-                    <td style="text-align:center;width:20%;"><code>x|y</code></td>
-                    <td style="text-align:center;width:20%;"><code>[^xyz]</code></td>
-                    <td style="text-align:center;width:20%;"><code>x(?=y)</code></td>
-                    <td style="text-align:center;width:20%;"><code>\b</code></td>
+                <tr class="regex-metacharacters">
+                    <td title="Matches the preceding expression 0 or 1 time."><code>?</code></td>
+                    <td title="Matches the preceding expression at least n times and at most m times."><code>{n,m}</code></td>
+                    <td title="Matches any of the characters in the brackets, including escape sequences. Called a character set."><code>[xyz]</code></td>
+                    <td title="Matches x only if x is not followed by y. Called a negated lookahead."><code>x(?!y)</code></td>
+                    <td title="Matches a single white space character. Includes space, tab, form meed, line feed."><code>\s</code></td>
+                </tr>
+                <tr class="regex-metacharacters">
+                    <td title="Used to escape special characters. Example \$ or \{"><code>\</code></td>
+                    <td title="Match either x or y."><code>x|y</code></td>
+                    <td title="Matches any character not included in the character set. Called a negated character set."><code>[^xyz]</code></td>
+                    <td title="Matches x only if x is followed by y. Called a lookahead."><code>x(?=y)</code></td>
+                    <td title="Matches a word boundary, i.e. the position where a word character is not followed or preceded by another word character."><code>\b</code></td>
                 </tr>
                 <tr>
                     <td colspan="5" style="text-align: right;">
@@ -111,6 +114,8 @@
                 <tr>
                     <td>
                         <span class="welcome-text">Need help with something? <a id="faq-link" href="https://github.com/brandon1024/find/wiki/FAQ-:-General">Check out our Wiki!</a></span>
+                    </td>
+                    <td>
                         <a id="welcome-dismiss-text">Dismiss</a>
                     </td>
                 </tr>
