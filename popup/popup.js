@@ -16,33 +16,27 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('input', updateLocalStorage);
     document.getElementById('search-field').addEventListener('keyup', handleKeyPress, true);
 
-    document.body.addEventListener('click', function(){
+    document.body.addEventListener('click', function() {
         document.getElementById('search-field').focus();
     });
 
-    document.getElementById('faq-link').addEventListener('click', function(){
+    document.getElementById('faq-link').addEventListener('click', function() {
         chrome.tabs.create({url: 'https://github.com/brandon1024/find/wiki/FAQ-:-General'});
         return false;
     });
 
-    document.getElementById('welcome-dismiss-text').addEventListener('click', function(){
+    document.getElementById('welcome-dismiss-text').addEventListener('click', function() {
+        document.getElementById('extension-help-body').style.display = 'none';
         document.getElementById('extension-message-welcome').style.display = 'none';
-        document.getElementById('extension-message-body').style.display = 'none';
     });
-
-    //for testing
-    document.getElementById('extension-message-body').style.display = 'initial';
-    document.getElementById('extension-message-welcome').style.display = 'initial';
 
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
         if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
-            document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-message-disallowed-url').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
         else if(url.match(/.*\.pdf$/i)) {
-            document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-pdf-fileview-text').style.display = 'initial';
         }
         else {
@@ -63,10 +57,10 @@ window.onload = function addListeners() {
 };
 
 chrome.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "install") {
-        document.getElementById('extension-message-body').style.display = 'initial';
+    if(details.reason == 'install') {
         document.getElementById('extension-message-welcome').style.display = 'initial';
-    } else if(details.reason == "update") {}
+        document.getElementById('extension-help-body').style.display = 'initial';
+    }
 });
 
 //Listen for messages from the background script
@@ -139,6 +133,10 @@ function closeExtension() {
     window.close();
 }
 
+function toggleHelpPane() {
+    $('#extension-help-body').slideToggle(400);
+}
+
 //Handles keyboard shortcuts
 function handleKeyPress(e) {
     if (e.keyCode == 13 && e.shiftKey) {
@@ -149,6 +147,9 @@ function handleKeyPress(e) {
     }
     else if (e.keyCode == 13) {
         nextHighlight();
+    }
+    else if(e.ctrlKey && e.keyCode == 72) {
+        toggleHelpPane();
     }
 }
 
