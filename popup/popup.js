@@ -30,6 +30,10 @@ window.onload = function addListeners() {
         document.getElementById('extension-message-welcome').style.display = 'none';
     });
 
+    document.getElementById('update-dismiss-text').addEventListener('click', function() {
+        document.getElementById('extension-message-updated').style.display = 'none';
+    });
+
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         var url = tabs[0].url;
         if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
@@ -54,14 +58,18 @@ window.onload = function addListeners() {
             });
         }
     });
-};
 
-chrome.runtime.onInstalled.addListener(function(details){
-    if(details.reason == 'install') {
-        document.getElementById('extension-message-welcome').style.display = 'initial';
-        document.getElementById('extension-help-body').style.display = 'initial';
-    }
-});
+    chrome.runtime.onInstalled.addListener(function(details){
+        console.log(details);
+        if(details.reason == 'install') {
+            document.getElementById('extension-message-welcome').style.display = 'initial';
+            document.getElementById('extension-help-body').style.display = 'initial';
+        }
+        else if(details.reason = 'update') {
+            document.getElementById('extension-message-updated').style.display = 'initial';
+        }
+    });
+};
 
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {

@@ -112,6 +112,7 @@ button.controls-button:disabled {
 
 /* extension message style */
 div#extension-message-welcome,
+div#extension-message-updated,
 div#extension-help-body,
 div#extension-message-disallowed-url {
    display: none;
@@ -139,7 +140,8 @@ span.extension-help-header-text {
     font-weight: 500;
 }
 
-a#welcome-dismiss-text {
+a#welcome-dismiss-text,
+a#update-dismiss-text {
     float: right;
     font-weight: lighter;
     color: #5d5d5d;
@@ -147,8 +149,8 @@ a#welcome-dismiss-text {
     cursor: pointer;
 }
 
-img#exclamation-icon,
-img#party-icon {
+img.exclamation-icon,
+img.party-icon {
     width: 20px;
     height: 20px;
     padding: 10px;
@@ -172,6 +174,7 @@ table#extension-help-table-further-help {
 }
 
 table#welcome-message-table,
+table#updated-extension-table,
 table#extension-help-shortcuts-table,
 table#extension-help-regex-metacharacters-table {
     margin-top: 3px;
@@ -183,6 +186,10 @@ table#extension-help-regex-metacharacters-table {
 }
 
 table#welcome-message-table {
+    background: linear-gradient(45deg, #6190e8, #a7bfe8);
+}
+
+table#updated-extension-table {
     background: linear-gradient(45deg, #6190e8, #a7bfe8);
 }
 
