@@ -21,7 +21,7 @@ window.onload = function addListeners() {
     });
 
     document.getElementById('faq-link').addEventListener('click', function() {
-        chrome.tabs.create({url: 'https://github.com/brandon1024/find/wiki/FAQ-:-General'});
+        browser.tabs.create({url: 'https://github.com/brandon1024/find/wiki/FAQ-:-General'});
         return false;
     });
 
@@ -59,7 +59,7 @@ window.onload = function addListeners() {
         }
     });
 
-    chrome.runtime.onInstalled.addListener(function(details){
+    browser.runtime.onInstalled.addListener(function(details){
         console.log(details);
         if(details.reason == 'install') {
             document.getElementById('extension-message-welcome').style.display = 'initial';
