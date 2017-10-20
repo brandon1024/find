@@ -10,7 +10,7 @@ var index = null;
 var regex = null;
 
 browser.runtime.onInstalled.addListener(function(details) {
-    var manifest = chrome.runtime.getManifest();
+    var manifest = browser.runtime.getManifest();
     var scripts = manifest.content_scripts[0].js;
     var css = manifest.content_scripts[0].css;
 

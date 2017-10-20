@@ -35,24 +35,129 @@
         </table>
     </div>
     <div id="extension-message-body">
-        <table id="message-table">
-            <tr>
-                <td id="exclamation-icon-cell">
-                    <img id="exclamation-icon" src="/resources/exclamation.svg"/>
-                </td>
-                <td>
-                    <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
-                    Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection
-                    of code. This is a security limitation across all Chrome extensions.</span>
-                    <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
-                    use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing
-                    here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.</span>
-                    <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the extension in a
-                    PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF.
-                    We recommend using the native tool instead.</span>
-                </td>
-            </tr>
-        </table>
+        <div id="extension-message-welcome">
+            <table id="welcome-message-table">
+                <tr>
+                    <td>
+                        <img class="party-icon" src="/resources/party.png"/>
+                    </td>
+                    <td>
+                        <span class="welcome-text def-font">Hi there! Thank you very much for installing our extension! To help you out, here are some things to get you started.</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="extension-message-updated">
+            <table id="updated-extension-table">
+                <tr>
+                    <td>
+                        <img class="party-icon" src="/resources/party.png"/>
+                    </td>
+                    <td>
+                        <span class="welcome-text def-font">We just updated the extension! Woo! Let us know what you think, we'd love to hear your feedback :)</span>
+                    </td>
+                </tr>
+            </table>
+            <a id="update-dismiss-text def-font">Dismiss</a>
+        </div>
+        <div id="extension-help-body">
+            <table id="extension-help-shortcuts-table">
+                <tr>
+                    <td colspan="2"><span class="extension-help-header-text def-font">Keyboard Shortcuts:</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text def-font">CTRL+SHIFT+F</span></td>
+                    <td style="text-align: center"><span class="welcome-text def-font">Open extension</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text def-font">ENTER</span></td>
+                    <td style="text-align: center"><span class="welcome-text def-font">Advance to next occurrence</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text def-font">SHIFT+ENTER</span></td>
+                    <td style="text-align: center"><span class="welcome-text def-font">Return to previous occurrence</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text def-font">CTRL+ENTER or ESC</span></td>
+                    <td style="text-align: center"><span class="welcome-text def-font">Close extension</span></td>
+                </tr>
+                <tr>
+                    <td><span class="welcome-text def-font">CTRL+ALT+H</span></td>
+                    <td style="text-align: center"><span class="welcome-text def-font">Show Help</span></td>
+                </tr>
+            </table>
+            <table id="extension-help-regex-metacharacters-table">
+                <tr>
+                    <td colspan="5"><span class="extension-help-header-text def-font">Regex Metacharacters:</span></td>
+                </tr>
+                <tr>
+                    <td colspan="5"><span class="welcome-text def-font" style="position:relative;bottom:5px;">Hover for more information.</span></td>
+                </tr>
+                <tr class="regex-metacharacters">
+                    <td title="Matches the preceding expression 0 or more times."><code>*</code></td>
+                    <td title="Matches the preceding expression exactly n times."><code>{n}</code></td>
+                    <td title="Match the beginning of the string."><code>^</code></td>
+                    <td title="Matches x and remembers the match. Called a capturing group."><code>(x)</code></td>
+                    <td title="Matches any decimal digit character."><code>\d</code></td>
+                </tr>
+                <tr class="regex-metacharacters">
+                    <td title="Matches the preceding expression 1 or more times."><code>+</code></td>
+                    <td title="Matches the preceding expression n or more times."><code>{n,}</code></td>
+                    <td title="Match the end of a string."><code>$</code></td>
+                    <td title="Match x, but does not remember the match. Called a non-capturing group."><code>(?:x)</code></td>
+                    <td title="Match any non-word character. Equivalent to [^a-Za-z0-9_]."><code>\w</code></td>
+                </tr>
+                <tr class="regex-metacharacters">
+                    <td title="Matches the preceding expression 0 or 1 time."><code>?</code></td>
+                    <td title="Matches the preceding expression at least n times and at most m times."><code>{n,m}</code></td>
+                    <td title="Matches any of the characters in the brackets, including escape sequences. Called a character set."><code>[xyz]</code></td>
+                    <td title="Matches x only if x is not followed by y. Called a negated lookahead."><code>x(?!y)</code></td>
+                    <td title="Matches a single white space character. Includes space, tab, form meed, line feed."><code>\s</code></td>
+                </tr>
+                <tr class="regex-metacharacters">
+                    <td title="Used to escape special characters. Example \$ or \{"><code>\</code></td>
+                    <td title="Match either x or y."><code>x|y</code></td>
+                    <td title="Matches any character not included in the character set. Called a negated character set."><code>[^xyz]</code></td>
+                    <td title="Matches x only if x is followed by y. Called a lookahead."><code>x(?=y)</code></td>
+                    <td title="Matches a word boundary, i.e. the position where a word character is not followed or preceded by another word character."><code>\b</code></td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: right;">
+                        <sub class="def-font">* This is not an exhaustive list.</sub>
+                    </td>
+                </tr>
+            </table>
+            <table id="extension-help-table-further-help">
+                <tr>
+                    <td>
+                        <span class="def-font" class="welcome-text">Need help with something? <a id="faq-link" href="https://github.com/brandon1024/find/wiki/FAQ-:-General">Check out our Wiki!</a></span>
+                    </td>
+                    <td>
+                        <a class="def-font" id="welcome-dismiss-text">Dismiss</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="extension-message-disallowed-url">
+            <table id="disallowed-url-message-table">
+                <tr>
+                    <td id="exclamation-icon-cell">
+                        <img class="exclamation-icon" src="/resources/exclamation.svg"/>
+                    </td>
+                    <td>
+                        <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
+                        Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection
+                        of code. This is a security limitation across all Chrome extensions.</span>
+                        <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
+                        use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing
+                        here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.</span>
+                        <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the extension in a
+                        PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF.
+                        We recommend using the native tool instead.</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>

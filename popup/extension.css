@@ -111,24 +111,46 @@ button.controls-button:disabled {
 }
 
 /* extension message style */
-div#extension-message-body {
+div#extension-message-welcome,
+div#extension-message-updated,
+div#extension-help-body,
+div#extension-message-disallowed-url {
    display: none;
 }
 
-table#message-table {
-    background-color: #e5e5e5;
+table#disallowed-url-message-table {
+    background-color: #e4efff;
     border-radius: 3px;
     padding: 3px;
 }
 
 span#extension-limitation-web-store-text,
 span#extension-limitation-chrome-settings-text,
-span#extension-limitation-pdf-fileview-text{
+span#extension-limitation-pdf-fileview-text {
     color: #FF0000;
     display: none;
+    font-weight: lighter;
 }
 
-img#exclamation-icon {
+span.welcome-text {
+    font-weight: lighter;
+}
+
+span.extension-help-header-text {
+    font-weight: 500;
+}
+
+a#welcome-dismiss-text,
+a#update-dismiss-text {
+    float: right;
+    font-weight: lighter;
+    color: #5d5d5d;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+img.exclamation-icon,
+img.party-icon {
     width: 20px;
     height: 20px;
     padding: 10px;
@@ -139,4 +161,42 @@ img#invalid-regex-icon {
     height: 10px;
     float: right;
     display: none;
+}
+
+tr.regex-metacharacters td {
+    width: 20%;
+    text-align: center;
+    cursor: pointer;
+}
+
+table#extension-help-table-further-help {
+    width: 100%;
+}
+
+table#welcome-message-table,
+table#updated-extension-table,
+table#extension-help-shortcuts-table,
+table#extension-help-regex-metacharacters-table {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    width: 100%;
+    border-radius: 3px;
+    padding: 3px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+table#welcome-message-table {
+    background: linear-gradient(45deg, #6190e8, #a7bfe8);
+}
+
+table#updated-extension-table {
+    background: linear-gradient(45deg, #6190e8, #a7bfe8);
+}
+
+table#extension-help-shortcuts-table {
+    background: linear-gradient(150deg, #ffffff, #a7afe8);
+}
+
+table#extension-help-regex-metacharacters-table {
+    background: linear-gradient(45deg, #ffffff, #a7ace8);
 }

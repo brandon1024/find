@@ -1,0 +1,131 @@
+/*=== DISPLAY ===*/
+.dp-none {
+    display: none;
+}
+
+.dp-init {
+    display: initial;
+}
+
+.dp-inhr {
+    display: inherit;
+}
+
+.dp-blk {
+    display: block;
+}
+
+.dp-inl {
+    display: inline;
+}
+
+.dp-inlblc {
+    display: inline-block;
+}
+
+.dp-flx {
+    display: flex;
+}
+
+
+/*=== PADDING ===*/
+.pd-none {
+    padding: 0;
+}
+
+.pd-5 {
+    padding: 5px;
+}
+
+.pd-10 {
+    padding: 10px;
+}
+
+.pd-lr-0 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+/*=== MARGIN ===*/
+.mg-none {
+    margin: 0;
+}
+
+.mg-5 {
+    margin: 5px;
+}
+
+.mg-10 {
+    margin: 10px;
+}
+
+.mg-lr-0 {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+
+/*=== WIDTH ===*/
+.w-full {
+    width: 100%;
+}
+
+.w-half {
+    width: 50%;
+}
+
+.w-quarter {
+    width: 25%;
+}
+
+.w-fifth {
+    width: 20%;
+}
+
+/*=== HEIGHT ===*/
+.h-full {
+    height: 100%;
+}
+
+.h-half {
+    height: 50%;
+}
+
+.h-quarter {
+    height: 25%;
+}
+
+.h-fifth {
+    height: 20%;
+}
+
+/*=== POSITIONING ===*/
+.v-align-middle {
+    vertical-align: middle;
+}
+
+.v-align-top {
+    vertical-align: top;
+}
+
+.v-align-bottom {
+    vertical-align: bottom;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.pos-abs {
+    position: absolute;
+}
+
+.t-align-center {
+    text-align: center;
+}
