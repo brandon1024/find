@@ -1,6 +1,10 @@
 "use strict";
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+window.browser = (function () {
+    return window.chrome || window.browser;
+})();
+
+browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if(message.action == 'init')
         sendResponse({model: buildDOMReferenceObject()});
     else if(message.action == 'update')
