@@ -1,9 +1,16 @@
 /* Popup Style */
 body {
     margin: 3px 3px 3px 3px;
+    width: 300px;
 }
 
-div#popup-body {
+.def-font {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: smaller;
+}
+
+div#popup-body,
+div#extension-message-body {
     width: 300px;
 }
 

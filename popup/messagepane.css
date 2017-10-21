@@ -1,4 +1,4 @@
-/* Extension Message Pane */
+/* extension message style */
 div#extension-message-body {
     display: none;
 }
@@ -10,7 +10,8 @@ table#message-table {
 }
 
 span#extension-limitation-web-store-text,
-span#extension-limitation-chrome-settings-text {
+span#extension-limitation-chrome-settings-text,
+span#extension-limitation-pdf-fileview-text{
     color: #FF0000;
     display: none;
 }

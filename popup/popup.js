@@ -1,6 +1,10 @@
 'use strict';
 
-var port = chrome.runtime.connect({name: 'popup_to_backend_port'});
+window.browser = (function () {
+    return window.chrome || window.browser;
+})();
+
+var port = browser.runtime.connect({name: 'popup_to_backend_port'});
 var options = {'find_by_regex': true, 'match_case': true, 'max_results': 0};
 var initialized = false;
 
@@ -35,15 +39,19 @@ window.onload = function addListeners() {
         }
     }, true);
 
-    chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
+    browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         //Ensure valid url, then get text selected on page or retrieve last search
         var url = tabs[0].url;
         if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
+        else if(url.match(/.*\.pdf$/i)) {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-limitation-pdf-fileview-text').style.display = 'initial';
+        }
         else {
-            chrome.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
+            browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
                 var selectedText = selection[0];
                 if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
                     retrieveSavedLastSearch();
@@ -127,18 +135,18 @@ function closeExtension() {
 
 //Commit options in memory to local storage
 function updateSavedOptions() {
-    chrome.storage.local.set({'options': options});
+    browser.storage.local.set({'options': options});
 }
 
 //Commit text in search field to local storage
 function updateSavedPreviousSearch() {
     var payload = {'previousSearch': getSearchFieldText()};
-    chrome.storage.local.set(payload);
+    browser.storage.local.set(payload);
 }
 
 //Retrieve last search from local storage, set the search field text, and enable buttons if text length > 0
 function retrieveSavedLastSearch() {
-    chrome.storage.local.get('previousSearch', function(data) {
+    browser.storage.local.get('previousSearch', function(data) {
         var previousSearchText = data.previousSearch;
         if(previousSearchText == null)
             return;
@@ -151,7 +159,7 @@ function retrieveSavedLastSearch() {
 
 //Retrieve saved options from local storage and update options panel
 function retrieveSavedOptions() {
-    chrome.storage.local.get('options', function(data) {
+    browser.storage.local.get('options', function(data) {
         if(data.options == null) {
             updateSavedOptions();
             return;

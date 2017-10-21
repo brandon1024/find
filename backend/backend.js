@@ -1,48 +1,52 @@
 "use strict";
 
+window.browser = (function () {
+    return window.chrome || window.browser;
+})();
+
 var DOMModelObject;
 var regexOccurrenceMap = null;
 var index = null;
 var regex = null;
 
 //Inject content scripts into pages on installed (not performed automatically)
-chrome.runtime.onInstalled.addListener(function(details) {
-    var manifest = chrome.runtime.getManifest();
+browser.runtime.onInstalled.addListener(function(details) {
+    var manifest = browser.runtime.getManifest();
     var scripts = manifest.content_scripts[0].js;
     var css = manifest.content_scripts[0].css;
 
-    chrome.tabs.query({}, function (tabs) {
+    browser.tabs.query({}, function (tabs) {
         for(var tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
             var url = tabs[tabIndex].url;
             if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)))
                 continue;
 
             for (var i = 0; i < scripts.length; i++)
-                chrome.tabs.executeScript(tabs[tabIndex].id, {file: scripts[i]});
+                browser.tabs.executeScript(tabs[tabIndex].id, {file: scripts[i]});
 
             for (i = 0; i < css.length; i++)
-                chrome.tabs.insertCSS(tabs[tabIndex].id, {file: css[i]});
+                browser.tabs.insertCSS(tabs[tabIndex].id, {file: css[i]});
         }
     });
 });
 
-chrome.runtime.onConnect.addListener(function(port) {
+browser.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
 
     //Listen to port to popup.js for action
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
         port.onMessage.addListener(function (message) {
             invokeAction(message.action, port, tabs[0].id, message);
         });
     });
 
     //Handle extension close
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
         port.onDisconnect.addListener(function() {
-            chrome.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+            browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
             var uuids = getUUIDsFromModelObject(DOMModelObject);
-            chrome.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
+            browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 
             DOMModelObject = null;
             regexOccurrenceMap = null;
@@ -52,8 +56,8 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
 
     //perform init action
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
             if(response && response.model) {
                 DOMModelObject = response.model;
                 index = 0;
@@ -74,7 +78,7 @@ function invokeAction(action, port, tabID, message) {
 
 //Action Update
 function actionUpdate(port, tabID, message) {
-    chrome.tabs.sendMessage(tabID, {action: 'update'}, function (response) {
+    browser.tabs.sendMessage(tabID, {action: 'update'}, function (response) {
         try {
             if(!DOMModelObject)
                 return;
@@ -89,7 +93,7 @@ function actionUpdate(port, tabID, message) {
             //Ensure non-empty search
             if(regex.length == 0) {
                 port.postMessage({action: "empty_regex"});
-                chrome.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+                browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
                 return;
             }
 
@@ -103,7 +107,7 @@ function actionUpdate(port, tabID, message) {
             }
 
             //Invoke highlight_update action, index_update action
-            chrome.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
+            browser.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
             var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
             var viewableTotal = ((options.max_results != 0 && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
             port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
@@ -127,7 +131,7 @@ function actionNext(port, tabID, message) {
         index++;
 
     //Invoke highlight_seek action, index_update action
-    chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+    browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
@@ -149,7 +153,7 @@ function actionPrevious(port, tabID, message) {
         index--;
 
     //Invoke highlight_seek action, index_update action
-    chrome.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+    browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});

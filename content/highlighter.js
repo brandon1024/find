@@ -1,9 +1,13 @@
 "use strict";
 
+window.browser = (function () {
+    return window.chrome || window.browser;
+})();
+
 var yellowHighlightClass = "find-ext-highlight-yellow";
 var orangeHighlightClass = "find-ext-highlight-orange";
 
-chrome.runtime.onMessage.addListener(function(message, sender, response) {
+browser.runtime.onMessage.addListener(function(message, sender, response) {
     var index;
     if(message.action == 'highlight_update') {
         var occurrenceMap = message.occurrenceMap;

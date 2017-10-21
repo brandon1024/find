@@ -15,10 +15,10 @@
         <table id="popup-body-table">
             <tr>
                 <td id="field-cell">
-                    <input class="field" id="search-field" type="text" name="search" title="Search Field"/>
+                    <input class="field" id="search-field" type="text" name="search" title="Search Field" autocomplete="off"/>
                 </td>
                 <td id="index-text-cell">
-                    <span id="index-text"></span>
+                    <span class="def-font" id="index-text"></span>
                     <img id="invalid-regex-icon" src="/resources/exclamation.svg" title="Malformed Regex:&#013;The regular expression entered is not acceptable, as it is either:&#013;&#09;- an invalid regular expression, or&#013;&#09;- not supported according to the Javascript RegExp specification"/>
                 </td>
                 <td id="divide-line-cell">
@@ -43,12 +43,15 @@
                     <img id="exclamation-icon" src="/resources/exclamation.svg"/>
                 </td>
                 <td>
-                    <span id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
+                    <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
                     Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection
                     of code. This is a security limitation across all Chrome extensions.</span>
-                    <span id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
+                    <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
                     use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing
                     here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.</span>
+                    <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the extension in a
+                    PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF.
+                    We recommend using the native tool instead.</span>
                 </td>
             </tr>
         </table>
