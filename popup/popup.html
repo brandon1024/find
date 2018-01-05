@@ -7,16 +7,18 @@
     <script type="text/javascript" src="/lib/jQuery/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/lib/jQuery/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="extension.css"/>
+    <link rel="stylesheet" href="messagepane.css"/>
+    <link rel="stylesheet" href="optionspane.css"/>
 </head>
 <body>
     <div id="popup-body">
         <table id="popup-body-table">
             <tr>
                 <td id="field-cell">
-                    <input class="field" id="search-field" type="text" name="search" title="Search Field"/>
+                    <input class="field" id="search-field" type="text" name="search" title="Search Field" autocomplete="off"/>
                 </td>
                 <td id="index-text-cell">
-                    <span id="index-text"></span>
+                    <span class="def-font" id="index-text"></span>
                     <img id="invalid-regex-icon" src="/resources/exclamation.svg" title="Malformed Regex:&#013;The regular expression entered is not acceptable, as it is either:&#013;&#09;- an invalid regular expression, or&#013;&#09;- not supported according to the Javascript RegExp specification"/>
                 </td>
                 <td id="divide-line-cell">
@@ -41,15 +43,62 @@
                     <img id="exclamation-icon" src="/resources/exclamation.svg"/>
                 </td>
                 <td>
-                    <span id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
+                    <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
                     Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection
                     of code. This is a security limitation across all Chrome extensions.</span>
-                    <span id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
+                    <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
                     use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing
                     here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.</span>
+                    <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the extension in a
+                    PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF.
+                    We recommend using the native tool instead.</span>
                 </td>
             </tr>
         </table>
+    </div>
+    <div id="regex-options">
+        <table id="regex-options-table">
+            <tbody>
+                <tr>
+                    <span id="regex-options-header" class="options-group-header">Search Options</span>
+                </tr>
+                <tr id="regex-options-table-row-1">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="regex-option-regex-disable-toggle" type="checkbox"/>
+                            <div class="toggle-slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="regex-option-regex-disable" class="options-text">
+                            Find by Regular Expression
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                                 title="If enabled, text entered in the search field will be treated as a regular expression.&#013;If disabled, the text is treated as string literal."/>
+                        </span>
+                    </td>
+                </tr>
+                <tr id="regex-options-table-row-2">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="regex-option-case-insensitive-toggle" type="checkbox"/>
+                            <div class="toggle-slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="regex-option-match-case-text" class="options-text">
+                            Match Case
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                            title="If enabled, the case of characters must match that of the query string.&#013;If disabled, the case of characters in the query string are not considered."/>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="regex-options-max-results-container">
+            <span id="regex-option-max-results-text" class="options-text">Max Highlighted Results</span>
+            <input id="max-results-slider" class="slider" type="range" value="10" min="0" max="10" step="1"/>
+            <span id="max-results-slider-value" class="slider-value">∞</span>
+        </div>
     </div>
 </body>
 </html>

@@ -33,6 +33,20 @@ To install the extension in Chrome, navigate to the Settings page in Chrome and 
 
 <img src="installation.png"/>
 
+## Keyboard Shortcuts
+To enable keyboard shortcuts, or if you would like to use `CTRL-F` instead to replace the native find-in-page tool entirely, you can change the keyboard shortcut used to open the extension by following these steps:
+1. Navigate to the `Extensions` settings page in Chrome. Do this easily by typing `chrome://extensions/` in the URL navigation bar.
+2. In the bottom right of the extensions list, click `Keyboard shortcuts`. This will make appear a dialog where you can modify the shortcuts for your installed extensions.
+3. Locate the shortcut settings for find+. Click the input field located to the right of the label `Activate the extension`.
+4. Press the combination of keys you would like to use to open the extension. Once complete, press `OK`.
+
+| Keyboard Shortcut | Action                                                                  |
+| :----------------- | :--------------------------------------------------------------------- |
+| CTRL-SHIFT-F      | Open the extension popup and select text in the search-field            |
+| ENTER             | Advance to the next occurrence of the regular expression in the page    |
+| SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page |
+| CTRL-ENTER or ESC | Close the extension popup                                               |
+
 ## A Small Notice
 Since **{find+}** is still in beta, you may experience bugs or issues while using the extension. We are hard at work fixing these issues, but we encourage you to continue using our extension in the meantime. You can keep an eye on current issues in progress by monitoring our GitHub page.
 
