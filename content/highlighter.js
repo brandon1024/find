@@ -12,9 +12,10 @@ browser.runtime.onMessage.addListener(function(message, sender, response) {
     if(message.action == 'highlight_update') {
         var occurrenceMap = message.occurrenceMap;
         var regex = message.regex;
+        var options = message.options;
         index = message.index;
         restore(yellowHighlightClass, orangeHighlightClass);
-        highlightAll(occurrenceMap, regex);
+        highlightAll(occurrenceMap, regex, options);
         seekHighlight(index);
     }
     else if(message.action == 'highlight_seek') {
@@ -28,16 +29,26 @@ browser.runtime.onMessage.addListener(function(message, sender, response) {
 });
 
 //Highlight all occurrences of regular expression on the page
-function highlightAll(occurrenceMap, regex) {
+function highlightAll(occurrenceMap, regex, options) {
     var occIndex = 0;
-    var tags = {occIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
+    var tags = {occIndex: null, maxIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
         if(this.occIndex != index) {
             this.occIndex = index;
-            this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+
+            //If reached max number of occurrences to show, don't highlight text
+            if(this.maxIndex == null || this.occIndex <= this.maxIndex)
+                this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+            else
+                this.openingMarkup = '<span>';
         }
     }};
+
+    tags.maxIndex = options.max_results == 0 ? null : options.max_results - 1;
     regex = regex.replace(/ /g, '\\s');
-    regex = new RegExp(regex, 'm');
+    if(options.match_case)
+        regex = new RegExp(regex, 'm');
+    else
+        regex = new RegExp(regex, 'mi');
 
     //Iterate each text group
     for(var index = 0; index < occurrenceMap.groups; index++) {

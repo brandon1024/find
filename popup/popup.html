@@ -7,6 +7,8 @@
     <script type="text/javascript" src="/lib/jQuery/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/lib/jQuery/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="extension.css"/>
+    <link rel="stylesheet" href="messagepane.css"/>
+    <link rel="stylesheet" href="optionspane.css"/>
 </head>
 <body>
     <div id="popup-body">
@@ -53,6 +55,50 @@
                 </td>
             </tr>
         </table>
+    </div>
+    <div id="regex-options">
+        <table id="regex-options-table">
+            <tbody>
+                <tr>
+                    <span id="regex-options-header" class="options-group-header">Search Options</span>
+                </tr>
+                <tr id="regex-options-table-row-1">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="regex-option-regex-disable-toggle" type="checkbox"/>
+                            <div class="toggle-slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="regex-option-regex-disable" class="options-text">
+                            Find by Regular Expression
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                                 title="If enabled, text entered in the search field will be treated as a regular expression.&#013;If disabled, the text is treated as string literal."/>
+                        </span>
+                    </td>
+                </tr>
+                <tr id="regex-options-table-row-2">
+                    <td class="options-table-toggle-cell">
+                        <label class="switch">
+                            <input id="regex-option-case-insensitive-toggle" type="checkbox"/>
+                            <div class="toggle-slider"/>
+                        </label>
+                    </td>
+                    <td>
+                        <span id="regex-option-match-case-text" class="options-text">
+                            Match Case
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                            title="If enabled, the case of characters must match that of the query string.&#013;If disabled, the case of characters in the query string are not considered."/>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="regex-options-max-results-container">
+            <span id="regex-option-max-results-text" class="options-text">Max Highlighted Results</span>
+            <input id="max-results-slider" class="slider" type="range" value="10" min="0" max="10" step="1"/>
+            <span id="max-results-slider-value" class="slider-value">∞</span>
+        </div>
     </div>
 </body>
 </html>

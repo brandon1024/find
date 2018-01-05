@@ -9,8 +9,9 @@ var regexOccurrenceMap = null;
 var index = null;
 var regex = null;
 
+//Inject content scripts into pages on installed (not performed automatically)
 browser.runtime.onInstalled.addListener(function(details) {
-    var manifest = chrome.runtime.getManifest();
+    var manifest = browser.runtime.getManifest();
     var scripts = manifest.content_scripts[0].js;
     var css = manifest.content_scripts[0].css;
 
@@ -33,12 +34,14 @@ browser.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
 
+    //Listen to port to popup.js for action
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
         port.onMessage.addListener(function (message) {
             invokeAction(message.action, port, tabs[0].id, message);
         });
     });
 
+    //Handle extension close
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
         port.onDisconnect.addListener(function() {
             browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
@@ -52,6 +55,7 @@ browser.runtime.onConnect.addListener(function(port) {
         });
     });
 
+    //perform init action
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
         browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
             if(response && response.model) {
@@ -67,9 +71,9 @@ function invokeAction(action, port, tabID, message) {
     if(action == 'update')
         actionUpdate(port, tabID, message);
     else if(action == 'next')
-        actionNext(port, tabID);
+        actionNext(port, tabID, message);
     else if(action == 'previous')
-        actionPrevious(port, tabID);
+        actionPrevious(port, tabID, message);
 }
 
 //Action Update
@@ -79,14 +83,22 @@ function actionUpdate(port, tabID, message) {
             if(!DOMModelObject)
                 return;
 
+            var options = message.options;
             regex = message.regex;
+
+            //If searching by string, escape all regex metacharacters
+            if(!options.find_by_regex)
+                regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+
+            //Ensure non-empty search
             if(regex.length == 0) {
                 port.postMessage({action: "empty_regex"});
                 browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
                 return;
             }
 
-            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex);
+            //Build occurrence map, reposition index if necessary
+            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, options);
             if(index > regexOccurrenceMap.length-1) {
                 if(regexOccurrenceMap.length == 0)
                     index = 0;
@@ -94,9 +106,11 @@ function actionUpdate(port, tabID, message) {
                     index = regexOccurrenceMap.length-1;
             }
 
-            browser.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
+            //Invoke highlight_update action, index_update action
+            browser.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
             var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-            port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
+            var viewableTotal = ((options.max_results != 0 && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+            port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
         }
         catch(e) {
             console.error(e);
@@ -106,38 +120,57 @@ function actionUpdate(port, tabID, message) {
 }
 
 //Action Next
-function actionNext(port, tabID) {
-    if(index >= regexOccurrenceMap.length-1) {
-        index = 0;
-        browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-    } else {
-        browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: ++index, regex: regex});
-    }
+function actionNext(port, tabID, message) {
+    var options = message.options;
+    var indexCap = options.max_results != 0;
 
+    //If reached end, reset index
+    if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1))
+        index = 0;
+    else
+        index++;
+
+    //Invoke highlight_seek action, index_update action
+    browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
+    var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
 }
 
 //Action Previous
-function actionPrevious(port, tabID) {
-    if(index <= 0) {
-        index = regexOccurrenceMap.length-1;
-        browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-    } else {
-        browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: --index, regex: regex});
-    }
+function actionPrevious(port, tabID, message) {
+    var options = message.options;
+    var indexCap = options.max_results != 0;
 
+    //If reached start, set index to last occurrence
+    if(index <= 0) {
+        if(indexCap && options.max_results <= regexOccurrenceMap.length)
+            index = options.max_results-1;
+        else
+            index = regexOccurrenceMap.length-1;
+    }
+    else
+        index--;
+
+    //Invoke highlight_seek action, index_update action
+    browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    port.postMessage({action: "index_update", index: viewableIndex, total: regexOccurrenceMap.length});
+    var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
 }
 
 //Build occurrence map from DOM model and regex
-function buildOccurrenceMap(DOMModelObject, regex) {
+function buildOccurrenceMap(DOMModelObject, regex, options) {
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
     regex = regex.replace(/ /g, '\\s');
-    regex = new RegExp(regex, 'gm');
 
+    if(options.match_case)
+        regex = new RegExp(regex, 'gm');
+    else
+        regex = new RegExp(regex, 'gmi');
+
+    //Loop over all text nodes in DOMModelObject
     for(var key in DOMModelObject) {
         var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
         var textGroup = '', uuids = [];
@@ -159,6 +192,10 @@ function buildOccurrenceMap(DOMModelObject, regex) {
         }
 
         groupIndex++;
+
+        //If reached maxIndex, exit
+        if(options.max_results != 0 && count >= options.max_results)
+            break;
     }
 
     occurrenceMap.length = count;

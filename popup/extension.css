@@ -19,7 +19,6 @@ table#popup-body-table {
     table-layout: fixed;
 }
 
-
 /* Search Field Style */
 input.field {
     background-color: transparent;
@@ -108,35 +107,4 @@ button.controls-button#close-button {
 button.controls-button:disabled {
     background-color: transparent;
     opacity: 0.2;
-}
-
-/* extension message style */
-div#extension-message-body {
-   display: none;
-}
-
-table#message-table {
-    background-color: #e5e5e5;
-    border-radius: 3px;
-    padding: 3px;
-}
-
-span#extension-limitation-web-store-text,
-span#extension-limitation-chrome-settings-text,
-span#extension-limitation-pdf-fileview-text{
-    color: #FF0000;
-    display: none;
-}
-
-img#exclamation-icon {
-    width: 20px;
-    height: 20px;
-    padding: 10px;
-}
-
-img#invalid-regex-icon {
-    width: 10px;
-    height: 10px;
-    float: right;
-    display: none;
 }
