@@ -65,8 +65,11 @@ window.onload = function addListeners() {
         }
         else if(url.match(/^file:\/\/.*/i)) {
             browser.tabs.sendMessage(tabs[0].id, {action: 'poll'}, function (response) {
-                if(!response || !response.success)
+                if(!response || !response.success) {
                     showOfflineFileErrorIcon(true);
+                    updateIndexText();
+                    enableButtons(false);
+                }
                 else
                     getSelectedOrLastSearch();
             });
