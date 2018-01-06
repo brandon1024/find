@@ -200,6 +200,9 @@ function seekHighlight(index) {
     var $el = $(classSelector);
     $el.addClass(orangeHighlightClass);
 
+    if($el.length == 0)
+        return;
+
     $el.get(0).scrollIntoView(true);
     var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
     var bottomScrollPos = window.pageYOffset + window.innerHeight;
