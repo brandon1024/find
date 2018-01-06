@@ -40,17 +40,7 @@ window.onload = function addListeners() {
     }, true);
 
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
-        //Ensure valid url, then get text selected on page or retrieve last search
-        var url = tabs[0].url;
-        if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
-            document.getElementById('extension-message-body').style.display = 'initial';
-            document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
-        }
-        else if(url.match(/.*\.pdf$/i)) {
-            document.getElementById('extension-message-body').style.display = 'initial';
-            document.getElementById('extension-limitation-pdf-fileview-text').style.display = 'initial';
-        }
-        else {
+        function getSelectedOrLastSearch() {
             browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
                 var selectedText = selection[0];
                 if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
@@ -62,6 +52,27 @@ window.onload = function addListeners() {
                 }
             });
         }
+
+        //Ensure valid url, then get text selected on page or retrieve last search
+        var url = tabs[0].url;
+        if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))) {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
+        }
+        else if(url.match(/.*\.pdf$/i)) {
+            document.getElementById('extension-message-body').style.display = 'initial';
+            document.getElementById('extension-limitation-pdf-fileview-text').style.display = 'initial';
+        }
+        else if(url.match(/^file:\/\/.*/i)) {
+            browser.tabs.sendMessage(tabs[0].id, {action: 'poll'}, function (response) {
+                if(!response || !response.success)
+                    showOfflineFileErrorIcon(true);
+                else
+                    getSelectedOrLastSearch();
+            });
+        }
+        else
+            getSelectedOrLastSearch();
     });
 
     retrieveSavedOptions();
@@ -201,6 +212,11 @@ function updateOptions() {
 //Show or hide red exclamation icon in the extension popup
 function showMalformedRegexIcon(flag) {
     document.getElementById('invalid-regex-icon').style.display = flag ? 'initial' : 'none';
+}
+
+//Show or hide red exclamation icon in the extension popup
+function showOfflineFileErrorIcon(flag) {
+    document.getElementById('offline-file-search-err').style.display = flag ? 'initial' : 'none';
 }
 
 //Enable next and previous buttons
