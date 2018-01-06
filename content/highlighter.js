@@ -31,15 +31,19 @@ browser.runtime.onMessage.addListener(function(message, sender, response) {
 //Highlight all occurrences of regular expression on the page
 function highlightAll(occurrenceMap, regex, options) {
     var occIndex = 0;
-    var tags = {occIndex: null, maxIndex: null, openingMarkup: '', closingMarkup: '</span>', update: function(index) {
+    var tags = {occIndex: null, maxIndex: null, openingMarkup: '', closingMarkup: '', update: function(index) {
         if(this.occIndex != index) {
             this.occIndex = index;
 
             //If reached max number of occurrences to show, don't highlight text
-            if(this.maxIndex == null || this.occIndex <= this.maxIndex)
+            if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
                 this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
-            else
-                this.openingMarkup = '<span>';
+                this.closingMarkup = '</span>';
+            }
+            else {
+                this.openingMarkup = '';
+                this.closingMarkup = '';
+            }
         }
     }};
 
