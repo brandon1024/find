@@ -100,16 +100,28 @@ function actionUpdate(port, tabID, message) {
             //Build occurrence map, reposition index if necessary
             regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, options);
             if(index > regexOccurrenceMap.length-1) {
-                if(regexOccurrenceMap.length == 0)
-                    index = 0;
-                else
+                if(regexOccurrenceMap.length != 0)
                     index = regexOccurrenceMap.length-1;
+                else
+                    index = 0;
             }
+
+            if(options.max_results != 0 && index >= options.max_results)
+                index = options.max_results - 1;
 
             //Invoke highlight_update action, index_update action
             browser.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
-            var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-            var viewableTotal = ((options.max_results != 0 && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+
+            //If occurrence map empty, viewable index is zero
+            var viewableIndex = index + 1;
+            if(regexOccurrenceMap.length == 0)
+                viewableIndex = 0;
+
+            //if occurrence map larger than max results, viewable total is max results
+            var viewableTotal = regexOccurrenceMap.length;
+            if(options.max_results != 0 && options.max_results <= regexOccurrenceMap.length)
+                viewableTotal = options.max_results;
+
             port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
         }
         catch(e) {

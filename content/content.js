@@ -11,6 +11,8 @@ browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         sendResponse({success: true});
     else if(message.action == 'restore')
         sendResponse({success: restoreWebPage(message.uuids)});
+    else if(message.action == 'poll')
+        sendResponse({success: true});
     else
         return false;
 

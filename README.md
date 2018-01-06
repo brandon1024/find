@@ -15,7 +15,7 @@ The idea to build this tool spawned as a response to poorly designed or dysfunct
 ## Getting Started
 The **{find+}** Chrome extension has recently transitioned to public beta and has become available in the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions). You can install the extension [here](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
 
-Feeling bold? You can also install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
+Ready for extension development? You can also install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
 
 Before you begin, ensure that you install the extension from the `master` branch. All other branches are under active development, which may not be stable.
 
@@ -45,7 +45,16 @@ To enable keyboard shortcuts, or if you would like to use `CTRL-F` instead to re
 | CTRL-SHIFT-F      | Open the extension popup and select text in the search-field            |
 | ENTER             | Advance to the next occurrence of the regular expression in the page    |
 | SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page |
+| CTRL-SHIFT-O      | Expand or Collapse Options Pane                                         |
 | CTRL-ENTER or ESC | Close the extension popup                                               |
+
+## Firefox Support
+This extension is now compatible with Mozilla Firefox. You can install the extension [here](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
+
+<sup>Note: Although the extension is supported in Firefox, the extension was designed to be used in Chrome. As such, the user interface in Firefox is not as polished and refined. For the best user experience, use this extension in Chrome.</sup>
+
+## Wiki
+We are continuously updating [our wiki](https://github.com/brandon1024/find/wiki) to provide help for new users and developers. Having an issue using the extension? Check out our [Frequently Asked Questions](https://github.com/brandon1024/find/wiki/FAQ-:-General) wiki!
 
 ## A Small Notice
 Since **{find+}** is still in beta, you may experience bugs or issues while using the extension. We are hard at work fixing these issues, but we encourage you to continue using our extension in the meantime. You can keep an eye on current issues in progress by monitoring our GitHub page.
