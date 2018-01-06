@@ -22,7 +22,7 @@ img#exclamation-icon {
     padding: 10px;
 }
 
-img#invalid-regex-icon {
+img.extension-error-icon {
     width: 10px;
     height: 10px;
     float: right;
