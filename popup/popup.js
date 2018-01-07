@@ -55,7 +55,7 @@ window.onload = function addListeners() {
 
         //Ensure valid url, then get text selected on page or retrieve last search
         var url = tabs[0].url;
-        if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/) || url.match(/https:\/\/google.ca\/_\/chrome\/newtab.*/)) {
+        if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome\.google\.com\/webstore\/.*/) || url.match(/https:\/\/google\.[^\/]*\/_\/chrome\/newtab.*/)) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
         }
