@@ -7,6 +7,7 @@ window.browser = (function () {
 var port = browser.runtime.connect({name: 'popup_to_backend_port'});
 var options = {'find_by_regex': true, 'match_case': true, 'max_results': 0};
 var initialized = false;
+var index = 0;
 
 window.onload = function addListeners() {
     //Load event listeners for popup components
@@ -18,6 +19,8 @@ window.onload = function addListeners() {
     document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', updateOptions);
     document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
     document.getElementById('max-results-slider').addEventListener('input', updateOptions);
+    document.getElementById('replace-next-button').addEventListener('input', replaceNext());
+    document.getElementById('replace-all-button').addEventListener('input', replaceAll());
 
     document.getElementById('popup-body').addEventListener('click', function() {
         document.getElementById('search-field').focus();
@@ -86,6 +89,7 @@ port.onMessage.addListener(function listener(response) {
     if(response.action == 'index_update') {
         showMalformedRegexIcon(false);
         updateIndexText(response.index, response.total);
+        index = response.index;
 
         if(response.index == 0 && response.total == 0)
             enableButtons(false);
@@ -94,13 +98,15 @@ port.onMessage.addListener(function listener(response) {
     }
     else if(response.action == 'empty_regex') {
         showMalformedRegexIcon(false);
-        updateIndexText();
         enableButtons(false);
+        updateIndexText();
+        index = 0;
     }
     else if(response.action == 'invalid_regex') {
         showMalformedRegexIcon(true);
-        updateIndexText();
         enableButtons(false);
+        updateIndexText();
+        index = 0;
     }
     else {
         console.error('Unrecognized action:', response.action);
@@ -141,12 +147,33 @@ function previousHighlight() {
     document.getElementById('search-field').focus();
 }
 
+//Replace current occurrences of regex with text
+function replaceNext() {
+    if(!initialized)
+        updateHighlight();
+
+    var action = 'replace_next';
+    var replaceWith = document.getElementById('replace-field').value;
+    port.postMessage({action: action, index: index, replaceWith: replaceWith, options: options});
+}
+
+//Replace all occurrences of regex with text
+function replaceAll() {
+    if(!initialized)
+        updateHighlight();
+
+    var action = 'replace_all';
+    var replaceWith = document.getElementById('replace-field').value;
+    port.postMessage({action: action, replaceWith: replaceWith, options: options});
+}
+
 //Close the extension
 function closeExtension() {
     port.disconnect();
     window.close();
 }
 
+//Toggle Options Pane
 function toggleOptionsPane() {
     var $el = document.getElementById('regex-options');
     if($el.style.display == 'none' || $el.style.display == '')
@@ -155,6 +182,7 @@ function toggleOptionsPane() {
         $el.style.display = 'none';
 }
 
+//Toggle Replace Pane
 function toggleReplacePane() {
     var $el = document.getElementById('replace-body');
     if($el.style.display == 'none' || $el.style.display == '')

@@ -26,6 +26,12 @@ browser.runtime.onMessage.addListener(function(message, sender, response) {
     else if(message.action == 'highlight_restore') {
         restore(yellowHighlightClass, orangeHighlightClass);
     }
+    else if(message.action == 'highlight_replace') {
+        replace(message.index, message.replaceWith);
+    }
+    else if(message.action == 'highlight_replace_all') {
+        replaceAll(message.replaceWith);
+    }
 });
 
 //Highlight all occurrences of regular expression on the page
@@ -212,6 +218,23 @@ function seekHighlight(index) {
     var bottomScrollPos = window.pageYOffset + window.innerHeight;
     if(bottomScrollPos + 100 < docHeight)
         window.scrollBy(0,-100);
+}
+
+function replace(index, replaceWith) {
+    var classSelector = '.find-ext-occr' + index;
+    var $els = document.getElementsByClassName(classSelector);
+
+    if($els.length == 0)
+        return;
+
+    $els.pop().innerText = replaceWith;
+    $els.forEach(function(el) {
+        el.innerText = '';
+    });
+}
+
+function replaceAll(replaceWith) {
+
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class

@@ -74,6 +74,10 @@ function invokeAction(action, port, tabID, message) {
         actionNext(port, tabID, message);
     else if(action == 'previous')
         actionPrevious(port, tabID, message);
+    else if(action == 'replace_next')
+        replaceNext(port, tabID, message);
+    else if(action == 'replace_all')
+        replaceAll(port, tabID, message);
 }
 
 //Action Update
@@ -169,6 +173,14 @@ function actionPrevious(port, tabID, message) {
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
+}
+
+function replaceNext(port, tabID, message) {
+    browser.tabs.sendMessage(tabID, {action: 'highlight_replace', index: message.index - 1, replaceWith: message.replaceWith, options: message.options});
+}
+
+function replaceAll(port, tabID, message) {
+    browser.tabs.sendMessage(tabID, {action: 'highlight_replace_all', replaceWith: message.replaceWith, options: message.options});
 }
 
 //Build occurrence map from DOM model and regex
