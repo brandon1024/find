@@ -241,6 +241,10 @@ function isInlineLevelElement(element) {
         'br','img','map','object','q','script','span','sub','sup','button',
         'input','label','select','textarea'];
 
+    //Special case: will treat br as block element
+    if(elementTagName == 'br')
+        return false;
+
     for(var index = 0; index < inlineElements.length; index++)
         if(elementTagName == inlineElements[index])
             return true;
