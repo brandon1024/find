@@ -19,24 +19,24 @@ window.onload = function addListeners() {
     document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
     document.getElementById('max-results-slider').addEventListener('input', updateOptions);
 
-    document.getElementById('popup-body').addEventListener('click', function(){
+    document.getElementById('popup-body').addEventListener('click', function() {
         document.getElementById('search-field').focus();
     });
 
-    document.getElementById('search-field').addEventListener('keyup', function(e){
-        if (e.keyCode == 13 && e.shiftKey)
+    document.getElementById('search-field').addEventListener('keyup', function(e) {
+        if(e.keyCode == 13 && e.shiftKey)
             previousHighlight();
-        else if (e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
+        else if(e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
             closeExtension();
         else if (e.keyCode == 13)
             nextHighlight();
-        else if(e.keyCode == 79 && e.ctrlKey) {
-            var $el = document.getElementById('regex-options');
-            if($el.style.display == 'none' || $el.style.display == '')
-                $el.style.display = 'inherit';
-            else
-                $el.style.display = 'none';
-        }
+    }, true);
+
+    document.body.addEventListener('keyup', function(e) {
+        if(e.keyCode == 79 && e.ctrlKey && e.altKey)
+            toggleOptionsPane();
+        else if(e.keyCode == 82 && e.ctrlKey && e.altKey)
+            toggleReplacePane();
     }, true);
 
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
@@ -145,6 +145,22 @@ function previousHighlight() {
 function closeExtension() {
     port.disconnect();
     window.close();
+}
+
+function toggleOptionsPane() {
+    var $el = document.getElementById('regex-options');
+    if($el.style.display == 'none' || $el.style.display == '')
+        $el.style.display = 'inherit';
+    else
+        $el.style.display = 'none';
+}
+
+function toggleReplacePane() {
+    var $el = document.getElementById('replace-body');
+    if($el.style.display == 'none' || $el.style.display == '')
+        $el.style.display = 'inherit';
+    else
+        $el.style.display = 'none';
 }
 
 //Commit options in memory to local storage
