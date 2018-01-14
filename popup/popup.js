@@ -19,8 +19,8 @@ window.onload = function addListeners() {
     document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', updateOptions);
     document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
     document.getElementById('max-results-slider').addEventListener('input', updateOptions);
-    document.getElementById('replace-next-button').addEventListener('input', replaceNext());
-    document.getElementById('replace-all-button').addEventListener('input', replaceAll());
+    document.getElementById('replace-next-button').addEventListener('click', replaceNext);
+    document.getElementById('replace-all-button').addEventListener('click', replaceAll);
 
     document.getElementById('popup-body').addEventListener('click', function() {
         document.getElementById('search-field').focus();
@@ -36,10 +36,14 @@ window.onload = function addListeners() {
     }, true);
 
     document.body.addEventListener('keyup', function(e) {
-        if(e.keyCode == 79 && e.ctrlKey && e.altKey)
+        if(e.keyCode == 79 && e.ctrlKey && e.altKey) {
+            toggleReplacePane(false);
             toggleOptionsPane();
-        else if(e.keyCode == 82 && e.ctrlKey && e.altKey)
+        }
+        else if(e.keyCode == 82 && e.ctrlKey && e.altKey) {
+            toggleOptionsPane(false);
             toggleReplacePane();
+        }
     }, true);
 
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
@@ -91,26 +95,36 @@ port.onMessage.addListener(function listener(response) {
         updateIndexText(response.index, response.total);
         index = response.index;
 
-        if(response.index == 0 && response.total == 0)
+        if(response.index == 0 && response.total == 0) {
             enableButtons(false);
-        else
+            enableReplaceButtons(false);
+        }
+        else {
             enableButtons(true);
+            enableReplaceButtons(true);
+        }
     }
     else if(response.action == 'empty_regex') {
         showMalformedRegexIcon(false);
         enableButtons(false);
+        enableReplaceButtons(false);
         updateIndexText();
         index = 0;
     }
     else if(response.action == 'invalid_regex') {
         showMalformedRegexIcon(true);
         enableButtons(false);
+        enableReplaceButtons(false);
         updateIndexText();
         index = 0;
+    }
+    else if(response.action == 'invalidate') {
+        updateHighlight();
     }
     else {
         console.error('Unrecognized action:', response.action);
         enableButtons(false);
+        enableReplaceButtons(false);
     }
 });
 
@@ -149,9 +163,6 @@ function previousHighlight() {
 
 //Replace current occurrences of regex with text
 function replaceNext() {
-    if(!initialized)
-        updateHighlight();
-
     var action = 'replace_next';
     var replaceWith = document.getElementById('replace-field').value;
     port.postMessage({action: action, index: index, replaceWith: replaceWith, options: options});
@@ -159,9 +170,6 @@ function replaceNext() {
 
 //Replace all occurrences of regex with text
 function replaceAll() {
-    if(!initialized)
-        updateHighlight();
-
     var action = 'replace_all';
     var replaceWith = document.getElementById('replace-field').value;
     port.postMessage({action: action, replaceWith: replaceWith, options: options});
@@ -176,6 +184,16 @@ function closeExtension() {
 //Toggle Options Pane
 function toggleOptionsPane() {
     var $el = document.getElementById('regex-options');
+
+    if(arguments.length == 1) {
+        if (arguments.length == 1 && arguments[0])
+            $el.style.display = 'inherit';
+        else if (arguments.length == 1 && !arguments[0])
+            $el.style.display = 'none';
+
+        return;
+    }
+
     if($el.style.display == 'none' || $el.style.display == '')
         $el.style.display = 'inherit';
     else
@@ -185,6 +203,16 @@ function toggleOptionsPane() {
 //Toggle Replace Pane
 function toggleReplacePane() {
     var $el = document.getElementById('replace-body');
+
+    if(arguments.length == 1) {
+        if (arguments.length == 1 && arguments[0])
+            $el.style.display = 'inherit';
+        else if (arguments.length == 1 && !arguments[0])
+            $el.style.display = 'none';
+
+        return;
+    }
+
     if($el.style.display == 'none' || $el.style.display == '')
         $el.style.display = 'inherit';
     else
@@ -276,6 +304,18 @@ function enableButtons() {
 
     document.getElementById('search-prev-button').disabled = false;
     document.getElementById('search-next-button').disabled = false;
+}
+
+//Enable `replace next` and `replace all` buttons
+function enableReplaceButtons() {
+    if(arguments.length == 1 && !arguments[0]) {
+        document.getElementById('replace-next-button').disabled = true;
+        document.getElementById('replace-all-button').disabled = true;
+        return;
+    }
+
+    document.getElementById('replace-next-button').disabled = false;
+    document.getElementById('replace-all-button').disabled = false;
 }
 
 //Update index text

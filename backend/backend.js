@@ -177,10 +177,36 @@ function actionPrevious(port, tabID, message) {
 
 function replaceNext(port, tabID, message) {
     browser.tabs.sendMessage(tabID, {action: 'highlight_replace', index: message.index - 1, replaceWith: message.replaceWith, options: message.options});
+
+    //Restore Web Page
+    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+    var uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+        //Rebuild DOMModelObject and invalidate
+        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                port.postMessage({action: 'invalidate'});
+            }
+        });
+    });
 }
 
 function replaceAll(port, tabID, message) {
     browser.tabs.sendMessage(tabID, {action: 'highlight_replace_all', replaceWith: message.replaceWith, options: message.options});
+
+    //Restore Web Page
+    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+    var uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+        //Rebuild DOMModelObject and invalidate
+        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                port.postMessage({action: 'invalidate'});
+            }
+        });
+    });
 }
 
 //Build occurrence map from DOM model and regex

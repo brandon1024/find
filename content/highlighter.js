@@ -221,20 +221,35 @@ function seekHighlight(index) {
 }
 
 function replace(index, replaceWith) {
-    var classSelector = '.find-ext-occr' + index;
-    var $els = document.getElementsByClassName(classSelector);
+    var classSelector = 'find-ext-occr' + index;
+    var $els = Array.from(document.getElementsByClassName(classSelector));
 
     if($els.length == 0)
         return;
 
-    $els.pop().innerText = replaceWith;
+    $els.shift().innerText = replaceWith;
     $els.forEach(function(el) {
         el.innerText = '';
     });
 }
 
 function replaceAll(replaceWith) {
+    var classSelector = "[class*='find-ext-occr']";
+    var $els = Array.from(document.querySelectorAll(classSelector));
 
+    var currentOccurrence = null;
+    for(var index = 0; index < $els.length; index++) {
+        var $el = $els[index];
+        var occrClassName = $el.getAttribute('class').match(/find-ext-occr\d*/)[0];
+        var occurrenceFromClass = parseInt(occrClassName.replace('find-ext-occr', ''));
+
+        if(occurrenceFromClass != currentOccurrence) {
+            currentOccurrence = occurrenceFromClass;
+            $el.innerText = replaceWith
+        }
+        else
+            $el.innerText = '';
+    }
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
