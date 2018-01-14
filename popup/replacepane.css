@@ -14,7 +14,6 @@ table#replace-body-table {
 
 td.replace-button-cell {
     float: right;
-    padding: 0 5px 0 5px;
 }
 
 /* Replace Control Buttons */
@@ -22,7 +21,6 @@ button.replace-button {
     background: transparent no-repeat center;
     border-width: 0;
     border-radius: 2px;
-    padding: 0;
     vertical-align: middle;
 }
 
@@ -31,12 +29,12 @@ button.replace-button:focus {
 }
 
 button.replace-button:hover {
-    background-color: #eaeaea;
+    background-color: #ffffff;
 }
 
 button.replace-button:active {
     border-radius: 30px;
-    background-color: #dadada;
+    background-color: #ffffff;
 }
 
 button.replace-button:disabled {

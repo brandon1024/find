@@ -4,7 +4,7 @@ window.browser = (function () {
     return window.chrome || window.browser;
 })();
 
-var DOMModelObject;
+var DOMModelObject = null;
 var regexOccurrenceMap = null;
 var index = null;
 var regex = null;
@@ -34,15 +34,13 @@ browser.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
 
-    //Listen to port to popup.js for action
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Invoke action on message from popup script
         port.onMessage.addListener(function (message) {
             invokeAction(message.action, port, tabs[0].id, message);
         });
-    });
 
-    //Handle extension close
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Handle extension close
         port.onDisconnect.addListener(function() {
             browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
             var uuids = getUUIDsFromModelObject(DOMModelObject);
@@ -53,10 +51,8 @@ browser.runtime.onConnect.addListener(function(port) {
             index = null;
             regex = null;
         });
-    });
 
-    //perform init action
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Perform init action
         browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
             if(response && response.model) {
                 DOMModelObject = response.model;

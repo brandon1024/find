@@ -8,29 +8,25 @@ var yellowHighlightClass = "find-ext-highlight-yellow";
 var orangeHighlightClass = "find-ext-highlight-orange";
 
 browser.runtime.onMessage.addListener(function(message, sender, response) {
-    var index;
-    if(message.action == 'highlight_update') {
-        var occurrenceMap = message.occurrenceMap;
-        var regex = message.regex;
-        var options = message.options;
-        index = message.index;
-        restore(yellowHighlightClass, orangeHighlightClass);
-        highlightAll(occurrenceMap, regex, options);
-        seekHighlight(index);
-    }
-    else if(message.action == 'highlight_seek') {
-        index = message.index;
-        restoreClass(orangeHighlightClass);
-        seekHighlight(index);
-    }
-    else if(message.action == 'highlight_restore') {
-        restore(yellowHighlightClass, orangeHighlightClass);
-    }
-    else if(message.action == 'highlight_replace') {
-        replace(message.index, message.replaceWith);
-    }
-    else if(message.action == 'highlight_replace_all') {
-        replaceAll(message.replaceWith);
+    switch(message.action) {
+        case 'highlight_update':
+            restore(yellowHighlightClass, orangeHighlightClass);
+            highlightAll(message.occurrenceMap, message.regex, message.options);
+            seekHighlight(message.index);
+            break;
+        case 'highlight_seek':
+            restoreClass(orangeHighlightClass);
+            seekHighlight(message.index);
+            break;
+        case 'highlight_restore':
+            restore(yellowHighlightClass, orangeHighlightClass);
+            break;
+        case 'highlight_replace':
+            replace(message.index, message.replaceWith);
+            break;
+        case 'highlight_replace_all':
+            replaceAll(message.replaceWith);
+            break;
     }
 });
 
@@ -206,14 +202,13 @@ function highlightAll(occurrenceMap, regex, options) {
 
 //Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
-    var classSelector = '.find-ext-occr' + index;
-    var $el = $(classSelector);
-    $el.addClass(orangeHighlightClass);
-
-    if($el.length == 0)
+    var $el = document.querySelector('.find-ext-occr' + index);
+    if($el == null)
         return;
 
-    $el.get(0).scrollIntoView(true);
+    $el.classList.add(orangeHighlightClass);
+    $el.scrollIntoView(true);
+
     var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
     var bottomScrollPos = window.pageYOffset + window.innerHeight;
     if(bottomScrollPos + 100 < docHeight)
@@ -221,8 +216,8 @@ function seekHighlight(index) {
 }
 
 function replace(index, replaceWith) {
-    var classSelector = 'find-ext-occr' + index;
-    var $els = Array.from(document.getElementsByClassName(classSelector));
+    var classSelector = '.find-ext-occr' + index;
+    var $els = Array.from(document.querySelectorAll(classSelector));
 
     if($els.length == 0)
         return;
@@ -254,9 +249,8 @@ function replaceAll(replaceWith) {
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
 function restore() {
-    function unwrapContentFromClass(className) {
-        var classSelector = '.' + className;
-        var $el = $(classSelector);
+    for(var argIndex = 0; argIndex < arguments.length; argIndex++) {
+        var $el = $('.' + arguments[argIndex]);
 
         if($el.length == 0)
             return;
@@ -269,18 +263,10 @@ function restore() {
         for(var index = 0; index < $parent.length; index++)
             $parent[index].normalize();
     }
-
-    for(var argIndex = 0; argIndex < arguments.length; argIndex++)
-        unwrapContentFromClass(arguments[argIndex]);
 }
 
 //Remove class from all element with that class
 function restoreClass() {
-    function removeClassFromElement(className) {
-        var classSelector = '.' + className;
-        $(classSelector).removeClass(className);
-    }
-
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
-        removeClassFromElement(arguments[argIndex]);
+        $('.' + arguments[argIndex]).removeClass(arguments[argIndex]);
 }

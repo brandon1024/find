@@ -5,16 +5,20 @@ window.browser = (function () {
 })();
 
 browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if(message.action == 'init')
-        sendResponse({model: buildDOMReferenceObject()});
-    else if(message.action == 'update')
-        sendResponse({success: true});
-    else if(message.action == 'restore')
-        sendResponse({success: restoreWebPage(message.uuids)});
-    else if(message.action == 'poll')
-        sendResponse({success: true});
-    else
-        return false;
+    switch(message.action) {
+        case 'init':
+            sendResponse({model: buildDOMReferenceObject()});
+            break;
+        case 'restore':
+            sendResponse({success: restoreWebPage(message.uuids)});
+            break;
+        case 'update':
+        case 'poll':
+            sendResponse({success: true});
+            break;
+        default:
+            return false;
+    }
 
     return true;
 });
