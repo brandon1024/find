@@ -1,10 +1,12 @@
 /* extension message style */
 div#extension-message-body {
+    width: 300px;
     display: none;
+    margin-bottom: 3px;
 }
 
 table#message-table {
-    background-color: #e5e5e5;
+    background-color: #eeeeee;
     border-radius: 3px;
     padding: 3px;
 }

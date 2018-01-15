@@ -4,7 +4,7 @@ window.browser = (function () {
     return window.chrome || window.browser;
 })();
 
-var DOMModelObject;
+var DOMModelObject = null;
 var regexOccurrenceMap = null;
 var index = null;
 var regex = null;
@@ -34,15 +34,13 @@ browser.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
 
-    //Listen to port to popup.js for action
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Invoke action on message from popup script
         port.onMessage.addListener(function (message) {
             invokeAction(message.action, port, tabs[0].id, message);
         });
-    });
 
-    //Handle extension close
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Handle extension close
         port.onDisconnect.addListener(function() {
             browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
             var uuids = getUUIDsFromModelObject(DOMModelObject);
@@ -53,10 +51,8 @@ browser.runtime.onConnect.addListener(function(port) {
             index = null;
             regex = null;
         });
-    });
 
-    //perform init action
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Perform init action
         browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
             if(response && response.model) {
                 DOMModelObject = response.model;
@@ -74,6 +70,10 @@ function invokeAction(action, port, tabID, message) {
         actionNext(port, tabID, message);
     else if(action == 'previous')
         actionPrevious(port, tabID, message);
+    else if(action == 'replace_next')
+        replaceNext(port, tabID, message);
+    else if(action == 'replace_all')
+        replaceAll(port, tabID, message);
 }
 
 //Action Update
@@ -169,6 +169,40 @@ function actionPrevious(port, tabID, message) {
     var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
     var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
+}
+
+function replaceNext(port, tabID, message) {
+    browser.tabs.sendMessage(tabID, {action: 'highlight_replace', index: message.index - 1, replaceWith: message.replaceWith, options: message.options});
+
+    //Restore Web Page
+    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+    var uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+        //Rebuild DOMModelObject and invalidate
+        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                port.postMessage({action: 'invalidate'});
+            }
+        });
+    });
+}
+
+function replaceAll(port, tabID, message) {
+    browser.tabs.sendMessage(tabID, {action: 'highlight_replace_all', replaceWith: message.replaceWith, options: message.options});
+
+    //Restore Web Page
+    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+    var uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+        //Rebuild DOMModelObject and invalidate
+        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                port.postMessage({action: 'invalidate'});
+            }
+        });
+    });
 }
 
 //Build occurrence map from DOM model and regex

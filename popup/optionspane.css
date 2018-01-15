@@ -1,9 +1,15 @@
 /* Extension Options Pane */
 div#regex-options {
+    display: none;
     background-color: #eeeeee;
     border-radius: 3px;
     padding: 3px;
-    display: none;
+    margin-bottom: 3px;
+}
+
+table#regex-options-table {
+    width: 100%;
+    padding: 5px;
 }
 
 span.options-text,
@@ -11,11 +17,6 @@ span.options-group-header {
     vertical-align: middle;
     font-family: "Arial", Arial, sans-serif;
     display: block;
-}
-
-table#regex-options-table {
-    width: 100%;
-    padding-bottom: 5px;
 }
 
 td.options-table-toggle-cell {

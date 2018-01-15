@@ -45,7 +45,8 @@ To enable keyboard shortcuts, or if you would like to use `CTRL-F` instead to re
 | CTRL-SHIFT-F      | Open the extension popup and select text in the search-field            |
 | ENTER             | Advance to the next occurrence of the regular expression in the page    |
 | SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page |
-| CTRL-SHIFT-O      | Expand or Collapse Options Pane                                         |
+| CTRL-ALT-O        | Expand or Collapse Options Pane                                         |
+| CTRL-ALT-R        | Expand or Collapse Replace Text Pane                                    |
 | CTRL-ENTER or ESC | Close the extension popup                                               |
 
 ## Firefox Support

@@ -7,6 +7,7 @@ window.browser = (function () {
 var port = browser.runtime.connect({name: 'popup_to_backend_port'});
 var options = {'find_by_regex': true, 'match_case': true, 'max_results': 0};
 var initialized = false;
+var index = 0;
 
 window.onload = function addListeners() {
     //Load event listeners for popup components
@@ -18,38 +19,43 @@ window.onload = function addListeners() {
     document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', updateOptions);
     document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
     document.getElementById('max-results-slider').addEventListener('input', updateOptions);
+    document.getElementById('replace-next-button').addEventListener('click', replaceNext);
+    document.getElementById('replace-all-button').addEventListener('click', replaceAll);
 
-    document.getElementById('popup-body').addEventListener('click', function(){
+    document.getElementById('popup-body').addEventListener('click', function() {
         document.getElementById('search-field').focus();
     });
 
-    document.getElementById('search-field').addEventListener('keyup', function(e){
-        if (e.keyCode == 13 && e.shiftKey)
+    document.getElementById('search-field').addEventListener('keyup', function(e) {
+        if(e.keyCode == 13 && e.shiftKey)
             previousHighlight();
-        else if (e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
+        else if(e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
             closeExtension();
         else if (e.keyCode == 13)
             nextHighlight();
-        else if(e.keyCode == 79 && e.ctrlKey) {
-            var $el = document.getElementById('regex-options');
-            if($el.style.display == 'none' || $el.style.display == '')
-                $el.style.display = 'inherit';
-            else
-                $el.style.display = 'none';
+    }, true);
+
+    document.body.addEventListener('keyup', function(e) {
+        if(e.keyCode == 79 && e.ctrlKey && e.altKey) {
+            toggleReplacePane(false);
+            toggleOptionsPane();
+        }
+        else if(e.keyCode == 82 && e.ctrlKey && e.altKey) {
+            toggleOptionsPane(false);
+            toggleReplacePane();
         }
     }, true);
 
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         function getSelectedOrLastSearch() {
             browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
-                var selectedText = selection[0];
-                if(selectedText === undefined || selectedText == null || selectedText.length <= 0) {
-                    retrieveSavedLastSearch();
-                }
-                else {
-                    setSearchFieldText(selection[0]);
+                if(selection[0]) {
+                    document.getElementById('search-field').value = selection[0];
+                    document.getElementById('search-field').select();
                     updateHighlight();
                 }
+                else
+                    retrieveSavedLastSearch();
             });
         }
 
@@ -83,28 +89,28 @@ window.onload = function addListeners() {
 
 //Listen for messages from the background script
 port.onMessage.addListener(function listener(response) {
-    if(response.action == 'index_update') {
-        showMalformedRegexIcon(false);
-        updateIndexText(response.index, response.total);
+    switch(response.action) {
+        case 'index_update':
+            updateIndexText(response.index, response.total);
+            index = response.index;
 
-        if(response.index == 0 && response.total == 0)
+            //Enable buttons only if occurrence exists
+            enableButtons(response.total != 0);
+            enableReplaceButtons(response.total != 0);
+
+            showMalformedRegexIcon(false);
+            break;
+        case 'invalidate':
+            updateHighlight();
+            break;
+        case 'empty_regex':
+        case 'invalid_regex':
+        default:
+            showMalformedRegexIcon(response.action == 'invalid_regex');
             enableButtons(false);
-        else
-            enableButtons(true);
-    }
-    else if(response.action == 'empty_regex') {
-        showMalformedRegexIcon(false);
-        updateIndexText();
-        enableButtons(false);
-    }
-    else if(response.action == 'invalid_regex') {
-        showMalformedRegexIcon(true);
-        updateIndexText();
-        enableButtons(false);
-    }
-    else {
-        console.error('Unrecognized action:', response.action);
-        enableButtons(false);
+            enableReplaceButtons(false);
+            updateIndexText();
+            index = 0;
     }
 });
 
@@ -112,9 +118,8 @@ port.onMessage.addListener(function listener(response) {
 function updateHighlight() {
     initialized = true;
     
-    var regex = getSearchFieldText();
-    var action = 'update';
-    port.postMessage({action: action, regex: regex, options: options});
+    var regex = document.getElementById('search-field').value;
+    port.postMessage({action: 'update', regex: regex, options: options});
 }
 
 //Highlight next occurrence of regex
@@ -124,8 +129,7 @@ function nextHighlight() {
         return;
     }
 
-    var action = 'next';
-    port.postMessage({action: action, options: options});
+    port.postMessage({action: 'next', options: options});
     document.getElementById('search-field').focus();
 }
 
@@ -136,9 +140,20 @@ function previousHighlight() {
         return;
     }
 
-    var action = 'previous';
-    port.postMessage({action: action, options: options});
+    port.postMessage({action: 'previous', options: options});
     document.getElementById('search-field').focus();
+}
+
+//Replace current occurrences of regex with text
+function replaceNext() {
+    var replaceWith = document.getElementById('replace-field').value;
+    port.postMessage({action: 'replace_next', index: index, replaceWith: replaceWith, options: options});
+}
+
+//Replace all occurrences of regex with text
+function replaceAll() {
+    var replaceWith = document.getElementById('replace-field').value;
+    port.postMessage({action: 'replace_all', replaceWith: replaceWith, options: options});
 }
 
 //Close the extension
@@ -154,7 +169,7 @@ function updateSavedOptions() {
 
 //Commit text in search field to local storage
 function updateSavedPreviousSearch() {
-    var payload = {'previousSearch': getSearchFieldText()};
+    var payload = {'previousSearch': document.getElementById('search-field').value};
     browser.storage.local.set(payload);
 }
 
@@ -165,7 +180,8 @@ function retrieveSavedLastSearch() {
         if(previousSearchText == null)
             return;
 
-        setSearchFieldText(previousSearchText);
+        document.getElementById('search-field').value = previousSearchText;
+        document.getElementById('search-field').select();
         if(previousSearchText.length > 0)
             enableButtons();
     });
@@ -212,6 +228,44 @@ function updateOptions() {
     updateHighlight();
 }
 
+//Toggle Options Pane
+function toggleOptionsPane() {
+    var $el = document.getElementById('regex-options');
+
+    if(arguments.length == 1) {
+        if (arguments.length == 1 && arguments[0])
+            $el.style.display = 'inherit';
+        else if (arguments.length == 1 && !arguments[0])
+            $el.style.display = 'none';
+
+        return;
+    }
+
+    if($el.style.display == 'none' || $el.style.display == '')
+        $el.style.display = 'inherit';
+    else
+        $el.style.display = 'none';
+}
+
+//Toggle Replace Pane
+function toggleReplacePane() {
+    var $el = document.getElementById('replace-body');
+
+    if(arguments.length == 1) {
+        if (arguments.length == 1 && arguments[0])
+            $el.style.display = 'inherit';
+        else if (arguments.length == 1 && !arguments[0])
+            $el.style.display = 'none';
+
+        return;
+    }
+
+    if($el.style.display == 'none' || $el.style.display == '')
+        $el.style.display = 'inherit';
+    else
+        $el.style.display = 'none';
+}
+
 //Show or hide red exclamation icon in the extension popup
 function showMalformedRegexIcon(flag) {
     document.getElementById('invalid-regex-icon').style.display = flag ? 'initial' : 'none';
@@ -234,23 +288,24 @@ function enableButtons() {
     document.getElementById('search-next-button').disabled = false;
 }
 
+//Enable `replace next` and `replace all` buttons
+function enableReplaceButtons() {
+    if(arguments.length == 1 && !arguments[0]) {
+        document.getElementById('replace-next-button').disabled = true;
+        document.getElementById('replace-all-button').disabled = true;
+        return;
+    }
+
+    document.getElementById('replace-next-button').disabled = false;
+    document.getElementById('replace-all-button').disabled = false;
+}
+
 //Update index text
 function updateIndexText() {
     if(arguments.length == 0)
         document.getElementById('index-text').innerText = '';
     else if(arguments.length == 2)
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
-}
-
-//gets previous search text and sets it to search field text, then selects search field
-function setSearchFieldText(text) {
-    document.getElementById('search-field').value = text;
-    document.getElementById('search-field').select();
-}
-
-//Retrieve search field text
-function getSearchFieldText() {
-    return document.getElementById('search-field').value;
 }
 
 //Formats numbers to have thousands comma delimiters
