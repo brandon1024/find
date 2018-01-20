@@ -46,6 +46,37 @@ window.onload = function addListeners() {
         }
     }, true);
 
+    //Display information icon on install or update
+    browser.runtime.onInstalled.addListener(function(details) {
+        var $el = null;
+        if(details.reason == 'install')
+            $el = document.getElementById('install-information');
+        else if(details.reason == 'update')
+            $el = document.getElementById('update-information');
+        else
+            return;
+
+        var timeoutFunction = function() {
+            $el.style.display = 'none';
+        };
+
+        $el.style.display = 'initial';
+        var timeoutHandle = window.setTimeout(timeoutFunction, 3000);
+
+        document.getElementById('search-field').addEventListener('input', function() {
+            document.getElementById('install-information').style.display = 'none';
+            document.getElementById('update-information').style.display = 'none';
+        }, {once: true});
+
+        $el.addEventListener('mouseover', function() {
+            window.clearTimeout(timeoutHandle);
+        });
+
+        $el.addEventListener('mouseout', function() {
+            timeoutHandle = window.setTimeout(timeoutFunction, 3000);
+        });
+    });
+
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         function getSelectedOrLastSearch() {
             browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
