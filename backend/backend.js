@@ -6,6 +6,7 @@ window.browser = (function () {
 
 var DOMModelObject = null;
 var regexOccurrenceMap = null;
+var options = null;
 var index = null;
 var regex = null;
 
@@ -35,6 +36,8 @@ browser.runtime.onConnect.addListener(function(port) {
         return;
 
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+
         //Invoke action on message from popup script
         port.onMessage.addListener(function (message) {
             invokeAction(message.action, port, tabs[0].id, message);
@@ -42,7 +45,9 @@ browser.runtime.onConnect.addListener(function(port) {
 
         //Handle extension close
         port.onDisconnect.addListener(function() {
-            browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+            if(!options || !options.persistent_highlights)
+                browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+
             var uuids = getUUIDsFromModelObject(DOMModelObject);
             browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 
@@ -83,7 +88,7 @@ function actionUpdate(port, tabID, message) {
             if(!DOMModelObject)
                 return;
 
-            var options = message.options;
+            options = message.options;
             regex = message.regex;
 
             //If searching by string, escape all regex metacharacters
@@ -133,7 +138,7 @@ function actionUpdate(port, tabID, message) {
 
 //Action Next
 function actionNext(port, tabID, message) {
-    var options = message.options;
+    options = message.options;
     var indexCap = options.max_results != 0;
 
     //If reached end, reset index
@@ -151,7 +156,7 @@ function actionNext(port, tabID, message) {
 
 //Action Previous
 function actionPrevious(port, tabID, message) {
-    var options = message.options;
+    options = message.options;
     var indexCap = options.max_results != 0;
 
     //If reached start, set index to last occurrence

@@ -5,7 +5,7 @@ window.browser = (function () {
 })();
 
 var port = browser.runtime.connect({name: 'popup_to_backend_port'});
-var options = {'find_by_regex': true, 'match_case': true, 'max_results': 0};
+var options = {'find_by_regex': true, 'match_case': true, 'persistent_highlights': false, 'max_results': 0};
 var initialized = false;
 var index = 0;
 
@@ -18,6 +18,7 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('input', updateSavedPreviousSearch);
     document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', updateOptions);
     document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
+    document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', updateOptions);
     document.getElementById('max-results-slider').addEventListener('input', updateOptions);
     document.getElementById('replace-next-button').addEventListener('click', replaceNext);
     document.getElementById('replace-all-button').addEventListener('click', replaceAll);
@@ -199,6 +200,7 @@ function retrieveSavedOptions() {
 
         document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
         document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
+        document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
 
         var rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
         if(options.max_results == 0)
@@ -214,6 +216,7 @@ function retrieveSavedOptions() {
 function updateOptions() {
     options.find_by_regex = document.getElementById('regex-option-regex-disable-toggle').checked;
     options.match_case = document.getElementById('regex-option-case-insensitive-toggle').checked;
+    options.persistent_highlights = document.getElementById('regex-option-persistent-highlights-toggle').checked;
 
     var rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
     var rangeIndex = document.getElementById('max-results-slider').value;
