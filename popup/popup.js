@@ -103,6 +103,9 @@ port.onMessage.addListener(function listener(response) {
         case 'invalidate':
             updateHighlight();
             break;
+        case 'install':
+            installedOrUpdated(response.details);
+            break;
         case 'empty_regex':
         case 'invalid_regex':
         default:
@@ -306,6 +309,37 @@ function updateIndexText() {
         document.getElementById('index-text').innerText = '';
     else if(arguments.length == 2)
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+}
+
+//Display information icon on install or update
+function installedOrUpdated(details) {
+    var $el = null;
+    if(details.reason == 'install')
+        $el = document.getElementById('install-information');
+    else if(details.reason == 'update')
+        $el = document.getElementById('update-information');
+    else
+        return;
+
+    var timeoutFunction = function() {
+        $el.style.display = 'none';
+    };
+
+    $el.style.display = 'initial';
+    var timeoutHandle = window.setTimeout(timeoutFunction, 3000);
+
+    document.getElementById('search-field').addEventListener('input', function() {
+        document.getElementById('install-information').style.display = 'none';
+        document.getElementById('update-information').style.display = 'none';
+    }, {once: true});
+
+    $el.addEventListener('mouseover', function() {
+        window.clearTimeout(timeoutHandle);
+    });
+
+    $el.addEventListener('mouseout', function() {
+        timeoutHandle = window.setTimeout(timeoutFunction, 3000);
+    });
 }
 
 //Formats numbers to have thousands comma delimiters

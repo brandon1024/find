@@ -9,8 +9,12 @@ var regexOccurrenceMap = null;
 var index = null;
 var regex = null;
 
+var installed = null;
+
 //Inject content scripts into pages on installed (not performed automatically)
 browser.runtime.onInstalled.addListener(function(details) {
+    installed = {details: details};
+
     var manifest = browser.runtime.getManifest();
     var scripts = manifest.content_scripts[0].js;
     var css = manifest.content_scripts[0].css;
@@ -33,6 +37,9 @@ browser.runtime.onInstalled.addListener(function(details) {
 browser.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
+
+    if(installed)
+        port.postMessage({action: "install", details: installed.details});
 
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
         //Invoke action on message from popup script
