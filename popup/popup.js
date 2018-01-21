@@ -329,13 +329,16 @@ function installedOrUpdated(details) {
     var timeoutHandle = window.setTimeout(timeoutFunction, 3000);
 
     document.getElementById('popup-body').addEventListener('click', function() {
-        document.getElementById('install-information').style.display = 'none';
-        document.getElementById('update-information').style.display = 'none';
-    }, {once: true});
+        if($el === event.target)
+            return;
+
+        timeoutFunction();
+        window.clearTimeout(timeoutHandle);
+    });
 
     document.getElementById('popup-body').addEventListener('keyup', function() {
-        document.getElementById('install-information').style.display = 'none';
-        document.getElementById('update-information').style.display = 'none';
+        timeoutFunction();
+        window.clearTimeout(timeoutHandle);
     }, {once: true});
 
     $el.addEventListener('mouseover', function() {
