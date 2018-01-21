@@ -38,8 +38,10 @@ browser.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
 
-    if(installed)
+    if(installed) {
         port.postMessage({action: "install", details: installed.details});
+        installed = null;
+    }
 
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
         //Invoke action on message from popup script
