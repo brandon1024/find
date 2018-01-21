@@ -325,21 +325,26 @@ function installedOrUpdated(details) {
         $el.style.display = 'none';
     };
 
+    //Show information icon
     $el.style.display = 'initial';
+
+    //Hide icon after 3 seconds
     var timeoutHandle = window.setTimeout(timeoutFunction, 3000);
 
-    document.getElementById('popup-body').addEventListener('click', function() {
+    //Self-deregistering event handler
+    var handler = function(event) {
         if($el === event.target)
             return;
 
         timeoutFunction();
         window.clearTimeout(timeoutHandle);
-    });
-
-    document.getElementById('popup-body').addEventListener('keyup', function() {
-        timeoutFunction();
-        window.clearTimeout(timeoutHandle);
-    }, {once: true});
+        document.getElementById('popup-body').removeEventListener('click', handler);
+        document.getElementById('popup-body').removeEventListener('keyup', handler);
+    };
+    
+    //Add event listeners
+    document.getElementById('popup-body').addEventListener('click', handler);
+    document.getElementById('popup-body').addEventListener('keyup', handler);
 
     $el.addEventListener('mouseover', function() {
         window.clearTimeout(timeoutHandle);
