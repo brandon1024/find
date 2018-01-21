@@ -328,7 +328,12 @@ function installedOrUpdated(details) {
     $el.style.display = 'initial';
     var timeoutHandle = window.setTimeout(timeoutFunction, 3000);
 
-    document.getElementById('search-field').addEventListener('input', function() {
+    document.getElementById('popup-body').addEventListener('click', function() {
+        document.getElementById('install-information').style.display = 'none';
+        document.getElementById('update-information').style.display = 'none';
+    }, {once: true});
+
+    document.getElementById('popup-body').addEventListener('keyup', function() {
         document.getElementById('install-information').style.display = 'none';
         document.getElementById('update-information').style.display = 'none';
     }, {once: true});
