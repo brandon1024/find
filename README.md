@@ -40,14 +40,14 @@ To enable keyboard shortcuts, or if you would like to use `CTRL-F` instead to re
 3. Locate the shortcut settings for find+. Click the input field located to the right of the label `Activate the extension`.
 4. Press the combination of keys you would like to use to open the extension. Once complete, press `OK`.
 
-| Keyboard Shortcut | Action                                                                  |
-| :----------------- | :--------------------------------------------------------------------- |
-| CTRL-SHIFT-F      | Open the extension popup and select text in the search-field            |
-| ENTER             | Advance to the next occurrence of the regular expression in the page    |
-| SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page |
-| CTRL-ALT-O        | Expand or Collapse Options Pane                                         |
-| CTRL-ALT-R        | Expand or Collapse Replace Text Pane                                    |
-| CTRL-ENTER or ESC | Close the extension popup                                               |
+| Windows Shortcut  | macOS Shortcut    | Action                                                                 |
+| :---------------- | :---------------- | :--------------------------------------------------------------------- |
+| CTRL-SHIFT-F      | COMMAND-SHIFT-F   | Open the extension popup and select text in the search-field           |
+| ENTER             | ENTER             | Advance to the next occurrence of the regular expression in the page   |
+| SHIFT-ENTER       | SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page|
+| CTRL-ALT-O        | CTRL-OPTION-O     | Expand or Collapse Options Pane                                        |
+| CTRL-ALT-R        | CTRL-OPTION-R     | Expand or Collapse Replace Text Pane                                   |
+| CTRL-ENTER or ESC | CTRL-ENTER or ESC | Close the extension popup                                              |
 
 ## Firefox Support
 This extension is now compatible with Mozilla Firefox. You can install the extension [here](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
