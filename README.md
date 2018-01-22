@@ -34,15 +34,23 @@ To install the extension in Chrome, navigate to the Settings page in Chrome and 
 <img src="installation.png"/>
 
 ## Keyboard Shortcuts
-To enable keyboard shortcuts, or if you would like to use `CTRL-F` instead to replace the native find-in-page tool entirely, you can change the keyboard shortcut used to open the extension by following these steps:
+To open the extension popup using a keyboard shortcut, you must first assign a keyboard shortcut to the extension through the Chrome settings. You can do this by following these steps:
 1. Navigate to the `Extensions` settings page in Chrome. Do this easily by typing `chrome://extensions/` in the URL navigation bar.
 2. In the bottom right of the extensions list, click `Keyboard shortcuts`. This will make appear a dialog where you can modify the shortcuts for your installed extensions.
 3. Locate the shortcut settings for find+. Click the input field located to the right of the label `Activate the extension`.
 4. Press the combination of keys you would like to use to open the extension. Once complete, press `OK`.
 
+Here's what we recommend for displaying the extension popup.
+
+| Windows Shortcut  | macOS Shortcut    | Notes                                                                  |
+| :---------------- | :---------------- | :--------------------------------------------------------------------- |
+| CTRL-SHIFT-F      | COMMAND-SHIFT-F   | Recommended: This shortcut will not have any conflicts with Chrome     |
+| CTRL-F            | COMMAND-F         | This shortcut will override the native find-in-page tool               |
+
+Several keyboard shortcuts exist directly in the extension for performing different actions. These shortcuts are built directly into the extension and are not managed through Chrome. As a result, these settings cannot be remapped. Below is a list of the current keyboard shortcuts.
+
 | Windows Shortcut  | macOS Shortcut    | Action                                                                 |
 | :---------------- | :---------------- | :--------------------------------------------------------------------- |
-| CTRL-SHIFT-F      | COMMAND-SHIFT-F   | Open the extension popup and select text in the search-field           |
 | ENTER             | ENTER             | Advance to the next occurrence of the regular expression in the page   |
 | SHIFT-ENTER       | SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page|
 | CTRL-ALT-O        | CTRL-OPTION-O     | Expand or Collapse Options Pane                                        |
