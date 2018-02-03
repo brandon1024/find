@@ -76,6 +76,72 @@ browser.runtime.onConnect.addListener(function(port) {
     });
 });
 
+//Omnibox support
+browser.omnibox.setDefaultSuggestion({description: 'Enter a regular expression'});
+
+browser.omnibox.onInputStarted.addListener(function () {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Perform init action
+        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
+            if(response && response.model)
+                DOMModelObject = response.model;
+        });
+    });
+});
+
+browser.omnibox.onInputChanged.addListener(function (regex) {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        try {
+            if (!DOMModelObject)
+                return;
+
+            //Ensure non-empty search
+            if (regex.length == 0) {
+                browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+                return;
+            }
+
+            //Build occurrence map, reposition index if necessary
+            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, null);
+
+            //Invoke highlight_update action, index_update action
+            browser.tabs.sendMessage(tabs[0].id, {
+                action: 'omni_update',
+                occurrenceMap: regexOccurrenceMap,
+                regex: regex
+            });
+        }
+        catch (e) {
+            browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+        }
+    });
+});
+
+browser.omnibox.onInputCancelled.addListener(function () {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+        var uuids = getUUIDsFromModelObject(DOMModelObject);
+        browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
+
+        DOMModelObject = null;
+        regexOccurrenceMap = null;
+        index = null;
+        regex = null;
+    });
+});
+
+browser.omnibox.onInputEntered.addListener(function () {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        var uuids = getUUIDsFromModelObject(DOMModelObject);
+        browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
+
+        DOMModelObject = null;
+        regexOccurrenceMap = null;
+        index = null;
+        regex = null;
+    });
+});
+
 //Dispatch action function
 function invokeAction(action, port, tabID, message) {
     if(action == 'update')
@@ -225,7 +291,7 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
     var count = 0, groupIndex = 0;
     regex = regex.replace(/ /g, '\\s');
 
-    if(options.match_case)
+    if(options && options.match_case)
         regex = new RegExp(regex, 'gm');
     else
         regex = new RegExp(regex, 'gmi');
@@ -254,7 +320,7 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
         groupIndex++;
 
         //If reached maxIndex, exit
-        if(options.max_results != 0 && count >= options.max_results)
+        if(options && options.max_results != 0 && count >= options.max_results)
             break;
     }
 

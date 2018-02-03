@@ -36,6 +36,7 @@
       "css": ["/content/highlighter.css"]
     }
   ],
+  "omnibox": { "keyword" : "find" },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {

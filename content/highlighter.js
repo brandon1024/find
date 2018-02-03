@@ -14,6 +14,10 @@ browser.runtime.onMessage.addListener(function(message, sender, response) {
             highlightAll(message.occurrenceMap, message.regex, message.options);
             seekHighlight(message.index);
             break;
+        case 'omni_update':
+            restore(yellowHighlightClass, orangeHighlightClass);
+            highlightAll(message.occurrenceMap, message.regex, null);
+            break;
         case 'highlight_seek':
             restoreClass(orangeHighlightClass);
             seekHighlight(message.index);
@@ -49,9 +53,13 @@ function highlightAll(occurrenceMap, regex, options) {
         }
     }};
 
-    tags.maxIndex = options.max_results == 0 ? null : options.max_results - 1;
+    if(options && options.max_results != 0)
+        tags.maxIndex = options.max_results - 1;
+    else
+        tags.maxIndex = null;
+
     regex = regex.replace(/ /g, '\\s');
-    if(options.match_case)
+    if(!options || options.match_case)
         regex = new RegExp(regex, 'm');
     else
         regex = new RegExp(regex, 'mi');
