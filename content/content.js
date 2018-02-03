@@ -226,12 +226,12 @@ function restoreWebPage(uuids) {
 
 //Check if Node is Element Node
 function isElementNode(node) {
-    return node.nodeType == 1;
+    return node.nodeType == Node.ELEMENT_NODE;
 }
 
 //Check if Node is Text Node
 function isTextNode(node) {
-    return node.nodeType == 3;
+    return node.nodeType == Node.TEXT_NODE;
 }
 
 //Check if Element is Inline
@@ -239,7 +239,7 @@ function isInlineLevelElement(element) {
     if(!isElementNode(element))
         return false;
 
-    //Special case: will treat br as block element
+    //Special case: will treat <br> as block element
     var elementTagName = element.tagName.toLowerCase();
     if(elementTagName == 'br')
         return false;
