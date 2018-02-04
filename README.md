@@ -57,6 +57,13 @@ Several keyboard shortcuts exist directly in the extension for performing differ
 | CTRL-ALT-R        | CTRL-OPTION-R     | Expand or Collapse Replace Text Pane                                   |
 | CTRL-ENTER or ESC | CTRL-ENTER or ESC | Close the extension popup                                              |
 
+## Omnibox Support
+In version 1.4.0, we enabled omnibox support! This allows you to highlight text on a page without even opening the extension. To use this feature, type `find` in your browser's address bar, press `TAB`, and then enter a regular expression. Occurrences of the regular expression will become highlighted on the page as you type.
+
+Pressing `ENTER` will leave the highlights in the page. To remove the highlights, simply refresh the page. If you don't want to leave the highlights in the page, just erase the text entered in the address bar.
+
+<img src="omni.png"/>
+
 ## Firefox Support
 This extension is now compatible with Mozilla Firefox. You can install the extension [here](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
 
