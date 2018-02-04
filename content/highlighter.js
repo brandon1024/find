@@ -43,7 +43,7 @@ function highlightAll(occurrenceMap, regex, options) {
 
             //If reached max number of occurrences to show, don't highlight text
             if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
-                this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+                this.openingMarkup = '<span class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
                 this.closingMarkup = '</span>';
             }
             else {
@@ -210,12 +210,15 @@ function highlightAll(occurrenceMap, regex, options) {
 
 //Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
-    var $el = document.querySelector('.find-ext-occr' + index);
-    if($el == null)
+    var $els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
+    if($els == null || $els.length == 0)
         return;
 
-    $el.classList.add(orangeHighlightClass);
-    $el.scrollIntoView(true);
+    $els.forEach(function($el) {
+        $el.classList.add(orangeHighlightClass);
+    });
+
+    $els[0].scrollIntoView(true);
 
     var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
     var bottomScrollPos = window.pageYOffset + window.innerHeight;
