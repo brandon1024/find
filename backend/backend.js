@@ -4,13 +4,18 @@ window.browser = (function () {
     return window.chrome || window.browser;
 })();
 
-var DOMModelObject;
+var DOMModelObject = null;
 var regexOccurrenceMap = null;
+var options = null;
 var index = null;
 var regex = null;
 
+var installed = null;
+
 //Inject content scripts into pages on installed (not performed automatically)
 browser.runtime.onInstalled.addListener(function(details) {
+    installed = {details: details};
+
     var manifest = browser.runtime.getManifest();
     var scripts = manifest.content_scripts[0].js;
     var css = manifest.content_scripts[0].css;
@@ -34,17 +39,24 @@ browser.runtime.onConnect.addListener(function(port) {
     if(port.name != 'popup_to_backend_port')
         return;
 
-    //Listen to port to popup.js for action
+    if(installed) {
+        port.postMessage({action: "install", details: installed.details});
+        installed = null;
+    }
+
     browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+
+        //Invoke action on message from popup script
         port.onMessage.addListener(function (message) {
             invokeAction(message.action, port, tabs[0].id, message);
         });
-    });
 
-    //Handle extension close
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Handle extension close
         port.onDisconnect.addListener(function() {
-            browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+            if(!options || !options.persistent_highlights)
+                browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+
             var uuids = getUUIDsFromModelObject(DOMModelObject);
             browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 
@@ -53,16 +65,80 @@ browser.runtime.onConnect.addListener(function(port) {
             index = null;
             regex = null;
         });
-    });
 
-    //perform init action
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Perform init action
         browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
             if(response && response.model) {
                 DOMModelObject = response.model;
                 index = 0;
             }
         });
+    });
+});
+
+//Omnibox support
+browser.omnibox.setDefaultSuggestion({description: 'Enter a regular expression'});
+
+browser.omnibox.onInputStarted.addListener(function () {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        //Perform init action
+        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
+            if(response && response.model)
+                DOMModelObject = response.model;
+        });
+    });
+});
+
+browser.omnibox.onInputChanged.addListener(function (regex) {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        try {
+            if (!DOMModelObject)
+                return;
+
+            //Ensure non-empty search
+            if (regex.length == 0) {
+                browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+                return;
+            }
+
+            //Build occurrence map, reposition index if necessary
+            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, null);
+
+            //Invoke highlight_update action, index_update action
+            browser.tabs.sendMessage(tabs[0].id, {
+                action: 'omni_update',
+                occurrenceMap: regexOccurrenceMap,
+                regex: regex
+            });
+        }
+        catch (e) {
+            browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+        }
+    });
+});
+
+browser.omnibox.onInputCancelled.addListener(function () {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+        var uuids = getUUIDsFromModelObject(DOMModelObject);
+        browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
+
+        DOMModelObject = null;
+        regexOccurrenceMap = null;
+        index = null;
+        regex = null;
+    });
+});
+
+browser.omnibox.onInputEntered.addListener(function () {
+    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        var uuids = getUUIDsFromModelObject(DOMModelObject);
+        browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
+
+        DOMModelObject = null;
+        regexOccurrenceMap = null;
+        index = null;
+        regex = null;
     });
 });
 
@@ -74,6 +150,10 @@ function invokeAction(action, port, tabID, message) {
         actionNext(port, tabID, message);
     else if(action == 'previous')
         actionPrevious(port, tabID, message);
+    else if(action == 'replace_next')
+        replaceNext(port, tabID, message);
+    else if(action == 'replace_all')
+        replaceAll(port, tabID, message);
 }
 
 //Action Update
@@ -83,7 +163,7 @@ function actionUpdate(port, tabID, message) {
             if(!DOMModelObject)
                 return;
 
-            var options = message.options;
+            options = message.options;
             regex = message.regex;
 
             //If searching by string, escape all regex metacharacters
@@ -133,7 +213,7 @@ function actionUpdate(port, tabID, message) {
 
 //Action Next
 function actionNext(port, tabID, message) {
-    var options = message.options;
+    options = message.options;
     var indexCap = options.max_results != 0;
 
     //If reached end, reset index
@@ -151,7 +231,7 @@ function actionNext(port, tabID, message) {
 
 //Action Previous
 function actionPrevious(port, tabID, message) {
-    var options = message.options;
+    options = message.options;
     var indexCap = options.max_results != 0;
 
     //If reached start, set index to last occurrence
@@ -171,13 +251,47 @@ function actionPrevious(port, tabID, message) {
     port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
 }
 
+function replaceNext(port, tabID, message) {
+    browser.tabs.sendMessage(tabID, {action: 'highlight_replace', index: message.index - 1, replaceWith: message.replaceWith, options: message.options});
+
+    //Restore Web Page
+    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+    var uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+        //Rebuild DOMModelObject and invalidate
+        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                port.postMessage({action: 'invalidate'});
+            }
+        });
+    });
+}
+
+function replaceAll(port, tabID, message) {
+    browser.tabs.sendMessage(tabID, {action: 'highlight_replace_all', replaceWith: message.replaceWith, options: message.options});
+
+    //Restore Web Page
+    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+    var uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+        //Rebuild DOMModelObject and invalidate
+        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+            if(response && response.model) {
+                DOMModelObject = response.model;
+                port.postMessage({action: 'invalidate'});
+            }
+        });
+    });
+}
+
 //Build occurrence map from DOM model and regex
 function buildOccurrenceMap(DOMModelObject, regex, options) {
     var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
     var count = 0, groupIndex = 0;
     regex = regex.replace(/ /g, '\\s');
 
-    if(options.match_case)
+    if(options && options.match_case)
         regex = new RegExp(regex, 'gm');
     else
         regex = new RegExp(regex, 'gmi');
@@ -206,7 +320,7 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
         groupIndex++;
 
         //If reached maxIndex, exit
-        if(options.max_results != 0 && count >= options.max_results)
+        if(options && options.max_results != 0 && count >= options.max_results)
             break;
     }
 

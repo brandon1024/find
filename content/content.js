@@ -5,16 +5,20 @@ window.browser = (function () {
 })();
 
 browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if(message.action == 'init')
-        sendResponse({model: buildDOMReferenceObject()});
-    else if(message.action == 'update')
-        sendResponse({success: true});
-    else if(message.action == 'restore')
-        sendResponse({success: restoreWebPage(message.uuids)});
-    else if(message.action == 'poll')
-        sendResponse({success: true});
-    else
-        return false;
+    switch(message.action) {
+        case 'init':
+            sendResponse({model: buildDOMReferenceObject()});
+            break;
+        case 'restore':
+            sendResponse({success: restoreWebPage(message.uuids)});
+            break;
+        case 'update':
+        case 'poll':
+            sendResponse({success: true});
+            break;
+        default:
+            return false;
+    }
 
     return true;
 });
@@ -222,12 +226,12 @@ function restoreWebPage(uuids) {
 
 //Check if Node is Element Node
 function isElementNode(node) {
-    return node.nodeType == 1;
+    return node.nodeType == Node.ELEMENT_NODE;
 }
 
 //Check if Node is Text Node
 function isTextNode(node) {
-    return node.nodeType == 3;
+    return node.nodeType == Node.TEXT_NODE;
 }
 
 //Check if Element is Inline
@@ -235,15 +239,13 @@ function isInlineLevelElement(element) {
     if(!isElementNode(element))
         return false;
 
+    //Special case: will treat <br> as block element
     var elementTagName = element.tagName.toLowerCase();
-    var inlineElements = ['a','b','big','i','small','tt','abbr','acronym',
-        'cite','code','dfn','em','kbd','strong','samp','time','var','bdo',
-        'br','img','map','object','q','script','span','sub','sup','button',
-        'input','label','select','textarea'];
+    if(elementTagName == 'br')
+        return false;
 
-    for(var index = 0; index < inlineElements.length; index++)
-        if(elementTagName == inlineElements[index])
-            return true;
+    if(window.getComputedStyle(element).display == 'inline')
+        return true;
 
     return false;
 }

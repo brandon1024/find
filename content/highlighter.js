@@ -8,23 +8,29 @@ var yellowHighlightClass = "find-ext-highlight-yellow";
 var orangeHighlightClass = "find-ext-highlight-orange";
 
 browser.runtime.onMessage.addListener(function(message, sender, response) {
-    var index;
-    if(message.action == 'highlight_update') {
-        var occurrenceMap = message.occurrenceMap;
-        var regex = message.regex;
-        var options = message.options;
-        index = message.index;
-        restore(yellowHighlightClass, orangeHighlightClass);
-        highlightAll(occurrenceMap, regex, options);
-        seekHighlight(index);
-    }
-    else if(message.action == 'highlight_seek') {
-        index = message.index;
-        restoreClass(orangeHighlightClass);
-        seekHighlight(index);
-    }
-    else if(message.action == 'highlight_restore') {
-        restore(yellowHighlightClass, orangeHighlightClass);
+    switch(message.action) {
+        case 'highlight_update':
+            restore(yellowHighlightClass, orangeHighlightClass);
+            highlightAll(message.occurrenceMap, message.regex, message.options);
+            seekHighlight(message.index);
+            break;
+        case 'omni_update':
+            restore(yellowHighlightClass, orangeHighlightClass);
+            highlightAll(message.occurrenceMap, message.regex, null);
+            break;
+        case 'highlight_seek':
+            restoreClass(orangeHighlightClass);
+            seekHighlight(message.index);
+            break;
+        case 'highlight_restore':
+            restore(yellowHighlightClass, orangeHighlightClass);
+            break;
+        case 'highlight_replace':
+            replace(message.index, message.replaceWith);
+            break;
+        case 'highlight_replace_all':
+            replaceAll(message.replaceWith);
+            break;
     }
 });
 
@@ -37,7 +43,7 @@ function highlightAll(occurrenceMap, regex, options) {
 
             //If reached max number of occurrences to show, don't highlight text
             if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
-                this.openingMarkup = '<span class="find-ext-highlight-yellow find-ext-occr' + index + '">';
+                this.openingMarkup = '<span class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
                 this.closingMarkup = '</span>';
             }
             else {
@@ -47,9 +53,13 @@ function highlightAll(occurrenceMap, regex, options) {
         }
     }};
 
-    tags.maxIndex = options.max_results == 0 ? null : options.max_results - 1;
+    if(options && options.max_results != 0)
+        tags.maxIndex = options.max_results - 1;
+    else
+        tags.maxIndex = null;
+
     regex = regex.replace(/ /g, '\\s');
-    if(options.match_case)
+    if(!options || options.match_case)
         regex = new RegExp(regex, 'm');
     else
         regex = new RegExp(regex, 'mi');
@@ -200,25 +210,58 @@ function highlightAll(occurrenceMap, regex, options) {
 
 //Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
-    var classSelector = '.find-ext-occr' + index;
-    var $el = $(classSelector);
-    $el.addClass(orangeHighlightClass);
-
-    if($el.length == 0)
+    var $els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
+    if($els == null || $els.length == 0)
         return;
 
-    $el.get(0).scrollIntoView(true);
+    $els.forEach(function($el) {
+        $el.classList.add(orangeHighlightClass);
+    });
+
+    $els[0].scrollIntoView(true);
+
     var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
     var bottomScrollPos = window.pageYOffset + window.innerHeight;
     if(bottomScrollPos + 100 < docHeight)
         window.scrollBy(0,-100);
 }
 
+function replace(index, replaceWith) {
+    var classSelector = '.find-ext-occr' + index;
+    var $els = Array.from(document.querySelectorAll(classSelector));
+
+    if($els.length == 0)
+        return;
+
+    $els.shift().innerText = replaceWith;
+    $els.forEach(function(el) {
+        el.innerText = '';
+    });
+}
+
+function replaceAll(replaceWith) {
+    var classSelector = "[class*='find-ext-occr']";
+    var $els = Array.from(document.querySelectorAll(classSelector));
+
+    var currentOccurrence = null;
+    for(var index = 0; index < $els.length; index++) {
+        var $el = $els[index];
+        var occrClassName = $el.getAttribute('class').match(/find-ext-occr\d*/)[0];
+        var occurrenceFromClass = parseInt(occrClassName.replace('find-ext-occr', ''));
+
+        if(occurrenceFromClass != currentOccurrence) {
+            currentOccurrence = occurrenceFromClass;
+            $el.innerText = replaceWith
+        }
+        else
+            $el.innerText = '';
+    }
+}
+
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
 function restore() {
-    function unwrapContentFromClass(className) {
-        var classSelector = '.' + className;
-        var $el = $(classSelector);
+    for(var argIndex = 0; argIndex < arguments.length; argIndex++) {
+        var $el = $('.' + arguments[argIndex]);
 
         if($el.length == 0)
             return;
@@ -231,18 +274,10 @@ function restore() {
         for(var index = 0; index < $parent.length; index++)
             $parent[index].normalize();
     }
-
-    for(var argIndex = 0; argIndex < arguments.length; argIndex++)
-        unwrapContentFromClass(arguments[argIndex]);
 }
 
 //Remove class from all element with that class
 function restoreClass() {
-    function removeClassFromElement(className) {
-        var classSelector = '.' + className;
-        $(classSelector).removeClass(className);
-    }
-
     for(var argIndex = 0; argIndex < arguments.length; argIndex++)
-        removeClassFromElement(arguments[argIndex]);
+        $('.' + arguments[argIndex]).removeClass(arguments[argIndex]);
 }
