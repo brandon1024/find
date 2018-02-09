@@ -47,6 +47,11 @@ window.onload = function addListeners() {
         }
     }, true);
 
+    document.getElementById('search-toggle-options-button').addEventListener('click', function() {
+        toggleReplacePane(false);
+        toggleOptionsPane();
+    }, true);
+
     browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
         function getSelectedOrLastSearch() {
             browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
