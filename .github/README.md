@@ -1,4 +1,4 @@
-<img src="resources/icon.png" align="right" width="128" />
+<img src="../resources/icon.png" align="right" width="128" />
 
 # **{find+}**
 **{find+}** is a simple _Find-in-Page_ extension for Google Chrome hosting a the ability to search a web page or document by regular expression. It has been designed to look and behave much like the `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
