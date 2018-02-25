@@ -1,7 +1,7 @@
 /* Popup Style */
 body {
     margin: 3px 3px 0 3px;
-    width: 300px;
+    width: 320px;
 }
 
 .def-font {
@@ -10,7 +10,7 @@ body {
 }
 
 div#popup-body {
-    width: 300px;
+    width: 320px;
 }
 
 table#popup-body-table {
@@ -95,6 +95,11 @@ button.controls-button#search-prev-button {
 
 button.controls-button#search-next-button {
     background-image: url(/resources/chevron-down.svg);
+    background-size: 12px 12px;
+}
+
+button.controls-button#search-toggle-options-button {
+    background-image: url(/resources/wrench.svg);
     background-size: 12px 12px;
 }
 
