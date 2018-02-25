@@ -112,10 +112,10 @@ function buildDOMReferenceObject() {
                     continue;
                 }
 
-                var $wrapperElement = document.createElement('span');
-                $wrapperElement.setAttribute('id', identifierUUID);
-                node.parentNode.insertBefore($wrapperElement, node);
-                $wrapperElement.appendChild(node);
+                var wrapperElement = document.createElement('span');
+                wrapperElement.setAttribute('id', identifierUUID);
+                node.parentNode.insertBefore(wrapperElement, node);
+                wrapperElement.appendChild(node);
 
                 var textNodeInformation = {groupIndex: groupIndex, text: nodeText, elementUUID: identifierUUID};
                 textGroup.group.push(textNodeInformation);
@@ -202,26 +202,16 @@ function isHiddenElement(node) {
 
 //Remove All Highlighting and Injected Markup
 function restoreWebPage(uuids) {
-    function unwrapContentFromID(id) {
-        var idSelector = '#' + id;
-        var $el = $(idSelector);
+    for(var index = 0; index < uuids.length; index++) {
+        var el = document.getElementById(uuids[index]);
+        var parent = el.parentElement;
 
-        if($el.length == 0)
-            return;
+        while(el.firstChild)
+            parent.insertBefore(el.firstChild, el);
 
-        var $parent = $el.parent();
-        $el.replaceWith(function() {
-            return $(this).contents();
-        });
-
-        for(var index = 0; index < $parent.length; index++)
-            $parent[index].normalize();
+        parent.removeChild(el);
+        parent.normalize();
     }
-
-    for(var index = 0; index < uuids.length; index++)
-        unwrapContentFromID(uuids[index]);
-
-    return true;
 }
 
 //Check if Node is Element Node
