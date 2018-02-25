@@ -241,40 +241,40 @@ function updateOptions() {
 
 //Toggle Options Pane
 function toggleOptionsPane() {
-    var $el = document.getElementById('regex-options');
+    var el = document.getElementById('regex-options');
 
     if(arguments.length == 1) {
         if (arguments.length == 1 && arguments[0])
-            $el.style.display = 'inherit';
+            el.style.display = 'inherit';
         else if (arguments.length == 1 && !arguments[0])
-            $el.style.display = 'none';
+            el.style.display = 'none';
 
         return;
     }
 
-    if($el.style.display == 'none' || $el.style.display == '')
-        $el.style.display = 'inherit';
+    if(el.style.display == 'none' || el.style.display == '')
+        el.style.display = 'inherit';
     else
-        $el.style.display = 'none';
+        el.style.display = 'none';
 }
 
 //Toggle Replace Pane
 function toggleReplacePane() {
-    var $el = document.getElementById('replace-body');
+    var el = document.getElementById('replace-body');
 
     if(arguments.length == 1) {
         if (arguments.length == 1 && arguments[0])
-            $el.style.display = 'inherit';
+            el.style.display = 'inherit';
         else if (arguments.length == 1 && !arguments[0])
-            $el.style.display = 'none';
+            el.style.display = 'none';
 
         return;
     }
 
-    if($el.style.display == 'none' || $el.style.display == '')
-        $el.style.display = 'inherit';
+    if(el.style.display == 'none' || el.style.display == '')
+        el.style.display = 'inherit';
     else
-        $el.style.display = 'none';
+        el.style.display = 'none';
 }
 
 //Show or hide red exclamation icon in the extension popup
@@ -321,27 +321,27 @@ function updateIndexText() {
 
 //Display information icon on install or update
 function installedOrUpdated(details) {
-    var $el = null;
+    var el = null;
     if(details.reason == 'install')
-        $el = document.getElementById('install-information');
+        el = document.getElementById('install-information');
     else if(details.reason == 'update')
-        $el = document.getElementById('update-information');
+        el = document.getElementById('update-information');
     else
         return;
 
     var timeoutFunction = function() {
-        $el.style.display = 'none';
+        el.style.display = 'none';
     };
 
     //Show information icon
-    $el.style.display = 'initial';
+    el.style.display = 'initial';
 
     //Hide icon after 3 seconds
     var timeoutHandle = window.setTimeout(timeoutFunction, 3000);
 
     //Self-deregistering event handler
     var handler = function(event) {
-        if($el === event.target)
+        if(el === event.target)
             return;
 
         timeoutFunction();
@@ -354,11 +354,11 @@ function installedOrUpdated(details) {
     document.getElementById('popup-body').addEventListener('click', handler);
     document.getElementById('popup-body').addEventListener('keyup', handler);
 
-    $el.addEventListener('mouseover', function() {
+    el.addEventListener('mouseover', function() {
         window.clearTimeout(timeoutHandle);
     });
 
-    $el.addEventListener('mouseout', function() {
+    el.addEventListener('mouseout', function() {
         timeoutHandle = window.setTimeout(timeoutFunction, 3000);
     });
 }

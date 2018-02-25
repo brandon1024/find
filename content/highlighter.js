@@ -72,8 +72,8 @@ function highlightAll(occurrenceMap, regex, options) {
         //Build groupText, charMap and charIndexMap
         var count = 0;
         for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
-            var $el = document.getElementById(uuids[uuidIndex]);
-            var text = $el.childNodes[0].nodeValue;
+            var el = document.getElementById(uuids[uuidIndex]);
+            var text = el.childNodes[0].nodeValue;
 
             if(!text)
                 continue;
@@ -210,15 +210,14 @@ function highlightAll(occurrenceMap, regex, options) {
 
 //Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
-    var $els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
-    if($els == null || $els.length == 0)
+    var els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
+    if(els == null || els.length == 0)
         return;
 
-    $els.forEach(function($el) {
-        $el.classList.add(orangeHighlightClass);
-    });
+    for(var elsIndex = 0; elsIndex < els.length; elsIndex++)
+        els[elsIndex].classList.add(orangeHighlightClass);
 
-    $els[0].scrollIntoView(true);
+    els[0].scrollIntoView(true);
 
     var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
     var bottomScrollPos = window.pageYOffset + window.innerHeight;
@@ -227,57 +226,58 @@ function seekHighlight(index) {
 }
 
 function replace(index, replaceWith) {
-    var classSelector = '.find-ext-occr' + index;
-    var $els = Array.from(document.querySelectorAll(classSelector));
+    var els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
 
-    if($els.length == 0)
+    if(els.length == 0)
         return;
 
-    $els.shift().innerText = replaceWith;
-    $els.forEach(function(el) {
-        el.innerText = '';
-    });
+    els.shift().innerText = replaceWith;
+    for(var elsIndex = 0; elsIndex < els.length; elsIndex++)
+        els[elsIndex].innerText = '';
 }
 
 function replaceAll(replaceWith) {
-    var classSelector = "[class*='find-ext-occr']";
-    var $els = Array.from(document.querySelectorAll(classSelector));
+    var els = Array.from(document.querySelectorAll("[class*='find-ext-occr']"));
 
     var currentOccurrence = null;
-    for(var index = 0; index < $els.length; index++) {
-        var $el = $els[index];
-        var occrClassName = $el.getAttribute('class').match(/find-ext-occr\d*/)[0];
+    for(var index = 0; index < els.length; index++) {
+        var el = els[index];
+        var occrClassName = el.getAttribute('class').match(/find-ext-occr\d*/)[0];
         var occurrenceFromClass = parseInt(occrClassName.replace('find-ext-occr', ''));
 
         if(occurrenceFromClass != currentOccurrence) {
             currentOccurrence = occurrenceFromClass;
-            $el.innerText = replaceWith
+            el.innerText = replaceWith
         }
         else
-            $el.innerText = '';
+            el.innerText = '';
     }
 }
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
 function restore() {
     for(var argIndex = 0; argIndex < arguments.length; argIndex++) {
-        var $el = $('.' + arguments[argIndex]);
+        var els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
 
-        if($el.length == 0)
-            return;
+        for(var elsIndex = 0; elsIndex < els.length; elsIndex++) {
+            var el = els[elsIndex];
+            var parent = el.parentElement;
 
-        var $parent = $el.parent();
-        $el.replaceWith(function() {
-            return $(this).contents();
-        });
+            while(el.firstChild)
+                parent.insertBefore(el.firstChild, el);
 
-        for(var index = 0; index < $parent.length; index++)
-            $parent[index].normalize();
+            parent.removeChild(el);
+            parent.normalize();
+        }
     }
 }
 
 //Remove class from all element with that class
 function restoreClass() {
-    for(var argIndex = 0; argIndex < arguments.length; argIndex++)
-        $('.' + arguments[argIndex]).removeClass(arguments[argIndex]);
+    for(var argIndex = 0; argIndex < arguments.length; argIndex++) {
+        var els = Arrays.from(document.querySelectorAll('.' + arguments[argIndex]));
+
+        for(var elsIndex = 0; elsIndex < els.length; elsIndex++)
+            els[elsIndex].classList.remove(arguments[argIndex]);
+    }
 }
