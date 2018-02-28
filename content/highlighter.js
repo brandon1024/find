@@ -275,7 +275,7 @@ function restore() {
 //Remove class from all element with that class
 function restoreClass() {
     for(var argIndex = 0; argIndex < arguments.length; argIndex++) {
-        var els = Arrays.from(document.querySelectorAll('.' + arguments[argIndex]));
+        var els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
 
         for(var elsIndex = 0; elsIndex < els.length; elsIndex++)
             els[elsIndex].classList.remove(arguments[argIndex]);
