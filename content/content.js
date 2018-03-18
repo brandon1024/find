@@ -100,14 +100,10 @@ function buildDOMReferenceObject() {
                     break;
                 }
 
-                if(!preformatted.flag && isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length != 1) {
-                    node = DOMTreeWalker.nextNode();
-                    continue;
-                }
-
                 var identifierUUID = generateElementUUID();
                 var nodeText = formatTextNodeValue(node, preformatted.flag, elementBoundary);
-                if(nodeText.length == 0) {
+
+                if((!preformatted.flag && isNodeTextValueWhitespaceOnly(node)) || nodeText.length == 0) {
                     node = DOMTreeWalker.nextNode();
                     continue;
                 }
