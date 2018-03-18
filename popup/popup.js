@@ -34,12 +34,12 @@ window.onload = function addListeners() {
         //SHIFT+ENTER => Previous Highlight (seek)
         else if(e.keyCode == 13 && e.shiftKey)
             previousHighlight();
-        //ENTER => Next Highlight (seek)
-        else if (e.keyCode == 13)
-            nextHighlight();
         //ESC OR CTRL+ENTER => Close Extension
         else if(e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
             closeExtension();
+        //ENTER => Next Highlight (seek)
+        else if (e.keyCode == 13)
+            nextHighlight();
     }, true);
 
     document.body.addEventListener('keyup', function(e) {
