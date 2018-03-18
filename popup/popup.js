@@ -28,19 +28,27 @@ window.onload = function addListeners() {
     });
 
     document.getElementById('search-field').addEventListener('keyup', function(e) {
-        if(e.keyCode == 13 && e.shiftKey)
+        //CTRL+SHIFT+ENTER => Enter Link
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 13)
+            enterLink();
+        //SHIFT+ENTER => Previous Highlight (seek)
+        else if(e.keyCode == 13 && e.shiftKey)
             previousHighlight();
-        else if(e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
-            closeExtension();
+        //ENTER => Next Highlight (seek)
         else if (e.keyCode == 13)
             nextHighlight();
+        //ESC OR CTRL+ENTER => Close Extension
+        else if(e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
+            closeExtension();
     }, true);
 
     document.body.addEventListener('keyup', function(e) {
+        //CTRL+ALT+O => Toggle Options Pane
         if(e.keyCode == 79 && e.ctrlKey && e.altKey) {
             toggleReplacePane(false);
             toggleOptionsPane();
         }
+        //CTRL+ALT+R => Toggle Replace Pane
         else if(e.keyCode == 82 && e.ctrlKey && e.altKey) {
             toggleOptionsPane(false);
             toggleReplacePane();
@@ -163,6 +171,16 @@ function replaceNext() {
 function replaceAll() {
     var replaceWith = document.getElementById('replace-field').value;
     port.postMessage({action: 'replace_all', replaceWith: replaceWith, options: options});
+}
+
+//Follow the link under the current focus highlight in the page
+function enterLink() {
+    if(!initialized) {
+        updateHighlight();
+        return;
+    }
+
+    port.postMessage({action: 'enter_link', options: options});
 }
 
 //Close the extension

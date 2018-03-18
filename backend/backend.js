@@ -154,6 +154,8 @@ function invokeAction(action, port, tabID, message) {
         replaceNext(port, tabID, message);
     else if(action == 'replace_all')
         replaceAll(port, tabID, message);
+    else if(action == 'enter_link')
+        enterLink(tabID);
 }
 
 //Action Update
@@ -283,6 +285,10 @@ function replaceAll(port, tabID, message) {
             }
         });
     });
+}
+
+function enterLink(tabID) {
+    browser.tabs.sendMessage(tabID, {action: 'enter_link'});
 }
 
 //Build occurrence map from DOM model and regex
