@@ -30,7 +30,7 @@ window.onload = function addListeners() {
     document.getElementById('search-field').addEventListener('keyup', function(e) {
         //CTRL+SHIFT+ENTER => Enter Link
         if(e.ctrlKey && e.shiftKey && e.keyCode == 13)
-            enterLink();
+            followLinkUnderFocus();
         //SHIFT+ENTER => Previous Highlight (seek)
         else if(e.keyCode == 13 && e.shiftKey)
             previousHighlight();
@@ -120,6 +120,9 @@ port.onMessage.addListener(function listener(response) {
         case 'install':
             installedOrUpdated(response.details);
             break;
+        case 'close':
+            closeExtension();
+            return;
         case 'empty_regex':
         case 'invalid_regex':
         default:
@@ -174,13 +177,13 @@ function replaceAll() {
 }
 
 //Follow the link under the current focus highlight in the page
-function enterLink() {
+function followLinkUnderFocus() {
     if(!initialized) {
         updateHighlight();
         return;
     }
 
-    port.postMessage({action: 'enter_link', options: options});
+    port.postMessage({action: 'follow_link', options: options});
 }
 
 //Close the extension

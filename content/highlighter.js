@@ -31,8 +31,8 @@ browser.runtime.onMessage.addListener(function(message, sender, response) {
         case 'highlight_replace_all':
             replaceAll(message.replaceWith);
             break;
-        case 'enter_link':
-            enterLink();
+        case 'follow_link':
+            followLinkUnderFocus();
             break;
     }
 });
@@ -258,7 +258,7 @@ function replaceAll(replaceWith) {
 }
 
 //Bubbling up the DOM tree, locate any highlighted anchor element and follow link once found
-function enterLink() {
+function followLinkUnderFocus() {
     var els = document.getElementsByClassName(orangeHighlightClass);
     for(var index = 0; index < els.length; index ++) {
         var el = els[index];
