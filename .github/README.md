@@ -29,7 +29,7 @@ git clone <clone link from clipboard>
 
 Otherwise, you can click `Download ZIP` and extract the source files to a location on your computer. Ensure you are viewing the `master` branch.
 
-To install the extension in Chrome, navigate to the Settings page in Chrome and click `Extensions` on the left. Enabling Developer Mode will show a button to `Load Unpacked Extension`, which you can use to navigate to the parent folder of the extension. Yay! You installed the extension!
+To install the extension in Chrome, navigate to `chrome://extensions`. Enabling Developer Mode will show a button to `Load Unpacked`, which you can use to navigate to the parent folder of the extension. Yay! You installed the extension!
 
 <img src="installation.png"/>
 
