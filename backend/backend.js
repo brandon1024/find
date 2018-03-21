@@ -23,7 +23,7 @@ browser.runtime.onInstalled.addListener(function(details) {
     browser.tabs.query({}, function (tabs) {
         for(var tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
             var url = tabs[tabIndex].url;
-            if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)))
+            if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))
                 continue;
 
             for (var i = 0; i < scripts.length; i++)
