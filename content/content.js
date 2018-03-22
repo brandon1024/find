@@ -100,14 +100,10 @@ function buildDOMReferenceObject() {
                     break;
                 }
 
-                if(!preformatted.flag && isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length != 1) {
-                    node = DOMTreeWalker.nextNode();
-                    continue;
-                }
-
                 var identifierUUID = generateElementUUID();
                 var nodeText = formatTextNodeValue(node, preformatted.flag, elementBoundary);
-                if(nodeText.length == 0) {
+
+                if((!preformatted.flag && isNodeTextValueWhitespaceOnly(node)) || nodeText.length == 0) {
                     node = DOMTreeWalker.nextNode();
                     continue;
                 }
@@ -140,7 +136,7 @@ function buildDOMReferenceObject() {
 //TreeWalker Filter, Allowing Element and Text Nodes
 function nodeFilter(node) {
     if(isElementNode(node)) {
-        if(node.tagName.toLowerCase() == 'script' || node.tagName.toLowerCase() == 'noscript' || node.tagName.toLowerCase() == 'style')
+        if(node.tagName.toLowerCase() == 'script' || node.tagName.toLowerCase() == 'noscript' || node.tagName.toLowerCase() == 'style' || node.tagName.toLowerCase() == 'textarea')
             return NodeFilter.FILTER_REJECT;
         else
             return NodeFilter.FILTER_ACCEPT;
