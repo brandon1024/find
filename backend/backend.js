@@ -23,7 +23,7 @@ browser.runtime.onInstalled.addListener(function(details) {
     browser.tabs.query({}, function (tabs) {
         for(var tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
             var url = tabs[tabIndex].url;
-            if(!(url.match(/chrome:\/\/newtab\//)) && (url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)))
+            if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))
                 continue;
 
             for (var i = 0; i < scripts.length; i++)
@@ -154,6 +154,8 @@ function invokeAction(action, port, tabID, message) {
         replaceNext(port, tabID, message);
     else if(action == 'replace_all')
         replaceAll(port, tabID, message);
+    else if(action == 'follow_link')
+        followLinkUnderFocus(port, tabID);
 }
 
 //Action Update
@@ -283,6 +285,11 @@ function replaceAll(port, tabID, message) {
             }
         });
     });
+}
+
+function followLinkUnderFocus(port, tabID) {
+    browser.tabs.sendMessage(tabID, {action: 'follow_link'});
+    port.postMessage({action: 'close'});
 }
 
 //Build occurrence map from DOM model and regex

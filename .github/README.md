@@ -29,7 +29,7 @@ git clone <clone link from clipboard>
 
 Otherwise, you can click `Download ZIP` and extract the source files to a location on your computer. Ensure you are viewing the `master` branch.
 
-To install the extension in Chrome, navigate to the Settings page in Chrome and click `Extensions` on the left. Enabling Developer Mode will show a button to `Load Unpacked Extension`, which you can use to navigate to the parent folder of the extension. Yay! You installed the extension!
+To install the extension in Chrome, navigate to `chrome://extensions`. Enabling Developer Mode will show a button to `Load Unpacked`, which you can use to navigate to the parent folder of the extension. Yay! You installed the extension!
 
 <img src="installation.png"/>
 
@@ -53,6 +53,7 @@ Several keyboard shortcuts exist directly in the extension for performing differ
 | :---------------- | :---------------- | :--------------------------------------------------------------------- |
 | ENTER             | ENTER             | Advance to the next occurrence of the regular expression in the page   |
 | SHIFT-ENTER       | SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page|
+| CTRL-SHIFT-ENTER  | CTRL-SHIFT-ENTER  | Follow the first highlighted link in the current occurrence focus      |
 | CTRL-ALT-O        | CTRL-OPTION-O     | Expand or Collapse Options Pane                                        |
 | CTRL-ALT-R        | CTRL-OPTION-R     | Expand or Collapse Replace Text Pane                                   |
 | CTRL-ENTER or ESC | CTRL-ENTER or ESC | Close the extension popup                                              |
