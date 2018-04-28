@@ -32,13 +32,13 @@ window.onload = function addListeners() {
         if(e.ctrlKey && e.shiftKey && e.keyCode == 13)
             followLinkUnderFocus();
         //SHIFT+ENTER => Previous Highlight (seek)
-        else if(e.keyCode == 13 && e.shiftKey)
+        else if((e.keyCode == 13 && e.shiftKey) || (e.keyCode == 114 && e.shiftKey))
             previousHighlight();
         //ESC OR CTRL+ENTER => Close Extension
         else if(e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
             closeExtension();
         //ENTER => Next Highlight (seek)
-        else if (e.keyCode == 13)
+        else if (e.keyCode == 13 || e.keyCode == 114)
             nextHighlight();
     }, true);
 
