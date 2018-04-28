@@ -100,10 +100,19 @@ function buildDOMReferenceObject() {
                     break;
                 }
 
+                if(!preformatted.flag && isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length != 1) {
+                    node = DOMTreeWalker.nextNode();
+                    continue;
+                }
+                else if(node.nodeValue.length == 1 && node.nodeValue.charCodeAt(0) == 10) {
+                    node = DOMTreeWalker.nextNode();
+                    continue;
+                }
+
                 var identifierUUID = generateElementUUID();
                 var nodeText = formatTextNodeValue(node, preformatted.flag, elementBoundary);
 
-                if((!preformatted.flag && isNodeTextValueWhitespaceOnly(node)) || nodeText.length == 0) {
+                if(nodeText.length == 0) {
                     node = DOMTreeWalker.nextNode();
                     continue;
                 }
