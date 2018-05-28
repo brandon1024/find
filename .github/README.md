@@ -36,7 +36,7 @@ To install the extension in Chrome, navigate to `chrome://extensions`. Enabling 
 ## Keyboard Shortcuts
 To open the extension popup using a keyboard shortcut, you must first assign a keyboard shortcut to the extension through the Chrome settings. You can do this by following these steps:
 1. Navigate to the `Extensions` settings page in Chrome. Do this easily by typing `chrome://extensions/` in the URL navigation bar.
-2. In the bottom right of the extensions list, click `Keyboard shortcuts`. This will make appear a dialog where you can modify the shortcuts for your installed extensions.
+2. In the top left click on the ☰ (hamburger menu icon), then click `Keyboard shortcuts`. This will make appear a dialog where you can modify the shortcuts for your installed extensions.
 3. Locate the shortcut settings for find+. Click the input field located to the right of the label `Activate the extension`.
 4. Press the combination of keys you would like to use to open the extension. Once complete, press `OK`.
 
