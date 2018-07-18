@@ -50,7 +50,7 @@ function highlightAll(occurrenceMap, regex, options) {
 
                 //If reached max number of occurrences to show, don't highlight text
                 if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
-                    this.openingMarkup = '<span class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
+                    this.openingMarkup = '<span style="all: unset;" class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
                     this.closingMarkup = '</span>';
                 } else {
                     this.openingMarkup = '';
