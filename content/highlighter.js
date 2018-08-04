@@ -1,13 +1,13 @@
 "use strict";
 
-window.browser = (function () {
+window.browser = (() => {
     return window.chrome || window.browser;
 })();
 
-var yellowHighlightClass = "find-ext-highlight-yellow";
-var orangeHighlightClass = "find-ext-highlight-orange";
+const yellowHighlightClass = "find-ext-highlight-yellow";
+const orangeHighlightClass = "find-ext-highlight-orange";
 
-browser.runtime.onMessage.addListener(function(message, sender, response) {
+browser.runtime.onMessage.addListener((message, sender, response) => {
     switch(message.action) {
         case 'highlight_update':
             restore(yellowHighlightClass, orangeHighlightClass);
@@ -39,24 +39,29 @@ browser.runtime.onMessage.addListener(function(message, sender, response) {
 
 //Highlight all occurrences of regular expression on the page
 function highlightAll(occurrenceMap, regex, options) {
-    var occIndex = 0;
-    var tags = {occIndex: null, maxIndex: null, openingMarkup: '', closingMarkup: '', update: function(index) {
-        if(this.occIndex != index) {
-            this.occIndex = index;
+    const tags = {
+        occIndex: null,
+        maxIndex: null,
+        openingMarkup: '',
+        closingMarkup: '',
+        update: (index) => {
+            if(this.occIndex !== index) {
+                this.occIndex = index;
 
-            //If reached max number of occurrences to show, don't highlight text
-            if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
-                this.openingMarkup = '<span class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
-                this.closingMarkup = '</span>';
-            }
-            else {
-                this.openingMarkup = '';
-                this.closingMarkup = '';
+                //If reached max number of occurrences to show, don't highlight text
+                if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
+                    this.openingMarkup = '<span class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
+                    this.closingMarkup = '</span>';
+                }
+                else {
+                    this.openingMarkup = '';
+                    this.closingMarkup = '';
+                }
             }
         }
-    }};
+    };
 
-    if(options && options.max_results != 0)
+    if(options && options.max_results !== 0)
         tags.maxIndex = options.max_results - 1;
     else
         tags.maxIndex = null;
@@ -68,15 +73,17 @@ function highlightAll(occurrenceMap, regex, options) {
         regex = new RegExp(regex, 'mi');
 
     //Iterate each text group
-    for(var index = 0; index < occurrenceMap.groups; index++) {
-        var uuids = occurrenceMap[index].uuids;
-        var groupText = '', charMap = {}, charIndexMap = [];
+    for(let index = 0; index < occurrenceMap.groups; index++) {
+        let uuids = occurrenceMap[index].uuids;
+        let groupText = '';
+        let charMap = {};
+        let charIndexMap = [];
 
         //Build groupText, charMap and charIndexMap
-        var count = 0;
-        for(var uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
-            var el = document.getElementById(uuids[uuidIndex]);
-            var text = el.childNodes[0].nodeValue;
+        let count = 0;
+        for(let uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
+            let el = document.getElementById(uuids[uuidIndex]);
+            let text = el.childNodes[0].nodeValue;
 
             if(!text)
                 continue;
@@ -84,16 +91,23 @@ function highlightAll(occurrenceMap, regex, options) {
             text = decode(text);
             groupText += text;
 
-            for(var stringIndex = 0; stringIndex < text.length; stringIndex++) {
+            for(let stringIndex = 0; stringIndex < text.length; stringIndex++) {
                 charIndexMap.push(count);
-                charMap[count++] = {char: text.charAt(stringIndex), nodeUUID: uuids[uuidIndex], nodeIndex: stringIndex, ignorable: false, matched: false, boundary: false};
+                charMap[count++] = {
+                    char: text.charAt(stringIndex),
+                    nodeUUID: uuids[uuidIndex],
+                    nodeIndex: stringIndex,
+                    ignorable: false,
+                    matched: false,
+                    boundary: false
+                };
             }
         }
         charMap.length = count;
 
         //Format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
         if(!occurrenceMap[index].preformatted) {
-            var info;
+            let info;
 
             //Replace all whitespace characters (\t \n\r) with the space character
             while(info = /[\t\n\r]/.exec(groupText)) {
@@ -102,15 +116,14 @@ function highlightAll(occurrenceMap, regex, options) {
             }
 
             //Truncate consecutive whitespaces
-            var len, offset, currIndex;
             while(info = / {2,}/.exec(groupText)) {
-                len = info[0].length;
-                offset = info.index;
+                let len = info[0].length;
+                let offset = info.index;
 
-                for(currIndex = 0; currIndex < len; currIndex++)
+                for(let currIndex = 0; currIndex < len; currIndex++)
                     charMap[charIndexMap[offset + currIndex]].ignorable = true;
 
-                for(currIndex = 0; currIndex < len-1; currIndex++)
+                for(let currIndex = 0; currIndex < len-1; currIndex++)
                     charIndexMap.splice(offset,1);
 
                 groupText = groupText.replace(/ {2,}/, ' ');
@@ -118,13 +131,13 @@ function highlightAll(occurrenceMap, regex, options) {
 
             //Collapse leading or trailing whitespaces
             while(info = /^ | $/.exec(groupText)) {
-                len = info[0].length;
-                offset = info.index;
+                let len = info[0].length;
+                let offset = info.index;
 
-                for(currIndex = 0; currIndex < len; currIndex++)
+                for(let currIndex = 0; currIndex < len; currIndex++)
                     charMap[charIndexMap[offset + currIndex]].ignorable = true;
 
-                for(currIndex = 0; currIndex < len; currIndex++)
+                for(let currIndex = 0; currIndex < len; currIndex++)
                     charIndexMap.splice(offset,1);
 
                 groupText = groupText.replace(/^ | $/, '');
@@ -132,35 +145,37 @@ function highlightAll(occurrenceMap, regex, options) {
         }
 
         //Perform complex regex search, updating charMap matched characters
+        let occIndex = 0;
+        let info;
         while(info = regex.exec(groupText)) {
-            len = info[0].length;
-            offset = info.index;
+            let len = info[0].length;
+            let offset = info.index;
 
-            if(len == 0)
+            if(len === 0)
                 break;
 
-            var first = charIndexMap[offset];
-            var last = charIndexMap[offset + len - 1];
-            for(currIndex = first; currIndex <= last; currIndex++) {
+            let first = charIndexMap[offset];
+            let last = charIndexMap[offset + len - 1];
+            for(let currIndex = first; currIndex <= last; currIndex++) {
                 charMap[currIndex].matched = true;
-                if(currIndex == last)
+                if(currIndex === last)
                     charMap[currIndex].boundary = true;
             }
 
-            for(currIndex = 0; currIndex < offset+len; currIndex++)
+            for(let currIndex = 0; currIndex < offset+len; currIndex++)
                 charIndexMap.splice(0,1);
 
             groupText = groupText.substring(offset+len);
         }
 
         //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
-        var matchGroup = {text: '', groupUUID: charMap[0].nodeUUID};
-        var inMatch = false;
-        for(var key = 0; key < charMap.length; key++) {
+        let matchGroup = {text: '', groupUUID: charMap[0].nodeUUID};
+        let inMatch = false;
+        for(let key = 0; key < charMap.length; key++) {
             tags.update(occIndex);
 
             //If Transitioning Into New Text Group
-            if(matchGroup.groupUUID != charMap[key].nodeUUID) {
+            if(matchGroup.groupUUID !== charMap[key].nodeUUID) {
                 if(inMatch)
                     matchGroup.text += tags.closingMarkup;
 
@@ -178,8 +193,7 @@ function highlightAll(occurrenceMap, regex, options) {
                     inMatch = charMap[key].matched;
                     matchGroup.text += tags.openingMarkup;
                 }
-            }
-            else {
+            } else {
                 if(inMatch) {
                     inMatch = charMap[key].matched;
                     matchGroup.text += tags.closingMarkup;
@@ -199,7 +213,7 @@ function highlightAll(occurrenceMap, regex, options) {
             }
 
             //If End of Map Reached
-            if(key == charMap.length-1) {
+            if(key === charMap.length-1) {
                 if(inMatch) {
                     matchGroup.text += tags.closingMarkup;
                     occIndex++;
@@ -213,58 +227,58 @@ function highlightAll(occurrenceMap, regex, options) {
 
 //Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
-    var els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
-    if(els == null || els.length == 0)
+    let els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
+    if(els == null || els.length === 0)
         return;
 
-    for(var elsIndex = 0; elsIndex < els.length; elsIndex++)
+    for(let elsIndex = 0; elsIndex < els.length; elsIndex++)
         els[elsIndex].classList.add(orangeHighlightClass);
 
     els[0].scrollIntoView(true);
 
-    var docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
-    var bottomScrollPos = window.pageYOffset + window.innerHeight;
+    let docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
+    let bottomScrollPos = window.pageYOffset + window.innerHeight;
     if(bottomScrollPos + 100 < docHeight)
         window.scrollBy(0,-100);
 }
 
 function replace(index, replaceWith) {
-    var els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
+    let els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
 
-    if(els.length == 0)
+    if(els.length === 0)
         return;
 
     els.shift().innerText = replaceWith;
-    for(var elsIndex = 0; elsIndex < els.length; elsIndex++)
+    for(let elsIndex = 0; elsIndex < els.length; elsIndex++)
         els[elsIndex].innerText = '';
 }
 
 function replaceAll(replaceWith) {
-    var els = Array.from(document.querySelectorAll("[class*='find-ext-occr']"));
+    let els = Array.from(document.querySelectorAll("[class*='find-ext-occr']"));
 
-    var currentOccurrence = null;
-    for(var index = 0; index < els.length; index++) {
-        var el = els[index];
-        var occrClassName = el.getAttribute('class').match(/find-ext-occr\d*/)[0];
-        var occurrenceFromClass = parseInt(occrClassName.replace('find-ext-occr', ''));
+    let currentOccurrence = null;
+    for(let index = 0; index < els.length; index++) {
+        let el = els[index];
+        let occrClassName = el.getAttribute('class').match(/find-ext-occr\d*/)[0];
+        let occurrenceFromClass = parseInt(occrClassName.replace('find-ext-occr', ''));
 
-        if(occurrenceFromClass != currentOccurrence) {
+        if(occurrenceFromClass !== currentOccurrence) {
             currentOccurrence = occurrenceFromClass;
             el.innerText = replaceWith
-        }
-        else
+        } else {
             el.innerText = '';
+        }
     }
 }
 
 //Bubbling up the DOM tree, locate any highlighted anchor element and follow link once found
 function followLinkUnderFocus() {
-    var els = document.getElementsByClassName(orangeHighlightClass);
-    for(var index = 0; index < els.length; index ++) {
-        var el = els[index];
+    let els = document.getElementsByClassName(orangeHighlightClass);
+    for(let index = 0; index < els.length; index ++) {
+        let el = els[index];
         while (el.parentElement) {
             el = el.parentElement;
-            if (el.tagName.toLowerCase() == 'a')
+            if (el.tagName.toLowerCase() === 'a')
                 return el.click();
         }
     }
@@ -272,12 +286,12 @@ function followLinkUnderFocus() {
 
 //Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
 function restore() {
-    for(var argIndex = 0; argIndex < arguments.length; argIndex++) {
-        var els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
+    for(let argIndex = 0; argIndex < arguments.length; argIndex++) {
+        let els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
 
-        for(var elsIndex = 0; elsIndex < els.length; elsIndex++) {
-            var el = els[elsIndex];
-            var parent = el.parentElement;
+        for(let elsIndex = 0; elsIndex < els.length; elsIndex++) {
+            let el = els[elsIndex];
+            let parent = el.parentElement;
 
             while(el.firstChild)
                 parent.insertBefore(el.firstChild, el);
@@ -290,10 +304,10 @@ function restore() {
 
 //Remove class from all element with that class
 function restoreClass() {
-    for(var argIndex = 0; argIndex < arguments.length; argIndex++) {
-        var els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
+    for(let argIndex = 0; argIndex < arguments.length; argIndex++) {
+        let els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
 
-        for(var elsIndex = 0; elsIndex < els.length; elsIndex++)
+        for(let elsIndex = 0; elsIndex < els.length; elsIndex++)
             els[elsIndex].classList.remove(arguments[argIndex]);
     }
 }

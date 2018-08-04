@@ -1,63 +1,64 @@
 "use strict";
 
-window.browser = (function () {
+//Support Chrome and Firefox
+window.browser = (() => {
     return window.chrome || window.browser;
 })();
 
-var DOMModelObject = null;
-var regexOccurrenceMap = null;
-var options = null;
-var index = null;
-var regex = null;
+let DOMModelObject = null;
+let regexOccurrenceMap = null;
+let options = null;
+let index = null;
+let regex = null;
 
-var installed = null;
+let installed = null;
 
 //Inject content scripts into pages on installed (not performed automatically)
-browser.runtime.onInstalled.addListener(function(details) {
+browser.runtime.onInstalled.addListener((details) => {
     installed = {details: details};
 
-    var manifest = browser.runtime.getManifest();
-    var scripts = manifest.content_scripts[0].js;
-    var css = manifest.content_scripts[0].css;
+    let manifest = browser.runtime.getManifest();
+    let scripts = manifest.content_scripts[0].js;
+    let css = manifest.content_scripts[0].css;
 
-    browser.tabs.query({}, function (tabs) {
-        for(var tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
-            var url = tabs[tabIndex].url;
+    browser.tabs.query({}, (tabs) => {
+        for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+            let url = tabs[tabIndex].url;
             if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))
                 continue;
 
-            for (var i = 0; i < scripts.length; i++)
+            for (let i = 0; i < scripts.length; i++)
                 browser.tabs.executeScript(tabs[tabIndex].id, {file: scripts[i]});
 
-            for (i = 0; i < css.length; i++)
+            for (let i = 0; i < css.length; i++)
                 browser.tabs.insertCSS(tabs[tabIndex].id, {file: css[i]});
         }
     });
 });
 
-browser.runtime.onConnect.addListener(function(port) {
-    if(port.name != 'popup_to_backend_port')
+browser.runtime.onConnect.addListener((port) => {
+    if(port.name !== 'popup_to_backend_port')
         return;
 
     if(installed) {
-        port.postMessage({action: "install", details: installed.details});
         installed = null;
+        port.postMessage({action: "install", details: installed.details});
     }
 
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
         browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
 
         //Invoke action on message from popup script
-        port.onMessage.addListener(function (message) {
+        port.onMessage.addListener((message) => {
             invokeAction(message.action, port, tabs[0].id, message);
         });
 
         //Handle extension close
-        port.onDisconnect.addListener(function() {
+        port.onDisconnect.addListener(() => {
             if(!options || !options.persistent_highlights)
                 browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
 
-            var uuids = getUUIDsFromModelObject(DOMModelObject);
+            let uuids = getUUIDsFromModelObject(DOMModelObject);
             browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 
             DOMModelObject = null;
@@ -67,7 +68,7 @@ browser.runtime.onConnect.addListener(function(port) {
         });
 
         //Perform init action
-        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
+        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, (response) => {
             if(response && response.model) {
                 DOMModelObject = response.model;
                 index = 0;
@@ -79,24 +80,24 @@ browser.runtime.onConnect.addListener(function(port) {
 //Omnibox support
 browser.omnibox.setDefaultSuggestion({description: 'Enter a regular expression'});
 
-browser.omnibox.onInputStarted.addListener(function () {
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+browser.omnibox.onInputStarted.addListener(() => {
+    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
         //Perform init action
-        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, function (response) {
+        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, (response) => {
             if(response && response.model)
                 DOMModelObject = response.model;
         });
     });
 });
 
-browser.omnibox.onInputChanged.addListener(function (regex) {
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+browser.omnibox.onInputChanged.addListener((regex) => {
+    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
         try {
             if (!DOMModelObject)
                 return;
 
             //Ensure non-empty search
-            if (regex.length == 0) {
+            if (regex.length === 0) {
                 browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
                 return;
             }
@@ -117,10 +118,10 @@ browser.omnibox.onInputChanged.addListener(function (regex) {
     });
 });
 
-browser.omnibox.onInputCancelled.addListener(function () {
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
+browser.omnibox.onInputCancelled.addListener(() => {
+    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
         browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
-        var uuids = getUUIDsFromModelObject(DOMModelObject);
+        let uuids = getUUIDsFromModelObject(DOMModelObject);
         browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 
         DOMModelObject = null;
@@ -130,9 +131,9 @@ browser.omnibox.onInputCancelled.addListener(function () {
     });
 });
 
-browser.omnibox.onInputEntered.addListener(function () {
-    browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        var uuids = getUUIDsFromModelObject(DOMModelObject);
+browser.omnibox.onInputEntered.addListener(() => {
+    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        let uuids = getUUIDsFromModelObject(DOMModelObject);
         browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
 
         DOMModelObject = null;
@@ -144,23 +145,23 @@ browser.omnibox.onInputEntered.addListener(function () {
 
 //Dispatch action function
 function invokeAction(action, port, tabID, message) {
-    if(action == 'update')
+    if(action === 'update')
         actionUpdate(port, tabID, message);
-    else if(action == 'next')
+    else if(action === 'next')
         actionNext(port, tabID, message);
-    else if(action == 'previous')
+    else if(action === 'previous')
         actionPrevious(port, tabID, message);
-    else if(action == 'replace_next')
+    else if(action === 'replace_next')
         replaceNext(port, tabID, message);
-    else if(action == 'replace_all')
+    else if(action === 'replace_all')
         replaceAll(port, tabID, message);
-    else if(action == 'follow_link')
+    else if(action === 'follow_link')
         followLinkUnderFocus(port, tabID);
 }
 
 //Action Update
 function actionUpdate(port, tabID, message) {
-    browser.tabs.sendMessage(tabID, {action: 'update'}, function (response) {
+    browser.tabs.sendMessage(tabID, {action: 'update'}, (response) => {
         try {
             if(!DOMModelObject)
                 return;
@@ -173,7 +174,7 @@ function actionUpdate(port, tabID, message) {
                 regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
             //Ensure non-empty search
-            if(regex.length == 0) {
+            if(regex.length === 0) {
                 port.postMessage({action: "empty_regex"});
                 browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
                 return;
@@ -182,29 +183,39 @@ function actionUpdate(port, tabID, message) {
             //Build occurrence map, reposition index if necessary
             regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, options);
             if(index > regexOccurrenceMap.length-1) {
-                if(regexOccurrenceMap.length != 0)
+                if(regexOccurrenceMap.length !== 0)
                     index = regexOccurrenceMap.length-1;
                 else
                     index = 0;
             }
 
-            if(options.max_results != 0 && index >= options.max_results)
+            if(options.max_results !== 0 && index >= options.max_results)
                 index = options.max_results - 1;
 
             //Invoke highlight_update action, index_update action
-            browser.tabs.sendMessage(tabID, {action: 'highlight_update', occurrenceMap: regexOccurrenceMap, index: index, regex: regex, options: options});
+            browser.tabs.sendMessage(tabID, {
+                action: 'highlight_update',
+                occurrenceMap: regexOccurrenceMap,
+                index: index,
+                regex: regex,
+                options: options
+            });
 
             //If occurrence map empty, viewable index is zero
-            var viewableIndex = index + 1;
-            if(regexOccurrenceMap.length == 0)
+            let viewableIndex = index + 1;
+            if(regexOccurrenceMap.length === 0)
                 viewableIndex = 0;
 
             //if occurrence map larger than max results, viewable total is max results
-            var viewableTotal = regexOccurrenceMap.length;
-            if(options.max_results != 0 && options.max_results <= regexOccurrenceMap.length)
+            let viewableTotal = regexOccurrenceMap.length;
+            if(options.max_results !== 0 && options.max_results <= regexOccurrenceMap.length)
                 viewableTotal = options.max_results;
 
-            port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
+            port.postMessage({
+                action: "index_update",
+                index: viewableIndex,
+                total: viewableTotal
+            });
         }
         catch(e) {
             console.error(e);
@@ -216,7 +227,7 @@ function actionUpdate(port, tabID, message) {
 //Action Next
 function actionNext(port, tabID, message) {
     options = message.options;
-    var indexCap = options.max_results != 0;
+    let indexCap = options.max_results !== 0;
 
     //If reached end, reset index
     if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1))
@@ -225,16 +236,26 @@ function actionNext(port, tabID, message) {
         index++;
 
     //Invoke highlight_seek action, index_update action
-    browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-    var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
-    port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
+    browser.tabs.sendMessage(tabID, {
+        action: 'highlight_seek',
+        occurrenceMap: regexOccurrenceMap,
+        index: index,
+        regex: regex
+    });
+
+    let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
+    let viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    port.postMessage({
+        action: "index_update",
+        index: viewableIndex,
+        total: viewableTotal
+    });
 }
 
 //Action Previous
 function actionPrevious(port, tabID, message) {
     options = message.options;
-    var indexCap = options.max_results != 0;
+    let indexCap = options.max_results !== 0;
 
     //If reached start, set index to last occurrence
     if(index <= 0) {
@@ -242,26 +263,42 @@ function actionPrevious(port, tabID, message) {
             index = options.max_results-1;
         else
             index = regexOccurrenceMap.length-1;
-    }
-    else
+    } else {
         index--;
+    }
 
     //Invoke highlight_seek action, index_update action
-    browser.tabs.sendMessage(tabID, {action: 'highlight_seek', occurrenceMap: regexOccurrenceMap, index: index, regex: regex});
-    var viewableIndex = regexOccurrenceMap.length == 0 ? 0 : index+1;
-    var viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
-    port.postMessage({action: "index_update", index: viewableIndex, total: viewableTotal});
+    browser.tabs.sendMessage(tabID, {
+        action: 'highlight_seek',
+        occurrenceMap: regexOccurrenceMap,
+        index: index,
+        regex: regex
+    });
+
+    let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
+    let viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    port.postMessage({
+        action: "index_update",
+        index: viewableIndex,
+        total: viewableTotal
+    });
 }
 
 function replaceNext(port, tabID, message) {
-    browser.tabs.sendMessage(tabID, {action: 'highlight_replace', index: message.index - 1, replaceWith: message.replaceWith, options: message.options});
+    browser.tabs.sendMessage(tabID, {
+        action: 'highlight_replace',
+        index: message.index - 1,
+        replaceWith: message.replaceWith,
+        options: message.options
+    });
 
     //Restore Web Page
     browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
-    var uuids = getUUIDsFromModelObject(DOMModelObject);
-    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+
+    let uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, (response) => {
         //Rebuild DOMModelObject and invalidate
-        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+        browser.tabs.sendMessage(tabID, {action: 'init'}, (response) => {
             if(response && response.model) {
                 DOMModelObject = response.model;
                 port.postMessage({action: 'invalidate'});
@@ -271,14 +308,19 @@ function replaceNext(port, tabID, message) {
 }
 
 function replaceAll(port, tabID, message) {
-    browser.tabs.sendMessage(tabID, {action: 'highlight_replace_all', replaceWith: message.replaceWith, options: message.options});
+    browser.tabs.sendMessage(tabID, {
+        action: 'highlight_replace_all',
+        replaceWith: message.replaceWith,
+        options: message.options
+    });
 
     //Restore Web Page
     browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
-    var uuids = getUUIDsFromModelObject(DOMModelObject);
-    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, function(response) {
+
+    let uuids = getUUIDsFromModelObject(DOMModelObject);
+    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, (response) => {
         //Rebuild DOMModelObject and invalidate
-        browser.tabs.sendMessage(tabID, {action: 'init'}, function (response) {
+        browser.tabs.sendMessage(tabID, {action: 'init'}, (response) => {
             if(response && response.model) {
                 DOMModelObject = response.model;
                 port.postMessage({action: 'invalidate'});
@@ -294,40 +336,44 @@ function followLinkUnderFocus(port, tabID) {
 
 //Build occurrence map from DOM model and regex
 function buildOccurrenceMap(DOMModelObject, regex, options) {
-    var occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
-    var count = 0, groupIndex = 0;
-    regex = regex.replace(/ /g, '\\s');
+    let occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
+    let count = 0;
+    let groupIndex = 0;
 
-    if(options && options.match_case)
-        regex = new RegExp(regex, 'gm');
-    else
-        regex = new RegExp(regex, 'gmi');
+    regex = regex.replace(/ /g, '\\s');
+    regex = (options && options.match_case) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
 
     //Loop over all text nodes in DOMModelObject
-    for(var key in DOMModelObject) {
-        var textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
-        var textGroup = '', uuids = [];
-        for(var nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
+    for(let key in DOMModelObject) {
+        let textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
+        let textGroup = '';
+        let uuids = [];
+        for(let nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
             textGroup += textNodes[nodeIndex].text;
             uuids.push(textNodes[nodeIndex].elementUUID);
         }
 
-        var matches = textGroup.match(regex);
+        let matches = textGroup.match(regex);
         if(!matches)
             continue;
 
         count += matches.length;
-        occurrenceMap[groupIndex] = {text: textGroup, uuids: uuids, count: matches.length, preformatted: preformatted};
+        occurrenceMap[groupIndex] = {
+            text: textGroup,
+            uuids: uuids,
+            count: matches.length,
+            preformatted: preformatted
+        };
 
-        for(var matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
-            var occMapIndex = matchesIndex + (count - matches.length);
+        for(let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
+            let occMapIndex = matchesIndex + (count - matches.length);
             occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: matchesIndex};
         }
 
         groupIndex++;
 
         //If reached maxIndex, exit
-        if(options && options.max_results != 0 && count >= options.max_results)
+        if(options && options.max_results !== 0 && count >= options.max_results)
             break;
     }
 
@@ -338,11 +384,11 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
 
 //Get all group uuids from model object
 function getUUIDsFromModelObject(modelObject) {
-    var uuids = [];
+    let uuids = [];
 
-    for(var key in modelObject) {
-        var textNodes = modelObject[key].group;
-        for(var index = 0; index < textNodes.length; index++)
+    for(let key in modelObject) {
+        let textNodes = modelObject[key].group;
+        for(let index = 0; index < textNodes.length; index++)
             uuids.push(textNodes[index].elementUUID);
     }
 
