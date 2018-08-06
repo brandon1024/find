@@ -44,7 +44,7 @@ function highlightAll(occurrenceMap, regex, options) {
         maxIndex: null,
         openingMarkup: '',
         closingMarkup: '',
-        update: (index) => {
+        update: function(index) {
             if(this.occIndex !== index) {
                 this.occIndex = index;
 
@@ -52,8 +52,7 @@ function highlightAll(occurrenceMap, regex, options) {
                 if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
                     this.openingMarkup = '<span class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
                     this.closingMarkup = '</span>';
-                }
-                else {
+                } else {
                     this.openingMarkup = '';
                     this.closingMarkup = '';
                 }
@@ -61,16 +60,18 @@ function highlightAll(occurrenceMap, regex, options) {
         }
     };
 
-    if(options && options.max_results !== 0)
+    if(options && options.max_results !== 0) {
         tags.maxIndex = options.max_results - 1;
-    else
+    } else {
         tags.maxIndex = null;
+    }
 
     regex = regex.replace(/ /g, '\\s');
-    if(!options || options.match_case)
+    if(!options || options.match_case) {
         regex = new RegExp(regex, 'm');
-    else
+    } else {
         regex = new RegExp(regex, 'mi');
+    }
 
     //Iterate each text group
     for(let index = 0; index < occurrenceMap.groups; index++) {
@@ -85,8 +86,9 @@ function highlightAll(occurrenceMap, regex, options) {
             let el = document.getElementById(uuids[uuidIndex]);
             let text = el.childNodes[0].nodeValue;
 
-            if(!text)
+            if(!text) {
                 continue;
+            }
 
             text = decode(text);
             groupText += text;
@@ -120,11 +122,13 @@ function highlightAll(occurrenceMap, regex, options) {
                 let len = info[0].length;
                 let offset = info.index;
 
-                for(let currIndex = 0; currIndex < len; currIndex++)
+                for(let currIndex = 0; currIndex < len; currIndex++) {
                     charMap[charIndexMap[offset + currIndex]].ignorable = true;
+                }
 
-                for(let currIndex = 0; currIndex < len-1; currIndex++)
-                    charIndexMap.splice(offset,1);
+                for(let currIndex = 0; currIndex < len-1; currIndex++) {
+                    charIndexMap.splice(offset, 1);
+                }
 
                 groupText = groupText.replace(/ {2,}/, ' ');
             }
@@ -134,11 +138,13 @@ function highlightAll(occurrenceMap, regex, options) {
                 let len = info[0].length;
                 let offset = info.index;
 
-                for(let currIndex = 0; currIndex < len; currIndex++)
+                for(let currIndex = 0; currIndex < len; currIndex++) {
                     charMap[charIndexMap[offset + currIndex]].ignorable = true;
+                }
 
-                for(let currIndex = 0; currIndex < len; currIndex++)
-                    charIndexMap.splice(offset,1);
+                for(let currIndex = 0; currIndex < len; currIndex++) {
+                    charIndexMap.splice(offset, 1);
+                }
 
                 groupText = groupText.replace(/^ | $/, '');
             }
@@ -151,19 +157,22 @@ function highlightAll(occurrenceMap, regex, options) {
             let len = info[0].length;
             let offset = info.index;
 
-            if(len === 0)
+            if(len === 0) {
                 break;
+            }
 
             let first = charIndexMap[offset];
             let last = charIndexMap[offset + len - 1];
             for(let currIndex = first; currIndex <= last; currIndex++) {
                 charMap[currIndex].matched = true;
-                if(currIndex === last)
+                if(currIndex === last) {
                     charMap[currIndex].boundary = true;
+                }
             }
 
-            for(let currIndex = 0; currIndex < offset+len; currIndex++)
-                charIndexMap.splice(0,1);
+            for(let currIndex = 0; currIndex < offset+len; currIndex++) {
+                charIndexMap.splice(0, 1);
+            }
 
             groupText = groupText.substring(offset+len);
         }
@@ -176,15 +185,17 @@ function highlightAll(occurrenceMap, regex, options) {
 
             //If Transitioning Into New Text Group
             if(matchGroup.groupUUID !== charMap[key].nodeUUID) {
-                if(inMatch)
+                if(inMatch) {
                     matchGroup.text += tags.closingMarkup;
+                }
 
                 document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 matchGroup.text = '';
                 matchGroup.groupUUID = charMap[key].nodeUUID;
 
-                if(inMatch)
+                if(inMatch) {
                     matchGroup.text += tags.openingMarkup;
+                }
             }
 
             //If Current Character is Matched
@@ -198,8 +209,9 @@ function highlightAll(occurrenceMap, regex, options) {
                     inMatch = charMap[key].matched;
                     matchGroup.text += tags.closingMarkup;
 
-                    if(key < charMap.length)
+                    if(key < charMap.length) {
                         occIndex++;
+                    }
                 }
             }
 
@@ -208,8 +220,9 @@ function highlightAll(occurrenceMap, regex, options) {
             if(charMap[key].boundary) {
                 inMatch = false;
                 matchGroup.text += tags.closingMarkup;
-                if(key < charMap.length)
+                if(key < charMap.length) {
                     occIndex++;
+                }
             }
 
             //If End of Map Reached
@@ -228,29 +241,34 @@ function highlightAll(occurrenceMap, regex, options) {
 //Move highlight focused text to a given occurrence index
 function seekHighlight(index) {
     let els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
-    if(els == null || els.length === 0)
+    if(els == null || els.length === 0) {
         return;
+    }
 
-    for(let elsIndex = 0; elsIndex < els.length; elsIndex++)
+    for(let elsIndex = 0; elsIndex < els.length; elsIndex++) {
         els[elsIndex].classList.add(orangeHighlightClass);
+    }
 
     els[0].scrollIntoView(true);
 
     let docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
     let bottomScrollPos = window.pageYOffset + window.innerHeight;
-    if(bottomScrollPos + 100 < docHeight)
-        window.scrollBy(0,-100);
+    if(bottomScrollPos + 100 < docHeight) {
+        window.scrollBy(0, -100);
+    }
 }
 
 function replace(index, replaceWith) {
     let els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
 
-    if(els.length === 0)
+    if(els.length === 0) {
         return;
+    }
 
     els.shift().innerText = replaceWith;
-    for(let elsIndex = 0; elsIndex < els.length; elsIndex++)
+    for(let elsIndex = 0; elsIndex < els.length; elsIndex++) {
         els[elsIndex].innerText = '';
+    }
 }
 
 function replaceAll(replaceWith) {
@@ -278,8 +296,9 @@ function followLinkUnderFocus() {
         let el = els[index];
         while (el.parentElement) {
             el = el.parentElement;
-            if (el.tagName.toLowerCase() === 'a')
+            if (el.tagName.toLowerCase() === 'a') {
                 return el.click();
+            }
         }
     }
 }
@@ -293,8 +312,9 @@ function restore() {
             let el = els[elsIndex];
             let parent = el.parentElement;
 
-            while(el.firstChild)
+            while(el.firstChild) {
                 parent.insertBefore(el.firstChild, el);
+            }
 
             parent.removeChild(el);
             parent.normalize();
@@ -307,7 +327,8 @@ function restoreClass() {
     for(let argIndex = 0; argIndex < arguments.length; argIndex++) {
         let els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
 
-        for(let elsIndex = 0; elsIndex < els.length; elsIndex++)
+        for(let elsIndex = 0; elsIndex < els.length; elsIndex++) {
             els[elsIndex].classList.remove(arguments[argIndex]);
+        }
     }
 }

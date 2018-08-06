@@ -28,28 +28,28 @@ window.onload = () => {
     });
 
     document.getElementById('search-field').addEventListener('keyup', (e) => {
-        //CTRL+SHIFT+ENTER => Enter Link
-        if(e.ctrlKey && e.shiftKey && e.keyCode === 13)
+        if(e.ctrlKey && e.shiftKey && e.keyCode === 13) {
+            //CTRL+SHIFT+ENTER => Enter Link
             followLinkUnderFocus();
-        //SHIFT+ENTER => Previous Highlight (seek)
-        else if((e.keyCode === 13 && e.shiftKey) || (e.keyCode === 114 && e.shiftKey))
+            //SHIFT+ENTER => Previous Highlight (seek)
+        } else if((e.keyCode === 13 && e.shiftKey) || (e.keyCode === 114 && e.shiftKey)) {
             previousHighlight();
-        //ESC OR CTRL+ENTER => Close Extension
-        else if(e.keyCode === 27 || e.keyCode === 13 && e.ctrlKey)
+        } else if(e.keyCode === 27 || e.keyCode === 13 && e.ctrlKey) {
+            //ESC OR CTRL+ENTER => Close Extension
             closeExtension();
-        //ENTER => Next Highlight (seek)
-        else if (e.keyCode === 13 || e.keyCode === 114)
+            //ENTER => Next Highlight (seek)
+        } else if (e.keyCode === 13 || e.keyCode === 114) {
             nextHighlight();
+        }
     }, true);
 
     document.body.addEventListener('keyup', (e) => {
-        //CTRL+ALT+O => Toggle Options Pane
         if(e.keyCode === 79 && e.ctrlKey && e.altKey) {
+            //CTRL+ALT+O => Toggle Options Pane
             toggleReplacePane(false);
             toggleOptionsPane();
-        }
-        //CTRL+ALT+R => Toggle Replace Pane
-        else if(e.keyCode === 82 && e.ctrlKey && e.altKey) {
+        } else if(e.keyCode === 82 && e.ctrlKey && e.altKey) {
+            //CTRL+ALT+R => Toggle Replace Pane
             toggleOptionsPane(false);
             toggleReplacePane();
         }
@@ -67,9 +67,9 @@ window.onload = () => {
                     document.getElementById('search-field').value = selection[0];
                     document.getElementById('search-field').select();
                     updateHighlight();
-                }
-                else
+                } else {
                     retrieveSavedLastSearch();
+                }
             });
         }
 
@@ -87,11 +87,13 @@ window.onload = () => {
                     showOfflineFileErrorIcon(true);
                     updateIndexText();
                     enableButtons(false);
-                } else
+                } else {
                     getSelectedOrLastSearch();
+                }
             });
-        } else
+        } else {
             getSelectedOrLastSearch();
+        }
     });
 
     retrieveSavedOptions();
@@ -208,8 +210,9 @@ function retrieveSavedLastSearch() {
 
         document.getElementById('search-field').value = previousSearchText;
         document.getElementById('search-field').select();
-        if(previousSearchText.length > 0)
+        if(previousSearchText.length > 0) {
             enableButtons();
+        }
     });
 }
 
@@ -228,10 +231,11 @@ function retrieveSavedOptions() {
         document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
 
         const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-        if(options.max_results === 0)
+        if(options.max_results === 0) {
             document.getElementById('max-results-slider-value').innerText = '∞';
-        else
+        } else {
             document.getElementById('max-results-slider-value').innerText = options.max_results.toString();
+        }
 
         document.getElementById('max-results-slider').value = rangeValues.indexOf(options.max_results);
     });
@@ -245,10 +249,11 @@ function updateOptions() {
 
     const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
     let rangeIndex = document.getElementById('max-results-slider').value;
-    if(rangeValues[rangeIndex] === 0)
+    if(rangeValues[rangeIndex] === 0) {
         document.getElementById('max-results-slider-value').innerText = '∞';
-    else
+    } else {
         document.getElementById('max-results-slider-value').innerText = rangeValues[rangeIndex].toString();
+    }
 
     options.max_results = rangeValues[rangeIndex];
 
@@ -261,18 +266,20 @@ function toggleOptionsPane() {
     let el = document.getElementById('regex-options');
 
     if(arguments.length === 1) {
-        if (arguments.length === 1 && arguments[0])
+        if (arguments.length === 1 && arguments[0]) {
             el.style.display = 'inherit';
-        else if (arguments.length === 1 && !arguments[0])
+        } else if (arguments.length === 1 && !arguments[0]) {
             el.style.display = 'none';
+        }
 
         return;
     }
 
-    if(el.style.display === 'none' || el.style.display === '')
+    if(el.style.display === 'none' || el.style.display === '') {
         el.style.display = 'inherit';
-    else
+    } else {
         el.style.display = 'none';
+    }
 }
 
 //Toggle Replace Pane
@@ -280,18 +287,20 @@ function toggleReplacePane() {
     let el = document.getElementById('replace-body');
 
     if(arguments.length === 1) {
-        if (arguments.length === 1 && arguments[0])
+        if (arguments[0]) {
             el.style.display = 'inherit';
-        else if (arguments.length === 1 && !arguments[0])
+        } else {
             el.style.display = 'none';
+        }
 
         return;
     }
 
-    if(el.style.display === 'none' || el.style.display === '')
+    if(el.style.display === 'none' || el.style.display === '') {
         el.style.display = 'inherit';
-    else
+    } else {
         el.style.display = 'none';
+    }
 }
 
 //Show or hide red exclamation icon in the extension popup
@@ -330,21 +339,23 @@ function enableReplaceButtons() {
 
 //Update index text
 function updateIndexText() {
-    if(arguments.length === 0)
+    if(arguments.length === 0) {
         document.getElementById('index-text').innerText = '';
-    else if(arguments.length === 2)
+    } else if(arguments.length === 2) {
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+    }
 }
 
 //Display information icon on install or update
 function installedOrUpdated(details) {
     let el = null;
-    if(details.reason === 'install')
+    if(details.reason === 'install') {
         el = document.getElementById('install-information');
-    else if(details.reason === 'update')
+    } else if(details.reason === 'update') {
         el = document.getElementById('update-information');
-    else
+    } else {
         return;
+    }
 
     let timeoutFunction = () => {
         el.style.display = 'none';
@@ -358,8 +369,9 @@ function installedOrUpdated(details) {
 
     //Self-deregistering event handler
     let handler = (event) => {
-        if(el === event.target)
+        if(el === event.target) {
             return;
+        }
 
         timeoutFunction();
         window.clearTimeout(timeoutHandle);

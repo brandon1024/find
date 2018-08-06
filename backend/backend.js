@@ -24,25 +24,29 @@ browser.runtime.onInstalled.addListener((details) => {
     browser.tabs.query({}, (tabs) => {
         for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
             let url = tabs[tabIndex].url;
-            if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/))
+            if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
                 continue;
+            }
 
-            for (let i = 0; i < scripts.length; i++)
+            for (let i = 0; i < scripts.length; i++) {
                 browser.tabs.executeScript(tabs[tabIndex].id, {file: scripts[i]});
+            }
 
-            for (let i = 0; i < css.length; i++)
+            for (let i = 0; i < css.length; i++) {
                 browser.tabs.insertCSS(tabs[tabIndex].id, {file: css[i]});
+            }
         }
     });
 });
 
 browser.runtime.onConnect.addListener((port) => {
-    if(port.name !== 'popup_to_backend_port')
+    if(port.name !== 'popup_to_backend_port') {
         return;
+    }
 
     if(installed) {
-        installed = null;
         port.postMessage({action: "install", details: installed.details});
+        installed = null;
     }
 
     browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
@@ -55,8 +59,9 @@ browser.runtime.onConnect.addListener((port) => {
 
         //Handle extension close
         port.onDisconnect.addListener(() => {
-            if(!options || !options.persistent_highlights)
+            if(!options || !options.persistent_highlights) {
                 browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
+            }
 
             let uuids = getUUIDsFromModelObject(DOMModelObject);
             browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
@@ -84,8 +89,9 @@ browser.omnibox.onInputStarted.addListener(() => {
     browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
         //Perform init action
         browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, (response) => {
-            if(response && response.model)
+            if(response && response.model) {
                 DOMModelObject = response.model;
+            }
         });
     });
 });
@@ -93,8 +99,9 @@ browser.omnibox.onInputStarted.addListener(() => {
 browser.omnibox.onInputChanged.addListener((regex) => {
     browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
         try {
-            if (!DOMModelObject)
+            if (!DOMModelObject) {
                 return;
+            }
 
             //Ensure non-empty search
             if (regex.length === 0) {
@@ -145,33 +152,36 @@ browser.omnibox.onInputEntered.addListener(() => {
 
 //Dispatch action function
 function invokeAction(action, port, tabID, message) {
-    if(action === 'update')
+    if(action === 'update') {
         actionUpdate(port, tabID, message);
-    else if(action === 'next')
+    } else if(action === 'next') {
         actionNext(port, tabID, message);
-    else if(action === 'previous')
+    } else if(action === 'previous') {
         actionPrevious(port, tabID, message);
-    else if(action === 'replace_next')
+    } else if(action === 'replace_next') {
         replaceNext(port, tabID, message);
-    else if(action === 'replace_all')
+    } else if(action === 'replace_all') {
         replaceAll(port, tabID, message);
-    else if(action === 'follow_link')
+    } else if(action === 'follow_link') {
         followLinkUnderFocus(port, tabID);
+    }
 }
 
 //Action Update
 function actionUpdate(port, tabID, message) {
     browser.tabs.sendMessage(tabID, {action: 'update'}, (response) => {
         try {
-            if(!DOMModelObject)
+            if(!DOMModelObject) {
                 return;
+            }
 
             options = message.options;
             regex = message.regex;
 
             //If searching by string, escape all regex metacharacters
-            if(!options.find_by_regex)
+            if(!options.find_by_regex) {
                 regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            }
 
             //Ensure non-empty search
             if(regex.length === 0) {
@@ -183,10 +193,11 @@ function actionUpdate(port, tabID, message) {
             //Build occurrence map, reposition index if necessary
             regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, options);
             if(index > regexOccurrenceMap.length-1) {
-                if(regexOccurrenceMap.length !== 0)
-                    index = regexOccurrenceMap.length-1;
-                else
+                if(regexOccurrenceMap.length !== 0) {
+                    index = regexOccurrenceMap.length - 1;
+                } else {
                     index = 0;
+                }
             }
 
             if(options.max_results !== 0 && index >= options.max_results)
@@ -203,13 +214,15 @@ function actionUpdate(port, tabID, message) {
 
             //If occurrence map empty, viewable index is zero
             let viewableIndex = index + 1;
-            if(regexOccurrenceMap.length === 0)
+            if(regexOccurrenceMap.length === 0) {
                 viewableIndex = 0;
+            }
 
             //if occurrence map larger than max results, viewable total is max results
             let viewableTotal = regexOccurrenceMap.length;
-            if(options.max_results !== 0 && options.max_results <= regexOccurrenceMap.length)
+            if(options.max_results !== 0 && options.max_results <= regexOccurrenceMap.length) {
                 viewableTotal = options.max_results;
+            }
 
             port.postMessage({
                 action: "index_update",
@@ -230,10 +243,11 @@ function actionNext(port, tabID, message) {
     let indexCap = options.max_results !== 0;
 
     //If reached end, reset index
-    if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1))
+    if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1)) {
         index = 0;
-    else
+    } else {
         index++;
+    }
 
     //Invoke highlight_seek action, index_update action
     browser.tabs.sendMessage(tabID, {
@@ -244,7 +258,7 @@ function actionNext(port, tabID, message) {
     });
 
     let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
-    let viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    let viewableTotal = (indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length;
     port.postMessage({
         action: "index_update",
         index: viewableIndex,
@@ -259,10 +273,11 @@ function actionPrevious(port, tabID, message) {
 
     //If reached start, set index to last occurrence
     if(index <= 0) {
-        if(indexCap && options.max_results <= regexOccurrenceMap.length)
-            index = options.max_results-1;
-        else
-            index = regexOccurrenceMap.length-1;
+        if(indexCap && options.max_results <= regexOccurrenceMap.length) {
+            index = options.max_results - 1;
+        } else {
+            index = regexOccurrenceMap.length - 1;
+        }
     } else {
         index--;
     }
@@ -276,7 +291,7 @@ function actionPrevious(port, tabID, message) {
     });
 
     let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
-    let viewableTotal = ((indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length);
+    let viewableTotal = (indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length;
     port.postMessage({
         action: "index_update",
         index: viewableIndex,
@@ -354,8 +369,9 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
         }
 
         let matches = textGroup.match(regex);
-        if(!matches)
+        if(!matches) {
             continue;
+        }
 
         count += matches.length;
         occurrenceMap[groupIndex] = {
@@ -373,8 +389,9 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
         groupIndex++;
 
         //If reached maxIndex, exit
-        if(options && options.max_results !== 0 && count >= options.max_results)
+        if(options && options.max_results !== 0 && count >= options.max_results) {
             break;
+        }
     }
 
     occurrenceMap.length = count;
@@ -388,8 +405,9 @@ function getUUIDsFromModelObject(modelObject) {
 
     for(let key in modelObject) {
         let textNodes = modelObject[key].group;
-        for(let index = 0; index < textNodes.length; index++)
+        for(let index = 0; index < textNodes.length; index++) {
             uuids.push(textNodes[index].elementUUID);
+        }
     }
 
     return uuids;

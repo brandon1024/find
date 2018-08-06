@@ -39,8 +39,9 @@ function buildDOMReferenceObject() {
     while(!reachedEndOfTree) {
         node = DOMTreeWalker.nextNode();
 
-        if(!node)
+        if(!node) {
             reachedEndOfTree = true;
+        }
 
         let textGroup = {group: [], preformatted: false};
         while(node) {
@@ -61,9 +62,9 @@ function buildDOMReferenceObject() {
                 if(!isHiddenElement(node)) {
                     hidden.flag = false;
                     hidden.index = null;
-                }
-                else
+                } else {
                     hidden.index = nodeDepth;
+                }
             }
 
             if(hidden.flag) {
@@ -73,11 +74,13 @@ function buildDOMReferenceObject() {
 
             if(isElementNode(node)) {
                 if(nodeDepth <= blockLevels[blockLevels.length-1]) {
-                    while(nodeDepth <= blockLevels[blockLevels.length-1])
+                    while(nodeDepth <= blockLevels[blockLevels.length-1]) {
                         blockLevels.pop();
+                    }
 
-                    if(!isInlineLevelElement(node))
+                    if(!isInlineLevelElement(node)) {
                         blockLevels.push(nodeDepth);
+                    }
 
                     elementBoundary = true;
                     break;
@@ -90,8 +93,9 @@ function buildDOMReferenceObject() {
                 }
             } else if(isTextNode(node)) {
                 if(nodeDepth <= blockLevels[blockLevels.length-1]) {
-                    while(nodeDepth <= blockLevels[blockLevels.length-1])
+                    while(nodeDepth <= blockLevels[blockLevels.length-1]) {
                         blockLevels.pop();
+                    }
 
                     DOMTreeWalker.previousNode();
                     elementBoundary = true;
@@ -127,12 +131,14 @@ function buildDOMReferenceObject() {
 
             node = DOMTreeWalker.nextNode();
             elementBoundary = false;
-            if(!node)
+            if(!node) {
                 reachedEndOfTree = true;
+            }
         }
 
-        if(textGroup.group.length === 0)
+        if(textGroup.group.length === 0) {
             continue;
+        }
 
         DOMModelObject[groupIndex++] = textGroup;
     }
@@ -143,71 +149,87 @@ function buildDOMReferenceObject() {
 //TreeWalker Filter, Allowing Element and Text Nodes
 function nodeFilter(node) {
     if(isElementNode(node)) {
-        if(node.tagName.toLowerCase() === 'script')
+        if(node.tagName.toLowerCase() === 'script') {
             return NodeFilter.FILTER_REJECT;
+        }
 
-        if(node.tagName.toLowerCase() === 'noscript')
+        if(node.tagName.toLowerCase() === 'noscript') {
             return NodeFilter.FILTER_REJECT;
+        }
 
-        if(node.tagName.toLowerCase() === 'style')
+        if(node.tagName.toLowerCase() === 'style') {
             return NodeFilter.FILTER_REJECT;
+        }
 
-        if(node.tagName.toLowerCase() === 'textarea')
+        if(node.tagName.toLowerCase() === 'textarea') {
             return NodeFilter.FILTER_REJECT;
+        }
 
         return NodeFilter.FILTER_ACCEPT;
     }
 
-    if(isTextNode(node))
+    if(isTextNode(node)) {
         return NodeFilter.FILTER_ACCEPT;
+    }
 
     return NodeFilter.FILTER_REJECT;
 }
 
 //Format text node value
 function formatTextNodeValue(node, preformatted, elementBoundary) {
-    if(isElementNode(node))
+    if(isElementNode(node)) {
         return;
+    }
 
     let nodeText = decode(node.nodeValue);
-    if(preformatted)
+    if(preformatted) {
         return nodeText;
+    }
 
     let text = nodeText.replace(/[\t\n\r ]+/g,' ');
-    if(elementBoundary)
+    if(elementBoundary) {
         text = text.replace(/^[\t\n\r ]+/g, '');
+    }
 
     return text;
 }
 
 //Check if element is <pre> or has style white-space:pre
 function isPreformattedElement(node) {
-    if(!isElementNode(node))
+    if(!isElementNode(node)) {
         return;
+    }
 
-    if(node.tagName.toLowerCase() === 'pre' || node.style.whiteSpace.toLowerCase() === 'pre')
+    if(node.tagName.toLowerCase() === 'pre' || node.style.whiteSpace.toLowerCase() === 'pre') {
         return true;
+    }
 
     let computedStyle = window.getComputedStyle(node);
-    if(computedStyle.getPropertyValue('whitespace').toLowerCase() === 'pre')
+    if(computedStyle.getPropertyValue('whitespace').toLowerCase() === 'pre') {
         return true;
+    }
 
     return false;
 }
 
 //Check if element is hidden, i.e. has display: none/hidden;
 function isHiddenElement(node) {
-    if(!isElementNode(node))
+    if(!isElementNode(node)) {
         return;
+    }
 
-    if(node.style.display === 'none' || node.style.display === 'hidden')
+    if(node.style.display === 'none' || node.style.display === 'hidden') {
         return true;
+    }
 
     let computedStyle = window.getComputedStyle(node);
-    if(computedStyle.getPropertyValue('display').toLowerCase() === 'none')
+    if(computedStyle.getPropertyValue('display').toLowerCase() === 'none') {
         return true;
-    if(computedStyle.getPropertyValue('display').toLowerCase() === 'hidden')
+    }
+
+    if(computedStyle.getPropertyValue('display').toLowerCase() === 'hidden') {
         return true;
+    }
 
     return false;
 }
@@ -218,8 +240,9 @@ function restoreWebPage(uuids) {
         let el = document.getElementById(uuids[index]);
         let parent = el.parentElement;
 
-        while(el.firstChild)
+        while(el.firstChild) {
             parent.insertBefore(el.firstChild, el);
+        }
 
         parent.removeChild(el);
         parent.normalize();
@@ -238,16 +261,19 @@ function isTextNode(node) {
 
 //Check if Element is Inline
 function isInlineLevelElement(element) {
-    if(!isElementNode(element))
+    if(!isElementNode(element)) {
         return false;
+    }
 
     //Special case: will treat <br> as block element
     let elementTagName = element.tagName.toLowerCase();
-    if(elementTagName === 'br')
+    if(elementTagName === 'br') {
         return false;
+    }
 
-    if(window.getComputedStyle(element).display === 'inline')
+    if(window.getComputedStyle(element).display === 'inline') {
         return true;
+    }
 
     return false;
 }
@@ -271,17 +297,20 @@ function getNodeTreeDepth(node) {
 
 //Generate V4 UUID
 function generateElementUUID() {
-    function generateBlock(size) {
+    let generateBlock = (size) => {
         let block = '';
-        for(let index = 0; index < size; index++)
+        for(let index = 0; index < size; index++) {
             block += Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        }
 
         return block;
-    }
+    };
 
-    let uuid = '', blockSizes = [2,1,1,1,3];
-    for(let index = 0; index < blockSizes.length; index++)
-        uuid += generateBlock(blockSizes[index]) + (index === blockSizes.length-1 ? '' : '-');
+    const blockSizes = [2,1,1,1,3];
+    let uuid = '';
+    for(let index = 0; index < blockSizes.length; index++) {
+        uuid += generateBlock(blockSizes[index]) + (index === blockSizes.length - 1 ? '' : '-');
+    }
 
     return uuid;
 }
