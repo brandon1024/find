@@ -74,6 +74,7 @@ function highlightAll(occurrenceMap, regex, options) {
     }
 
     //Iterate each text group
+    let occIndex = 0;
     for(let index = 0; index < occurrenceMap.groups; index++) {
         let uuids = occurrenceMap[index].uuids;
         let groupText = '';
@@ -151,7 +152,6 @@ function highlightAll(occurrenceMap, regex, options) {
         }
 
         //Perform complex regex search, updating charMap matched characters
-        let occIndex = 0;
         let info;
         while(info = regex.exec(groupText)) {
             let len = info[0].length;
