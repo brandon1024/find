@@ -120,6 +120,7 @@ function buildDOMReferenceObject() {
                 }
 
                 let wrapperElement = document.createElement('span');
+                wrapperElement.style.cssText = 'all: unset;';
                 wrapperElement.setAttribute('id', identifierUUID);
                 node.parentNode.insertBefore(wrapperElement, node);
                 wrapperElement.appendChild(node);
