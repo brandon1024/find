@@ -44,7 +44,7 @@ Here's what we recommend for displaying the extension popup.
 
 | Windows Shortcut  | macOS Shortcut    | Notes                                                                  |
 | :---------------- | :---------------- | :--------------------------------------------------------------------- |
-| CTRL-SHIFT-F      | COMMAND-SHIFT-F   | Recommended: This shortcut will not have any conflicts with Chrome     |
+| CTRL-SHIFT-F      | CTRL-SHIFT-F      | Recommended: This shortcut will not have any conflicts with Chrome     |
 | CTRL-F            | COMMAND-F         | This shortcut will override the native find-in-page tool               |
 
 Several keyboard shortcuts exist directly in the extension for performing different actions. These shortcuts are built directly into the extension and are not managed through Chrome. As a result, these settings cannot be remapped. Below is a list of the current keyboard shortcuts.
