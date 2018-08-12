@@ -1,15 +1,15 @@
 'use strict';
 
-window.browser = (function () {
+window.browser = (() => {
     return window.chrome || window.browser;
 })();
 
-var port = browser.runtime.connect({name: 'popup_to_backend_port'});
-var options = {'find_by_regex': true, 'match_case': true, 'persistent_highlights': false, 'max_results': 0};
-var initialized = false;
-var index = 0;
+let port = browser.runtime.connect({name: 'popup_to_backend_port'});
+let options = {'find_by_regex': true, 'match_case': true, 'persistent_highlights': false, 'max_results': 0};
+let initialized = false;
+let index = 0;
 
-window.onload = function addListeners() {
+window.onload = () => {
     //Load event listeners for popup components
     document.getElementById('search-next-button').addEventListener('click', nextHighlight);
     document.getElementById('search-prev-button').addEventListener('click', previousHighlight);
@@ -23,33 +23,33 @@ window.onload = function addListeners() {
     document.getElementById('replace-next-button').addEventListener('click', replaceNext);
     document.getElementById('replace-all-button').addEventListener('click', replaceAll);
 
-    document.getElementById('popup-body').addEventListener('click', function() {
+    document.getElementById('popup-body').addEventListener('click', () => {
         document.getElementById('search-field').focus();
     });
 
-    document.getElementById('search-field').addEventListener('keyup', function(e) {
-        //CTRL+SHIFT+ENTER => Enter Link
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 13)
+    document.getElementById('search-field').addEventListener('keyup', (e) => {
+        if(e.ctrlKey && e.shiftKey && e.keyCode === 13) {
+            //CTRL+SHIFT+ENTER => Enter Link
             followLinkUnderFocus();
-        //SHIFT+ENTER => Previous Highlight (seek)
-        else if((e.keyCode == 13 && e.shiftKey) || (e.keyCode == 114 && e.shiftKey))
+            //SHIFT+ENTER => Previous Highlight (seek)
+        } else if((e.keyCode === 13 && e.shiftKey) || (e.keyCode === 114 && e.shiftKey)) {
             previousHighlight();
-        //ESC OR CTRL+ENTER => Close Extension
-        else if(e.keyCode == 27 || e.keyCode == 13 && e.ctrlKey)
+        } else if(e.keyCode === 27 || e.keyCode === 13 && e.ctrlKey) {
+            //ESC OR CTRL+ENTER => Close Extension
             closeExtension();
-        //ENTER => Next Highlight (seek)
-        else if (e.keyCode == 13 || e.keyCode == 114)
+            //ENTER => Next Highlight (seek)
+        } else if (e.keyCode === 13 || e.keyCode === 114) {
             nextHighlight();
+        }
     }, true);
 
-    document.body.addEventListener('keyup', function(e) {
-        //CTRL+ALT+O => Toggle Options Pane
-        if(e.keyCode == 79 && e.ctrlKey && e.altKey) {
+    document.body.addEventListener('keyup', (e) => {
+        if(e.keyCode === 79 && e.ctrlKey && e.altKey) {
+            //CTRL+ALT+O => Toggle Options Pane
             toggleReplacePane(false);
             toggleOptionsPane();
-        }
-        //CTRL+ALT+R => Toggle Replace Pane
-        else if(e.keyCode == 82 && e.ctrlKey && e.altKey) {
+        } else if(e.keyCode === 82 && e.ctrlKey && e.altKey) {
+            //CTRL+ALT+R => Toggle Replace Pane
             toggleOptionsPane(false);
             toggleReplacePane();
         }
@@ -60,57 +60,55 @@ window.onload = function addListeners() {
         toggleOptionsPane();
     }, true);
 
-    browser.tabs.query({'active': true, currentWindow: true}, function (tabs) {
+    browser.tabs.query({'active': true, currentWindow: true}, (tabs) => {
         function getSelectedOrLastSearch() {
             browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
                 if(selection[0]) {
                     document.getElementById('search-field').value = selection[0];
                     document.getElementById('search-field').select();
                     updateHighlight();
-                }
-                else
+                } else {
                     retrieveSavedLastSearch();
+                }
             });
         }
 
         //Ensure valid url, then get text selected on page or retrieve last search
-        var url = tabs[0].url;
+        let url = tabs[0].url;
         if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome\.google\.com\/webstore\/.*/) || url.match(/https:\/\/google\.[^\/]*\/_\/chrome\/newtab.*/)) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
-        }
-        else if(url.match(/.*\.pdf$/i)) {
+        } else if(url.match(/.*\.pdf$/i)) {
             document.getElementById('extension-message-body').style.display = 'initial';
             document.getElementById('extension-limitation-pdf-fileview-text').style.display = 'initial';
-        }
-        else if(url.match(/^file:\/\/.*/i)) {
-            browser.tabs.sendMessage(tabs[0].id, {action: 'poll'}, function (response) {
+        } else if(url.match(/^file:\/\/.*/i)) {
+            browser.tabs.sendMessage(tabs[0].id, {action: 'poll'}, (response) => {
                 if(!response || !response.success) {
                     showOfflineFileErrorIcon(true);
                     updateIndexText();
                     enableButtons(false);
-                }
-                else
+                } else {
                     getSelectedOrLastSearch();
+                }
             });
-        }
-        else
+        } else {
             getSelectedOrLastSearch();
+        }
     });
 
     retrieveSavedOptions();
 };
 
 //Listen for messages from the background script
-port.onMessage.addListener(function listener(response) {
+port.onMessage.addListener((response) => {
     switch(response.action) {
         case 'index_update':
             updateIndexText(response.index, response.total);
             index = response.index;
 
             //Enable buttons only if occurrence exists
-            enableButtons(response.total != 0);
-            enableReplaceButtons(response.total != 0);
+            enableButtons(response.total !== 0);
+            enableReplaceButtons(response.total !== 0);
 
             showMalformedRegexIcon(false);
             break;
@@ -126,7 +124,7 @@ port.onMessage.addListener(function listener(response) {
         case 'empty_regex':
         case 'invalid_regex':
         default:
-            showMalformedRegexIcon(response.action == 'invalid_regex');
+            showMalformedRegexIcon(response.action === 'invalid_regex');
             enableButtons(false);
             enableReplaceButtons(false);
             updateIndexText();
@@ -137,8 +135,8 @@ port.onMessage.addListener(function listener(response) {
 //Perform update action
 function updateHighlight() {
     initialized = true;
-    
-    var regex = document.getElementById('search-field').value;
+
+    let regex = document.getElementById('search-field').value;
     port.postMessage({action: 'update', regex: regex, options: options});
 }
 
@@ -166,13 +164,13 @@ function previousHighlight() {
 
 //Replace current occurrences of regex with text
 function replaceNext() {
-    var replaceWith = document.getElementById('replace-field').value;
+    let replaceWith = document.getElementById('replace-field').value;
     port.postMessage({action: 'replace_next', index: index, replaceWith: replaceWith, options: options});
 }
 
 //Replace all occurrences of regex with text
 function replaceAll() {
-    var replaceWith = document.getElementById('replace-field').value;
+    let replaceWith = document.getElementById('replace-field').value;
     port.postMessage({action: 'replace_all', replaceWith: replaceWith, options: options});
 }
 
@@ -199,21 +197,22 @@ function updateSavedOptions() {
 
 //Commit text in search field to local storage
 function updateSavedPreviousSearch() {
-    var payload = {'previousSearch': document.getElementById('search-field').value};
+    let payload = {'previousSearch': document.getElementById('search-field').value};
     browser.storage.local.set(payload);
 }
 
 //Retrieve last search from local storage, set the search field text, and enable buttons if text length > 0
 function retrieveSavedLastSearch() {
-    browser.storage.local.get('previousSearch', function(data) {
-        var previousSearchText = data.previousSearch;
+    browser.storage.local.get('previousSearch', (data) => {
+        let previousSearchText = data.previousSearch;
         if(previousSearchText == null)
             return;
 
         document.getElementById('search-field').value = previousSearchText;
         document.getElementById('search-field').select();
-        if(previousSearchText.length > 0)
+        if(previousSearchText.length > 0) {
             enableButtons();
+        }
     });
 }
 
@@ -231,11 +230,12 @@ function retrieveSavedOptions() {
         document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
         document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
 
-        var rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-        if(options.max_results == 0)
+        const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
+        if(options.max_results === 0) {
             document.getElementById('max-results-slider-value').innerText = '∞';
-        else
+        } else {
             document.getElementById('max-results-slider-value').innerText = options.max_results.toString();
+        }
 
         document.getElementById('max-results-slider').value = rangeValues.indexOf(options.max_results);
     });
@@ -247,12 +247,13 @@ function updateOptions() {
     options.match_case = document.getElementById('regex-option-case-insensitive-toggle').checked;
     options.persistent_highlights = document.getElementById('regex-option-persistent-highlights-toggle').checked;
 
-    var rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-    var rangeIndex = document.getElementById('max-results-slider').value;
-    if(rangeValues[rangeIndex] == 0)
+    const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
+    let rangeIndex = document.getElementById('max-results-slider').value;
+    if(rangeValues[rangeIndex] === 0) {
         document.getElementById('max-results-slider-value').innerText = '∞';
-    else
+    } else {
         document.getElementById('max-results-slider-value').innerText = rangeValues[rangeIndex].toString();
+    }
 
     options.max_results = rangeValues[rangeIndex];
 
@@ -262,40 +263,44 @@ function updateOptions() {
 
 //Toggle Options Pane
 function toggleOptionsPane() {
-    var el = document.getElementById('regex-options');
+    let el = document.getElementById('regex-options');
 
-    if(arguments.length == 1) {
-        if (arguments.length == 1 && arguments[0])
+    if(arguments.length === 1) {
+        if (arguments.length === 1 && arguments[0]) {
             el.style.display = 'inherit';
-        else if (arguments.length == 1 && !arguments[0])
+        } else if (arguments.length === 1 && !arguments[0]) {
             el.style.display = 'none';
+        }
 
         return;
     }
 
-    if(el.style.display == 'none' || el.style.display == '')
+    if(el.style.display === 'none' || el.style.display === '') {
         el.style.display = 'inherit';
-    else
+    } else {
         el.style.display = 'none';
+    }
 }
 
 //Toggle Replace Pane
 function toggleReplacePane() {
-    var el = document.getElementById('replace-body');
+    let el = document.getElementById('replace-body');
 
-    if(arguments.length == 1) {
-        if (arguments.length == 1 && arguments[0])
+    if(arguments.length === 1) {
+        if (arguments[0]) {
             el.style.display = 'inherit';
-        else if (arguments.length == 1 && !arguments[0])
+        } else {
             el.style.display = 'none';
+        }
 
         return;
     }
 
-    if(el.style.display == 'none' || el.style.display == '')
+    if(el.style.display === 'none' || el.style.display === '') {
         el.style.display = 'inherit';
-    else
+    } else {
         el.style.display = 'none';
+    }
 }
 
 //Show or hide red exclamation icon in the extension popup
@@ -310,7 +315,7 @@ function showOfflineFileErrorIcon(flag) {
 
 //Enable next and previous buttons
 function enableButtons() {
-    if(arguments.length == 1 && !arguments[0]) {
+    if(arguments.length === 1 && !arguments[0]) {
         document.getElementById('search-prev-button').disabled = true;
         document.getElementById('search-next-button').disabled = true;
         return;
@@ -322,7 +327,7 @@ function enableButtons() {
 
 //Enable `replace next` and `replace all` buttons
 function enableReplaceButtons() {
-    if(arguments.length == 1 && !arguments[0]) {
+    if(arguments.length === 1 && !arguments[0]) {
         document.getElementById('replace-next-button').disabled = true;
         document.getElementById('replace-all-button').disabled = true;
         return;
@@ -334,23 +339,25 @@ function enableReplaceButtons() {
 
 //Update index text
 function updateIndexText() {
-    if(arguments.length == 0)
+    if(arguments.length === 0) {
         document.getElementById('index-text').innerText = '';
-    else if(arguments.length == 2)
+    } else if(arguments.length === 2) {
         document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
+    }
 }
 
 //Display information icon on install or update
 function installedOrUpdated(details) {
-    var el = null;
-    if(details.reason == 'install')
+    let el = null;
+    if(details.reason === 'install') {
         el = document.getElementById('install-information');
-    else if(details.reason == 'update')
+    } else if(details.reason === 'update') {
         el = document.getElementById('update-information');
-    else
+    } else {
         return;
+    }
 
-    var timeoutFunction = function() {
+    let timeoutFunction = () => {
         el.style.display = 'none';
     };
 
@@ -358,12 +365,13 @@ function installedOrUpdated(details) {
     el.style.display = 'initial';
 
     //Hide icon after 3 seconds
-    var timeoutHandle = window.setTimeout(timeoutFunction, 3000);
+    let timeoutHandle = window.setTimeout(timeoutFunction, 3000);
 
     //Self-deregistering event handler
-    var handler = function(event) {
-        if(el === event.target)
+    let handler = (event) => {
+        if(el === event.target) {
             return;
+        }
 
         timeoutFunction();
         window.clearTimeout(timeoutHandle);
@@ -375,18 +383,18 @@ function installedOrUpdated(details) {
     document.getElementById('popup-body').addEventListener('click', handler);
     document.getElementById('popup-body').addEventListener('keyup', handler);
 
-    el.addEventListener('mouseover', function() {
+    el.addEventListener('mouseover', () => {
         window.clearTimeout(timeoutHandle);
     });
 
-    el.addEventListener('mouseout', function() {
+    el.addEventListener('mouseout', () => {
         timeoutHandle = window.setTimeout(timeoutFunction, 3000);
     });
 }
 
 //Formats numbers to have thousands comma delimiters
 function formatNumber(x) {
-    var parts = x.toString().split('.');
+    let parts = x.toString().split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return parts.join('.');
 }
