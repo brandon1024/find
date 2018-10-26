@@ -205,7 +205,7 @@ function updateSavedPreviousSearch() {
 function retrieveSavedLastSearch() {
     browser.storage.local.get('previousSearch', (data) => {
         let previousSearchText = data.previousSearch;
-        if(previousSearchText == null)
+        if(previousSearchText == null || browser.extension.inIncognitoContext)
             return;
 
         document.getElementById('search-field').value = previousSearchText;
