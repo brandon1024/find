@@ -1,6 +1,7 @@
 "use strict";
 
 //Support Chrome and Firefox
+window.browser_id = typeof browser !== "undefined" ? "Firefox" : "Chrome";
 window.browser = (() => {
     return window.chrome || window.browser;
 })();
@@ -13,8 +14,12 @@ let regex = null;
 
 let installed = null;
 
-//Inject content scripts into pages on installed (not performed automatically)
+//Inject content scripts into pages on installed (not performed automatically in Chrome)
 browser.runtime.onInstalled.addListener((details) => {
+    if(browser_id === "Firefox") {
+        return;
+    }
+
     installed = {details: details};
 
     let manifest = browser.runtime.getManifest();
