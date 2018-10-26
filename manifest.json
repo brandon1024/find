@@ -43,5 +43,6 @@
       }
     }
   },
-  "offline_enabled": true
+  "offline_enabled": true,
+  "incognito": "split"
 }
