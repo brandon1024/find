@@ -204,8 +204,8 @@ function updateSavedPreviousSearch() {
 //Retrieve last search from local storage, set the search field text, and enable buttons if text length > 0
 function retrieveSavedLastSearch() {
     browser.storage.local.get('previousSearch', (data) => {
-        let previousSearchText = data.previousSearch;
-        if(previousSearchText == null || browser.extension.inIncognitoContext)
+        let previousSearchText = data.previousSearch || '';
+        if(previousSearchText === '' || browser.extension.inIncognitoContext)
             return;
 
         document.getElementById('search-field').value = previousSearchText;
