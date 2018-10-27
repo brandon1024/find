@@ -12,8 +12,7 @@
     "storage",
     "<all_urls>"
   ],
-  "icons":
-  {
+  "icons": {
     "128": "resources/icon.png",
     "16": "resources/icon.png",
     "48": "resources/icon.png"
@@ -26,25 +25,24 @@
     "scripts": ["/backend/backend.js"],
     "persistent": false
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "all_frames": false,
-      "run_at": "document_end",
-      "js": ["/lib/html-entity-handler/entityhandler.js",
-        "/content/content.js",
-        "/content/highlighter.js"],
-      "css": ["/content/highlighter.css"]
-    }
-  ],
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "all_frames": false,
+    "run_at": "document_end",
+    "js": ["/lib/html-entity-handler/entityhandler.js",
+      "/content/content.js",
+      "/content/highlighter.js"],
+    "css": ["/content/highlighter.css"]
+  }],
   "omnibox": { "keyword" : "find" },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+F",
-        "mac": "Ctrl+Shift+F"
+        "mac": "MacCtrl+Shift+F"
       }
     }
   },
-  "offline_enabled": true
+  "offline_enabled": true,
+  "incognito": "split"
 }
