@@ -1,7 +1,7 @@
 /* Popup Style */
 body {
-    margin: 3px 3px 0 3px;
-    width: 320px;
+    margin: 3px;
+    width: 340px;
 }
 
 .def-font {
@@ -10,12 +10,30 @@ body {
 }
 
 div#popup-body {
-    width: 320px;
+    width: 340px;
 }
 
-table#popup-body-table {
+div#popup-body-container {
     width: 100%;
-    table-layout: fixed;
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+}
+
+div#search-field-cell,
+div#controls-cell {
+    display: inline-flex;
+    align-items: center;
+}
+
+div#search-field-cell {
+    width: 100%;
+    padding-right: 5px;
+}
+
+div#controls-cell {
+    border-left: 1px solid #e0e0e0;
+    padding-left: 5px;
 }
 
 /* Search Field Style */
@@ -29,12 +47,7 @@ input.field textarea:focus, input:focus {
 }
 
 input.field#search-field {
-    width: 100%;
-}
-
-/* Index Text Style */
-td#index-text-cell {
-    width: 20%;
+    flex: auto;
 }
 
 span#index-text {
@@ -42,25 +55,12 @@ span#index-text {
     white-space: nowrap;
     user-select: none;
     cursor: default;
-    float: right;
-}
-
-/* Dividing Line Style */
-td#divide-line-cell {
-    vertical-align: middle;
-    width: 2px;
-    height: 100%;
-    padding: 0 5px;
-}
-
-img#dividing-line-img {
-    vertical-align: middle;
-    background: transparent no-repeat center;
-    user-select: none;
+    text-align: right;
+    min-width: 40px;
 }
 
 /* Button Style */
-td.button-cell {
+div.button-cell {
     width: 25px;
     height: 25px;
 }
@@ -72,7 +72,6 @@ button.controls-button {
     width: 25px;
     height: 25px;
     padding: 0;
-    vertical-align: middle;
 }
 
 button.controls-button:focus {
