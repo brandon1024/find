@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+ME=$0
+ROOT_DIR=$PWD
+BUILD_DIR="$ROOT_DIR/.build"
+MANIFEST="$ROOT_DIR/manifest.json"
+VERSION=
+
 # Display Usage
 function help() {
         cat <<EOS
@@ -12,41 +18,45 @@ example:
 options:
     -m, --manifest  Alternate path of the manifest file 'manifest.json'.
     -v, --version   New extension version number
-    -o, --output    Alternate build directory. Default '.build' in same directory as the manifest file.
+    -o, --output    Alternate build directory. Default '.build' in the current working directory
     -h, --help      Show help and exit
 EOS
     exit 2
 }
 
-ME=$0
-MANIFEST="./manifest.json"
 function parseargs() {
     while [[ $# -gt 0 ]]; do
         key="$1"
 
         case $key in
             -m|--manifest)
-            MANIFEST=$2
-            shift
-            shift
-            ;;
+                case $2 in
+                    /*) MANIFEST="$2" ;;
+                    *) MANIFEST="$ROOT_DIR/$2" ;;
+                esac
+                shift
+                shift
+                ;;
             -v|--version)
-            VERSION=$2
-            shift
-            shift
-            ;;
+                VERSION=$2
+                shift
+                shift
+                ;;
             -o|--output)
-            BUILD=$2
-            shift
-            shift
-            ;;
+                case $2 in
+                    /*) BUILD_DIR="$2" ;;
+                    *) BUILD_DIR="$ROOT_DIR/$2" ;;
+                esac
+                shift
+                shift
+                ;;
             -h|--help)
-            help
-            ;;
+                help
+                ;;
             *)
-            echo "Error: Unknown option $key"
-            help
-            ;;
+                echo "Error: Unknown option $key"
+                help
+                ;;
         esac
     done
 }
@@ -54,19 +64,14 @@ function parseargs() {
 parseargs "$@"
 
 # Check if manifest filename matches expected filename
-if [[ $MANIFEST =~ "*/manifest.json" ]]; then
-    # Prepend ./ if necessary, else exit
-    if [[ $MANIFEST == "manifest.json" ]]; then
-        MANIFEST="./manifest.json"
-    else
-        echo "Error: file '$MANIFEST' must have the filename 'manifest.json'"
-        exit 2
-    fi
+if [[ ${MANIFEST} =~ "*/manifest.json" ]]; then
+    echo "Error: file '$MANIFEST' must have the filename 'manifest.json'"
+    exit 2
 fi
 
 # Check if manifest file exists
-if [ ! -f $MANIFEST ]; then
-    echo "Error: file '$MANIFEST' not found."
+if [ ! -f ${MANIFEST} ]; then
+    echo "Error: manifest file '$MANIFEST' not found."
     exit 2
 fi
 
@@ -76,35 +81,37 @@ if [ -z "$VERSION" ]; then
     help
 fi
 
-# Check if build directory is valid
-if [ -z "$BUILD" ]; then
-    BUILD=$(echo "$MANIFEST" | sed 's/manifest.json/.build/')
-fi
+# Create build directory structure
+echo "$ME: Creating the build directory structure under $BUILD_DIR..."
+rm -rf "$BUILD_DIR"
+mkdir --parents --verbose "$BUILD_DIR/chr"
+mkdir --parents --verbose "$BUILD_DIR/moz"
 
-# Create build directory if necessary
-if [ ! -d "$BUILD" ]; then
-    mkdir -p "$BUILD"
-else
-    rm -rf "$BUILD/*"
-fi
+# Copy project src to build directory
+echo "$ME: Copying project source files to build directory..."
+PROJECT_SRC_DIR=$(dirname "${MANIFEST}")
+for file in "$PROJECT_SRC_DIR/"*
+do
+    [[ $file = $BUILD_DIR ]] && continue
+    cp -r "$file" "$BUILD_DIR/chr"
+    cp -r "$file" "$BUILD_DIR/moz"
+done
 
-mkdir "$BUILD/chr"
-mkdir "$BUILD/moz"
+# Update manifest version numbers
+echo "$ME: Updating version number in manifest to $VERSION..."
+sed -i "s/\"version\": \"1\"/\"version\": \"$VERSION\"/" "$BUILD_DIR/chr/manifest.json"
+sed -i "s/\"version\": \"1\"/\"version\": \"$VERSION\"/" "$BUILD_DIR/moz/manifest_firefox.json"
 
-PROJECTFILES=$(echo "$MANIFEST" | sed 's/manifest.json/*/')
+# Package extension for chrome
+echo "$ME: Packaging extension for Chrome..."
+rm -f "$BUILD_DIR/chr/manifest_firefox.json"
+cd "$BUILD_DIR/chr"
+zip -r "$BUILD_DIR/find-chrome.zip" .
+cd "$ROOT_DIR"
 
-cp -r "$PROJECTFILES" "$BUILD/chr"
-cp -r "$PROJECTFILES" "$BUILD/moz"
-
-#
-## Package Extension for Chrome
-#cd .build
-#rm chr/_config.yml chr/build.sh chr/manifest_firefox.json
-#sed -i 's/"version": "1"/"version": ""/' manifest.json
-### TODO: zip
-#
-#
-## Package Extension for Firefox
-#rm chr/_config.yml chr/build.sh chr/manifest.json
-#mv chr/manifest_firefox.json chr/manifest.json
-## TODO: zip
+# Package extension for firefox
+echo "$ME: Packaging extension for Firefox..."
+mv "$BUILD_DIR/moz/manifest_firefox.json" "$BUILD_DIR/moz/manifest.json"
+cd "$BUILD_DIR/moz"
+zip -r "$BUILD_DIR/find-firefox.zip" .
+cd "$ROOT_DIR"
