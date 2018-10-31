@@ -195,17 +195,27 @@ function updateSavedOptions() {
     browser.storage.local.set({'options': options});
 }
 
+function getStorageKey(){
+    let key = 'previousSearch';
+    if(browser.extension.inIncognitoContext){
+        key += 'Incognito';
+    }
+    return key;
+}
+
 //Commit text in search field to local storage
 function updateSavedPreviousSearch() {
-    let payload = {'previousSearch': document.getElementById('search-field').value};
+    let payload = {};
+    payload[getStorageKey()] = document.getElementById('search-field').value;
     browser.storage.local.set(payload);
 }
 
 //Retrieve last search from local storage, set the search field text, and enable buttons if text length > 0
 function retrieveSavedLastSearch() {
-    browser.storage.local.get('previousSearch', (data) => {
-        let previousSearchText = data.previousSearch || '';
-        if(previousSearchText === '' || browser.extension.inIncognitoContext)
+    let key = getStorageKey();
+    browser.storage.local.get(key, (data) => {
+        let previousSearchText = data[key] || '';
+        if(previousSearchText === '')
             return;
 
         document.getElementById('search-field').value = previousSearchText;
