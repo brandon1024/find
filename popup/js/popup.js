@@ -11,11 +11,6 @@ let index = 0;
 
 window.onload = () => {
     //Load event listeners for popup components
-    document.getElementById('search-next-button').addEventListener('click', nextHighlight);
-    document.getElementById('search-prev-button').addEventListener('click', previousHighlight);
-    document.getElementById('close-button').addEventListener('click', closeExtension);
-    document.getElementById('search-field').addEventListener('input', updateHighlight);
-    document.getElementById('search-field').addEventListener('input', updateSavedPreviousSearch);
     document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', updateOptions);
     document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', updateOptions);
     document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', updateOptions);
@@ -27,22 +22,6 @@ window.onload = () => {
         document.getElementById('search-field').focus();
     });
 
-    document.getElementById('search-field').addEventListener('keyup', (e) => {
-        if(e.ctrlKey && e.shiftKey && e.keyCode === 13) {
-            //CTRL+SHIFT+ENTER => Enter Link
-            followLinkUnderFocus();
-            //SHIFT+ENTER => Previous Highlight (seek)
-        } else if((e.keyCode === 13 && e.shiftKey) || (e.keyCode === 114 && e.shiftKey)) {
-            previousHighlight();
-        } else if(e.keyCode === 27 || e.keyCode === 13 && e.ctrlKey) {
-            //ESC OR CTRL+ENTER => Close Extension
-            closeExtension();
-            //ENTER => Next Highlight (seek)
-        } else if (e.keyCode === 13 || e.keyCode === 114) {
-            nextHighlight();
-        }
-    }, true);
-
     document.body.addEventListener('keyup', (e) => {
         if(e.keyCode === 79 && e.ctrlKey && e.altKey) {
             //CTRL+ALT+O => Toggle Options Pane
@@ -53,11 +32,6 @@ window.onload = () => {
             toggleOptionsPane(false);
             toggleReplacePane();
         }
-    }, true);
-
-    document.getElementById('search-toggle-options-button').addEventListener('click', function() {
-        toggleReplacePane(false);
-        toggleOptionsPane();
     }, true);
 
     browser.tabs.query({'active': true, currentWindow: true}, (tabs) => {
@@ -261,91 +235,6 @@ function updateOptions() {
     updateHighlight();
 }
 
-//Toggle Options Pane
-function toggleOptionsPane() {
-    let el = document.getElementById('regex-options');
-
-    if(arguments.length === 1) {
-        if (arguments.length === 1 && arguments[0]) {
-            el.style.display = 'inherit';
-        } else if (arguments.length === 1 && !arguments[0]) {
-            el.style.display = 'none';
-        }
-
-        return;
-    }
-
-    if(el.style.display === 'none' || el.style.display === '') {
-        el.style.display = 'inherit';
-    } else {
-        el.style.display = 'none';
-    }
-}
-
-//Toggle Replace Pane
-function toggleReplacePane() {
-    let el = document.getElementById('replace-body');
-
-    if(arguments.length === 1) {
-        if (arguments[0]) {
-            el.style.display = 'inherit';
-        } else {
-            el.style.display = 'none';
-        }
-
-        return;
-    }
-
-    if(el.style.display === 'none' || el.style.display === '') {
-        el.style.display = 'inherit';
-    } else {
-        el.style.display = 'none';
-    }
-}
-
-//Show or hide red exclamation icon in the extension popup
-function showMalformedRegexIcon(flag) {
-    document.getElementById('invalid-regex-icon').style.display = flag ? 'initial' : 'none';
-}
-
-//Show or hide red exclamation icon in the extension popup
-function showOfflineFileErrorIcon(flag) {
-    document.getElementById('offline-file-search-err').style.display = flag ? 'initial' : 'none';
-}
-
-//Enable next and previous buttons
-function enableButtons() {
-    if(arguments.length === 1 && !arguments[0]) {
-        document.getElementById('search-prev-button').disabled = true;
-        document.getElementById('search-next-button').disabled = true;
-        return;
-    }
-
-    document.getElementById('search-prev-button').disabled = false;
-    document.getElementById('search-next-button').disabled = false;
-}
-
-//Enable `replace next` and `replace all` buttons
-function enableReplaceButtons() {
-    if(arguments.length === 1 && !arguments[0]) {
-        document.getElementById('replace-next-button').disabled = true;
-        document.getElementById('replace-all-button').disabled = true;
-        return;
-    }
-
-    document.getElementById('replace-next-button').disabled = false;
-    document.getElementById('replace-all-button').disabled = false;
-}
-
-//Update index text
-function updateIndexText() {
-    if(arguments.length === 0) {
-        document.getElementById('index-text').innerText = '';
-    } else if(arguments.length === 2) {
-        document.getElementById('index-text').innerText = formatNumber(arguments[0]) + ' of ' + formatNumber(arguments[1]);
-    }
-}
-
 //Display information icon on install or update
 function installedOrUpdated(details) {
     let el = null;
@@ -390,11 +279,4 @@ function installedOrUpdated(details) {
     el.addEventListener('mouseout', () => {
         timeoutHandle = window.setTimeout(timeoutFunction, 3000);
     });
-}
-
-//Formats numbers to have thousands comma delimiters
-function formatNumber(x) {
-    let parts = x.toString().split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return parts.join('.');
 }
