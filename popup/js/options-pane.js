@@ -1,12 +1,24 @@
 'use strict';
 
 /**
- *
+ * Create the Popup OptionsPane namespace.
  * */
 Find.register('Popup.OptionsPane', function (namespace) {
 
     /**
+     * Register event handlers.
+     * */
+    namespace.init = function() {
+        document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', notifyBrowserActionOptionsChange);
+        document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', notifyBrowserActionOptionsChange);
+        document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', notifyBrowserActionOptionsChange);
+        document.getElementById('max-results-slider').addEventListener('input', notifyBrowserActionOptionsChange);
+    };
+
+    /**
+     * Show or hide the options pane.
      *
+     * @param {boolean} value - Undefined or true to display the options pane, false to hide.
      * */
     namespace.show = function(value) {
         let el = document.getElementById('regex-options');
@@ -19,7 +31,9 @@ Find.register('Popup.OptionsPane', function (namespace) {
     };
 
     /**
+     * Build an object of values from the settings fields in the options pane.
      *
+     * @return {object} an options object.
      * */
     namespace.getOptions = function() {
         let findByRegex = document.getElementById('regex-option-regex-disable-toggle').checked;
@@ -40,7 +54,9 @@ Find.register('Popup.OptionsPane', function (namespace) {
     };
 
     /**
+     * Apply an object representing a set of options to the options pane.
      *
+     * @param {object} options - The options to apply to the options pane.
      * */
     namespace.applyOptions = function(options) {
         document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
@@ -58,7 +74,18 @@ Find.register('Popup.OptionsPane', function (namespace) {
     };
 
     /**
+     * Notify the browser action that the user has changed the settings through the options pane.
+     * */
+    function notifyBrowserActionOptionsChange() {
+        let options = namespace.getOptions();
+
+        Find.Popup.BrowserAction.updateOptions(options);
+    }
+
+    /**
+     * Build an options object from individual fields.
      *
+     * @return {object} an options object.
      * */
     function buildOptions(findByRegex, matchCase, persistentHighlights, maxResults) {
         return {

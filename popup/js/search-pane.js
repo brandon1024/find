@@ -1,37 +1,49 @@
 'use strict';
 
 /**
- *
+ * Create the Popup SearchPane namespace.
  * */
 Find.register('Popup.SearchPane', function (namespace) {
 
+    /**
+     * Register event handlers.
+     * */
     namespace.init = function() {
         document.getElementById('search-field').addEventListener('keyup', (e) => {
-            if(e.ctrlKey && e.shiftKey && e.keyCode === 13) {
+            if(e.ctrlKey && e.shiftKey && e.key === 'Enter') {
                 //CTRL+SHIFT+ENTER => Enter Link
-                followLinkUnderFocus();
+                Find.Popup.BrowserAction.followLink();
+            } else if((e.key === 'Enter' && e.shiftKey) || (e.key === 'F3' && e.shiftKey)) {
                 //SHIFT+ENTER => Previous Highlight (seek)
-            } else if((e.keyCode === 13 && e.shiftKey) || (e.keyCode === 114 && e.shiftKey)) {
-                previousHighlight();
-            } else if(e.keyCode === 27 || e.keyCode === 13 && e.ctrlKey) {
+                Find.Popup.BrowserAction.seekBackwards();
+            } else if(e.key === 'Escape' || (e.key === 'Enter' && e.ctrlKey)) {
                 //ESC OR CTRL+ENTER => Close Extension
-                closeExtension();
+                Find.Popup.BrowserAction.closeExtension();
+            } else if (e.key === 'Enter' || e.key === 'F3') {
                 //ENTER => Next Highlight (seek)
-            } else if (e.keyCode === 13 || e.keyCode === 114) {
-                nextHighlight();
+                Find.Popup.BrowserAction.seekForward();
             }
         }, true);
 
+        document.getElementById('search-field').addEventListener('input', () => {
+            Find.Popup.BrowserAction.updateSearch();
+        });
+
+        document.getElementById('search-next-button').addEventListener('click', () => {
+            Find.Popup.BrowserAction.seekForward();
+        });
+
+        document.getElementById('search-prev-button').addEventListener('click', () => {
+            Find.Popup.BrowserAction.seekBackwards();
+        });
+
         document.getElementById('search-toggle-options-button').addEventListener('click', () => {
-            toggleReplacePane(false);
-            toggleOptionsPane();
+            Find.Popup.OptionsPane.show();
         }, true);
 
-        document.getElementById('search-next-button').addEventListener('click', nextHighlight);
-        document.getElementById('search-prev-button').addEventListener('click', previousHighlight);
-        document.getElementById('close-button').addEventListener('click', closeExtension);
-        document.getElementById('search-field').addEventListener('input', updateHighlight);
-        document.getElementById('search-field').addEventListener('input', updateSavedPreviousSearch);
+        document.getElementById('close-button').addEventListener('click', () => {
+            Find.Popup.BrowserAction.closeExtension();
+        });
     };
 
     /**
@@ -41,23 +53,8 @@ Find.register('Popup.SearchPane', function (namespace) {
      * Otherwise disables the buttons.
      * */
     namespace.enableButtons = function(enable) {
-        if(enable !== undefined && !enable) {
-            document.getElementById('search-prev-button').disabled = true;
-            document.getElementById('search-next-button').disabled = true;
-            return;
-        }
-
-        document.getElementById('search-prev-button').disabled = false;
-        document.getElementById('search-next-button').disabled = false;
-    };
-
-    /**
-     * Set the search field text to the given value.
-     *
-     * @param {string} text - The text to place in the search field.
-     * */
-    namespace.setSearchFieldText = function(text) {
-        document.getElementById('search-field').value = text;
+        document.getElementById('search-prev-button').disabled = enable !== undefined && !enable;
+        document.getElementById('search-next-button').disabled = enable !== undefined && !enable;
     };
 
     /**
@@ -70,6 +67,15 @@ Find.register('Popup.SearchPane', function (namespace) {
     };
 
     /**
+     * Set the search field text to the given value.
+     *
+     * @param {string} text - The text to place in the search field.
+     * */
+    namespace.setSearchFieldText = function(text) {
+        document.getElementById('search-field').value = text;
+    };
+
+    /**
      * Place focus on the search field.
      * */
     namespace.focusSearchField = function() {
@@ -77,7 +83,7 @@ Find.register('Popup.SearchPane', function (namespace) {
     };
 
     /**
-     * Select all the text in the search field text field.
+     * Select all the text in the search field.
      * */
     namespace.selectSearchField = function() {
         document.getElementById('search-field').select();
@@ -99,6 +105,25 @@ Find.register('Popup.SearchPane', function (namespace) {
      * */
     namespace.clearIndexText = function() {
         document.getElementById('index-text').innerText = '';
+    };
+
+    /**
+     * Display an error icon in the index text to notify the user that the regex is invalid.
+     *
+     * @param {boolean} flag - Whether or not to display the icon.
+     * */
+    namespace.showMalformedRegexIcon = function(flag) {
+        document.getElementById('invalid-regex-icon').style.display = flag ? 'initial' : 'none';
+    };
+
+    /**
+     * Display an error icon in the index text to notify the user that the extension does not have
+     * permission to search in offline files.
+     *
+     * @param {boolean} flag - Whether or not to display the icon.
+     * */
+    namespace.showOfflineFileErrorIcon = function(flag) {
+        document.getElementById('offline-file-search-err').style.display = flag ? 'initial' : 'none';
     };
 
     /**

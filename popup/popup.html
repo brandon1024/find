@@ -7,6 +7,10 @@
     <script type="text/javascript" src="js/storage.js"></script>
     <script type="text/javascript" src="js/background-proxy.js"></script>
     <script type="text/javascript" src="js/browser-action.js"></script>
+    <script type="text/javascript" src="js/search-pane.js"></script>
+    <script type="text/javascript" src="js/options-pane.js"></script>
+    <script type="text/javascript" src="js/replace-pane.js"></script>
+    <script type="text/javascript" src="js/message-pane.js"></script>
     <link rel="stylesheet" href="css/extension.css"/>
     <link rel="stylesheet" href="css/replacepane.css"/>
     <link rel="stylesheet" href="css/messagepane.css"/>
@@ -19,7 +23,6 @@
                 <input class="field" id="search-field" type="text" name="search" title="Search Field" autocomplete="off"/>
                 <span class="def-font" id="index-text"></span>
                 <img class="extension-error-icon" id="invalid-regex-icon" src="/resources/exclamation.svg" title="Malformed Regex:&#013;The regular expression entered is not acceptable, as it is either:&#013;&#09;- an invalid regular expression, or&#013;&#09;- not supported according to the Javascript RegExp specification"/>
-                <img class="extension-error-icon" id="offline-file-search-err" src="/resources/exclamation.svg" title="Offline File Search:&#013;Something went wrong internally while trying to search this offline file. Luckily, we might know how to fix this. Try this:&#013;&#09;Navigate to 'chrome://extensions'.&#013;&#09;Locate the checkbox 'Allow access to file URLs' under the {find+} extension."/>
                 <img class="extension-error-icon" id="install-information" src="/resources/question-circle.svg"
                      title="Welcome and thanks for installing our extension! Here are some tips to get you started:&#013;&#09;ENTER : Advance to the next occurrence of the regular expression in the page&#013;&#09;SHIFT-ENTER : Return to the previous occurrence of the regular expression in the page&#013;&#09;CTRL-ALT-O : Expand or Collapse Options Pane&#013;&#09;CTRL-ALT-R : Expand or Collapse Replace Text Pane&#013;&#09;CTRL-ENTER or ESC : Close the extension popup"/>
                 <img class="extension-error-icon" id="update-information" src="/resources/question-circle.svg"
@@ -63,15 +66,22 @@
                     <img id="exclamation-icon" src="/resources/exclamation.svg"/>
                 </td>
                 <td>
-                    <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to use the extension in the Chrome
-                    Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection
-                    of code. This is a security limitation across all Chrome extensions.</span>
-                    <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying to
-                    use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing
-                    here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.</span>
-                    <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the extension in a
-                    PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF.
-                    We recommend using the native tool instead.</span>
+                    <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to
+                        use the extension in the Chrome Web Store. Developers at Google have blocked extensions from
+                        executing here to prevent the malicious injection of code. This is a security limitation across
+                        all Chrome extensions.</span>
+                    <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying
+                        to use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions
+                        from executing here to prevent the malicious injection of code. This is a security limitation
+                        across all Chrome extensions.</span>
+                    <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the
+                        extension in a PDF document. Unfortunately, due to the complexity of the PDF viewer our
+                        extension is not able to handle searching through a PDF. We recommend using the native tool
+                        instead.</span>
+                    <span id="extension-limitation-offline-file-search-text">Something went wrong internally while
+                        trying to search this offline file. Luckily, we might know how to fix this. Navigate to
+                        'chrome://extensions' and locate the checkbox 'Allow access to file URLs' under the {find+}
+                        extension.</span>
                 </td>
             </tr>
         </table>
