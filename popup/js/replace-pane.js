@@ -3,12 +3,12 @@
 /**
  * Create the Popup ReplacePane namespace.
  * */
-Find.register('Popup.ReplacePane', function (namespace) {
+Find.register('Popup.ReplacePane', function (self) {
 
     /**
      * Register event handlers.
      * */
-    namespace.init = function() {
+    self.init = function() {
         document.getElementById('replace-next-button').addEventListener('click', () => {
             Find.Popup.BrowserAction.replaceNext();
         });
@@ -23,7 +23,7 @@ Find.register('Popup.ReplacePane', function (namespace) {
      *
      * @param {boolean} value - True to show the pane, false to hide the pane.
      * */
-    namespace.show = function(value) {
+    self.show = function(value) {
         let el = document.getElementById('replace-body');
 
         if(value === undefined || value) {
@@ -38,7 +38,7 @@ Find.register('Popup.ReplacePane', function (namespace) {
      *
      * @return {string} the text in the replace field.
      * */
-    namespace.getReplaceFieldText = function() {
+    self.getReplaceFieldText = function() {
         return document.getElementById('replace-field').value;
     };
 
@@ -47,21 +47,21 @@ Find.register('Popup.ReplacePane', function (namespace) {
      *
      * @param {string} text - The text to place in the replace field.
      * */
-    namespace.setReplaceFieldText = function(text) {
+    self.setReplaceFieldText = function(text) {
         document.getElementById('replace-field').value = text;
     };
 
     /**
      * Place focus on the replace field.
      * */
-    namespace.focusSearchField = function() {
+    self.focusSearchField = function() {
         document.getElementById('replace-field').focus();
     };
 
     /**
      * Select all the text in the replace field.
      * */
-    namespace.selectSearchField = function() {
+    self.selectSearchField = function() {
         document.getElementById('replace-field').select();
     };
 
@@ -70,7 +70,7 @@ Find.register('Popup.ReplacePane', function (namespace) {
      *
      * @param {boolean} enable - Undefined or true to enable the buttons, false to disable the buttons.
      * */
-    namespace.enableButtons = function(enable) {
+    self.enableButtons = function(enable) {
         document.getElementById('replace-next-button').disabled = enable !== undefined && !enable;
         document.getElementById('replace-all-button').disabled = enable !== undefined && !enable;
     }

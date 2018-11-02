@@ -3,12 +3,12 @@
 /**
  * Create the Popup SearchPane namespace.
  * */
-Find.register('Popup.SearchPane', function (namespace) {
+Find.register('Popup.SearchPane', function (self) {
 
     /**
      * Register event handlers.
      * */
-    namespace.init = function() {
+    self.init = function() {
         document.getElementById('search-field').addEventListener('keyup', (e) => {
             if(e.ctrlKey && e.shiftKey && e.key === 'Enter') {
                 //CTRL+SHIFT+ENTER => Enter Link
@@ -21,7 +21,7 @@ Find.register('Popup.SearchPane', function (namespace) {
                 Find.Popup.BrowserAction.closeExtension();
             } else if (e.key === 'Enter' || e.key === 'F3') {
                 //ENTER => Next Highlight (seek)
-                Find.Popup.BrowserAction.seekForward();
+                Find.Popup.BrowserAction.seekForwards();
             }
         }, true);
 
@@ -30,7 +30,7 @@ Find.register('Popup.SearchPane', function (namespace) {
         });
 
         document.getElementById('search-next-button').addEventListener('click', () => {
-            Find.Popup.BrowserAction.seekForward();
+            Find.Popup.BrowserAction.seekForwards();
         });
 
         document.getElementById('search-prev-button').addEventListener('click', () => {
@@ -52,7 +52,7 @@ Find.register('Popup.SearchPane', function (namespace) {
      * @param {boolean} enable - Optional boolean value. If true or undefined, enables the buttons.
      * Otherwise disables the buttons.
      * */
-    namespace.enableButtons = function(enable) {
+    self.enableButtons = function(enable) {
         document.getElementById('search-prev-button').disabled = enable !== undefined && !enable;
         document.getElementById('search-next-button').disabled = enable !== undefined && !enable;
     };
@@ -62,7 +62,7 @@ Find.register('Popup.SearchPane', function (namespace) {
      *
      * @return {string} the text in the search field.
      * */
-    namespace.getSearchFieldText = function() {
+    self.getSearchFieldText = function() {
         return document.getElementById('search-field').value;
     };
 
@@ -71,21 +71,21 @@ Find.register('Popup.SearchPane', function (namespace) {
      *
      * @param {string} text - The text to place in the search field.
      * */
-    namespace.setSearchFieldText = function(text) {
+    self.setSearchFieldText = function(text) {
         document.getElementById('search-field').value = text;
     };
 
     /**
      * Place focus on the search field.
      * */
-    namespace.focusSearchField = function() {
+    self.focusSearchField = function() {
         document.getElementById('search-field').focus();
     };
 
     /**
      * Select all the text in the search field.
      * */
-    namespace.selectSearchField = function() {
+    self.selectSearchField = function() {
         document.getElementById('search-field').select();
     };
 
@@ -95,7 +95,7 @@ Find.register('Popup.SearchPane', function (namespace) {
      * @param {number} occurrence - The index of the current occurrence
      * @param {number} count - The total number of occurrences
      * */
-    namespace.updateIndexText = function(occurrence, count) {
+    self.updateIndexText = function(occurrence, count) {
         document.getElementById('index-text').innerText = formatNumber(occurrence)
             + ' of ' + formatNumber(count);
     };
@@ -103,7 +103,7 @@ Find.register('Popup.SearchPane', function (namespace) {
     /**
      * Clear the search occurrence index text.
      * */
-    namespace.clearIndexText = function() {
+    self.clearIndexText = function() {
         document.getElementById('index-text').innerText = '';
     };
 
@@ -112,7 +112,7 @@ Find.register('Popup.SearchPane', function (namespace) {
      *
      * @param {boolean} flag - Whether or not to display the icon.
      * */
-    namespace.showMalformedRegexIcon = function(flag) {
+    self.showMalformedRegexIcon = function(flag) {
         document.getElementById('invalid-regex-icon').style.display = flag ? 'initial' : 'none';
     };
 
@@ -122,7 +122,7 @@ Find.register('Popup.SearchPane', function (namespace) {
      *
      * @param {boolean} flag - Whether or not to display the icon.
      * */
-    namespace.showOfflineFileErrorIcon = function(flag) {
+    self.showOfflineFileErrorIcon = function(flag) {
         document.getElementById('offline-file-search-err').style.display = flag ? 'initial' : 'none';
     };
 

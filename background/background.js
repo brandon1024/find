@@ -45,7 +45,7 @@ browser.runtime.onInstalled.addListener((details) => {
 });
 
 browser.runtime.onConnect.addListener((port) => {
-    if(port.name !== 'popup_to_backend_port') {
+    if(port.name !== 'popup_to_background_port') {
         return;
     }
 

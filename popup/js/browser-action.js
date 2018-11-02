@@ -3,7 +3,7 @@
 /**
  * Create the Popup BrowserAction namespace.
  * */
-Find.register('Popup.BrowserAction', function (namespace) {
+Find.register('Popup.BrowserAction', function (self) {
     let initialized = false;
     let index = 0;
     let options = {
@@ -16,7 +16,9 @@ Find.register('Popup.BrowserAction', function (namespace) {
     /**
      * Register event handlers and initialize extension browser action.
      * */
-    namespace.init = function() {
+    self.init = function() {
+        Find.Popup.BackgroundProxy.openConnection();
+
         Find.Popup.Storage.retrieveOptions((data) => {
             if(data) {
                 options = data;
@@ -24,10 +26,6 @@ Find.register('Popup.BrowserAction', function (namespace) {
 
             Find.Popup.OptionsPane.applyOptions(options);
             Find.Popup.BrowserAction.updateOptions(options);
-        });
-
-        document.getElementById('popup-body').addEventListener('click', () => {
-            Find.Popup.SearchPane.focusSearchField();
         });
 
         document.body.addEventListener('keyup', (e) => {
@@ -42,10 +40,14 @@ Find.register('Popup.BrowserAction', function (namespace) {
             }
         }, true);
 
-        browser.tabs.query({'active': true, currentWindow: true}, (tabs) => {
+        document.getElementById('popup-body').addEventListener('click', () => {
+            Find.Popup.SearchPane.focusSearchField();
+        });
+
+        Find.browser.tabs.query({'active': true, currentWindow: true}, (tabs) => {
             //Todo: move this logic into the content scripts
             function getSelectedOrLastSearch() {
-                browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
+                Find.browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
                     if(selection[0]) {
                         Find.Popup.SearchPane.setSearchFieldText(selection[0]);
                         Find.Popup.SearchPane.select();
@@ -66,24 +68,24 @@ Find.register('Popup.BrowserAction', function (namespace) {
             let url = tabs[0].url;
             if(isWithinChromeNamespace(url)) {
                 Find.Popup.MessagePane.showChromeNamespaceErrorMessage();
-                Find.Popup.ReplacePane.enableButtons(false);
-                Find.Popup.SearchPane.enableButtons(false);
+                Find.Popup.BrowserAction.error('forbidden_url');
             } else if(isWithinWebStoreNamespace(url)) {
                 Find.Popup.MessagePane.showChromeWebStoreErrorMessage();
+                Find.Popup.BrowserAction.error('forbidden_url');
             } else if(isPDF(url)) {
                 Find.Popup.MessagePane.showPDFSearchErrorMessage();
+                Find.Popup.BrowserAction.error('pdf_unsupported');
             } else if(isLocalFile(url)) {
-                // browser.tabs.sendMessage(tabs[0].id, {action: 'poll'}, (response) => {
-                //     if(!response || !response.success) {
-                //         Find.Popup.MessagePane.showOfflineFileErrorMessage();
-                //         updateIndexText();
-                //         enableButtons(false);
-                //     } else {
-                //         getSelectedOrLastSearch();
-                //     }
-                // });
+                Find.browser.tabs.sendMessage(tabs[0].id, {action: 'poll'}, (response) => {
+                    if(!response || !response.success) {
+                        Find.Popup.MessagePane.showOfflineFileErrorMessage();
+                        Find.Popup.BrowserAction.error('offline_file');
+                    } else {
+                        getSelectedOrLastSearch();
+                    }
+                });
             } else {
-                //getSelectedOrLastSearch();
+                getSelectedOrLastSearch();
             }
         });
     };
@@ -91,7 +93,7 @@ Find.register('Popup.BrowserAction', function (namespace) {
     /**
      * Close the extension.
      * */
-    namespace.closeExtension = function() {
+    self.closeExtension = function() {
         Find.Popup.BackgroundProxy.closeConnection();
         window.close();
     };
@@ -99,17 +101,20 @@ Find.register('Popup.BrowserAction', function (namespace) {
     /**
      * Update the current search query.
      * */
-    namespace.updateSearch = function() {
+    self.updateSearch = function() {
         initialized = true;
 
         let regex = Find.Popup.SearchPane.getSearchFieldText();
+        Find.Popup.Storage.saveHistory(regex);
         Find.Popup.BackgroundProxy.postMessage({action: 'update', regex: regex, options: options});
     };
 
     /**
+     * Seek forward to the next occurrence of the regex.
      *
+     * If the search has not yet been initialized, it will invoke updateSearch().
      * */
-    namespace.seekForward = function() {
+    self.seekForwards = function() {
         if(!initialized) {
             Find.Popup.BrowserAction.updateSearch();
             return;
@@ -120,9 +125,11 @@ Find.register('Popup.BrowserAction', function (namespace) {
     };
 
     /**
+     * Seek backwards to the previous occurrence of the regex.
      *
+     * If the search has not yet been initialized, it will invoke updateSearch().
      * */
-    namespace.seekBackwards = function() {
+    self.seekBackwards = function() {
         if(!initialized) {
             Find.Popup.BrowserAction.updateSearch();
             return;
@@ -133,25 +140,25 @@ Find.register('Popup.BrowserAction', function (namespace) {
     };
 
     /**
-     *
+     * Replace the current occurrence with the text in the replace field, and seek to the next occurrence.
      * */
-    namespace.replaceNext = function() {
+    self.replaceNext = function() {
         let replaceWith = Find.Popup.ReplacePane.getReplaceFieldText();
         Find.Popup.BackgroundProxy.postMessage({action: 'replace_next', index: index, replaceWith: replaceWith, options: options});
     };
 
     /**
-     *
+     * Replace all occurrences with the text in the replace field.
      * */
-    namespace.replaceAll = function() {
+    self.replaceAll = function() {
         let replaceWith = Find.Popup.ReplacePane.getReplaceFieldText();
         Find.Popup.BackgroundProxy.postMessage({action: 'replace_all', replaceWith: replaceWith, options: options});
     };
 
     /**
-     *
+     * Follow the link at the current search index.
      * */
-    namespace.followLink = function() {
+    self.followLink = function() {
         if(!initialized) {
             Find.Popup.BrowserAction.updateSearch();
             return;
@@ -161,17 +168,21 @@ Find.register('Popup.BrowserAction', function (namespace) {
     };
 
     /**
-     *
+     * Update the options, save them to the local storage, and update the search.
      * */
-    namespace.updateOptions = function(newOptions) {
+    self.updateOptions = function(newOptions) {
         options = newOptions;
+        Find.Popup.Storage.saveOptions(newOptions);
         Find.Popup.BrowserAction.updateSearch();
     };
 
     /**
+     * Update the current search index. Disable buttons if the total is zero.
      *
+     * @param {number} newIndex - The new occurrence index.
+     * @param {number} total - The total number of occurrences.
      * */
-    namespace.updateIndex = function(newIndex, total) {
+    self.updateIndex = function(newIndex, total) {
         index = newIndex;
 
         Find.Popup.SearchPane.updateIndexText(index, total);
@@ -182,14 +193,19 @@ Find.register('Popup.BrowserAction', function (namespace) {
     };
 
     /**
+     * Reset the index, disable buttons, clear the index text.
      *
+     * If the reason is 'invalid_regex', the malformed regex icon is shown.
+     *
+     * @param {string} reason - The cause of the error.
      * */
-    namespace.error = function(reason) {
+    self.error = function(reason) {
         index = 0;
 
         Find.Popup.SearchPane.enableButtons(false);
-        Find.Popup.SearchPane.clearIndexText();
         Find.Popup.ReplacePane.enableButtons(false);
+
+        Find.Popup.SearchPane.clearIndexText();
         Find.Popup.SearchPane.showMalformedRegexIcon(reason === 'invalid_regex');
     };
 
@@ -204,7 +220,7 @@ Find.register('Popup.BrowserAction', function (namespace) {
      *
      * @param {object} details - A simple object containing a single key 'reason', with the value 'install' or 'update'.
      * */
-    namespace.showInstallUpdateDetails = function(details) {
+    self.showInstallUpdateDetails = function(details) {
         let el = null;
         if(details.reason === 'install') {
             el = document.getElementById('install-information');

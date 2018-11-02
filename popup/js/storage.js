@@ -3,7 +3,7 @@
 /**
  * Create the Popup Storage namespace.
  * */
-Find.register('Popup.Storage', function (namespace) {
+Find.register('Popup.Storage', function (self) {
     const HISTORY_KEY = 'history';
     const OPTIONS_KEY = 'options';
 
@@ -15,7 +15,7 @@ Find.register('Popup.Storage', function (namespace) {
      * @paran {function} callback - The callback function to handle the data.
      * @return {object} The search history, or null if it does not exist or cannot be retrieved.
      * */
-    namespace.retrieveHistory = function(callback) {
+    self.retrieveHistory = function(callback) {
         if(Find.incognito) {
             return null;
         }
@@ -33,7 +33,7 @@ Find.register('Popup.Storage', function (namespace) {
      * @paran {function} callback - The callback function to handle the data.
      * @return {object} The search history, or null if it does not exist or cannot be retrieved.
      * */
-    namespace.retrieveOptions = function(callback) {
+    self.retrieveOptions = function(callback) {
         if(Find.incognito) {
             return null;
         }
@@ -50,7 +50,7 @@ Find.register('Popup.Storage', function (namespace) {
      * @paran {function} callback - The callback function to execute once the
      * save operation is complete.
      * */
-    namespace.saveHistory = function(data, callback) {
+    self.saveHistory = function(data, callback) {
         if(Find.incognito) {
             if(callback) {
                 callback();
@@ -72,7 +72,7 @@ Find.register('Popup.Storage', function (namespace) {
      * @paran {function} callback - The callback function to execute once the
      * save operation is complete.
      * */
-    namespace.saveOptions = function(data, callback) {
+    self.saveOptions = function(data, callback) {
         if(Find.incognito) {
             if(callback) {
                 callback();

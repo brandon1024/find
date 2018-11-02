@@ -3,12 +3,12 @@
 /**
  * Create the Popup OptionsPane namespace.
  * */
-Find.register('Popup.OptionsPane', function (namespace) {
+Find.register('Popup.OptionsPane', function (self) {
 
     /**
      * Register event handlers.
      * */
-    namespace.init = function() {
+    self.init = function() {
         document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', notifyBrowserActionOptionsChange);
         document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', notifyBrowserActionOptionsChange);
         document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', notifyBrowserActionOptionsChange);
@@ -20,7 +20,7 @@ Find.register('Popup.OptionsPane', function (namespace) {
      *
      * @param {boolean} value - Undefined or true to display the options pane, false to hide.
      * */
-    namespace.show = function(value) {
+    self.show = function(value) {
         let el = document.getElementById('regex-options');
 
         if(value === undefined || value) {
@@ -35,7 +35,7 @@ Find.register('Popup.OptionsPane', function (namespace) {
      *
      * @return {object} an options object.
      * */
-    namespace.getOptions = function() {
+    self.getOptions = function() {
         let findByRegex = document.getElementById('regex-option-regex-disable-toggle').checked;
         let matchCase = document.getElementById('regex-option-case-insensitive-toggle').checked;
         let persistentHighlights = document.getElementById('regex-option-persistent-highlights-toggle').checked;
@@ -58,7 +58,7 @@ Find.register('Popup.OptionsPane', function (namespace) {
      *
      * @param {object} options - The options to apply to the options pane.
      * */
-    namespace.applyOptions = function(options) {
+    self.applyOptions = function(options) {
         document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
         document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
         document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
@@ -77,7 +77,7 @@ Find.register('Popup.OptionsPane', function (namespace) {
      * Notify the browser action that the user has changed the settings through the options pane.
      * */
     function notifyBrowserActionOptionsChange() {
-        let options = namespace.getOptions();
+        let options = self.getOptions();
 
         Find.Popup.BrowserAction.updateOptions(options);
     }

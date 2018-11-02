@@ -7,22 +7,22 @@
  * his book JavaScript Patterns.
  * */
 const Find = (function () {
-    const applicationNamespace = {};
+    const self = {};
 
-    applicationNamespace.browserId = (() => {
-        if(typeof window.browser !== "undefined") {
-            return "Firefox";
+    self.browserId = (() => {
+        if(typeof window.browser !== 'undefined') {
+            return 'Firefox';
         } else {
-            return "Chrome";
+            return 'Chrome';
         }
     })();
 
-    applicationNamespace.browser = (() => {
+    self.browser = (() => {
         return window.chrome || window.browser;
     })();
 
-    applicationNamespace.incognito = (() => {
-        return browser.extension.inIncognitoContext;
+    self.incognito = (() => {
+        return self.browser.extension.inIncognitoContext;
     })();
 
     /**
@@ -43,9 +43,9 @@ const Find = (function () {
      * @param {function} callback - A function that initializes the namespace.
      * @return the namespace
      * */
-    applicationNamespace.register = function(path, callback) {
+    self.register = function(path, callback) {
         let pathKeys = path.split('.');
-        let parent = applicationNamespace;
+        let parent = self;
 
         for(let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
             let key = pathKeys[keyIndex];
@@ -58,7 +58,7 @@ const Find = (function () {
 
         callback(parent);
         if(parent && isFunction(parent.init)) {
-            if(document.readyState === "complete") {
+            if(document.readyState === 'complete') {
                 parent.init(parent);
             } else {
                 window.addEventListener('load', () => {
@@ -76,9 +76,9 @@ const Find = (function () {
      * @param {string} path - The namespace path.
      * @return the namespace.
      * */
-    applicationNamespace.getContext = function(path) {
+    self.getContext = function(path) {
         let pathKeys = path.split('.');
-        let parent = applicationNamespace;
+        let parent = self;
 
         for(let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
             let key = pathKeys[keyIndex];
@@ -103,5 +103,5 @@ const Find = (function () {
         return !!(obj && obj.constructor && obj.call && obj.apply);
     }
 
-    return applicationNamespace;
+    return self;
 })();
