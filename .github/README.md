@@ -15,26 +15,9 @@ The idea to build this tool spawned as a response to poorly designed or dysfunct
 ## Getting Started
 The **{find+}** extension is available through the Chrome Web Store and through the Firefox Add-ons Store.
 
-<img src="chrome-icon.png" width="32/> Download the extension here: [find+ | Regex Find-in-Page Tool](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
-<img src="firefox-icon.png" width="32/> Download the extension here: [{find+} – Get this Extension for 🦊 Firefox](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
+<img src="chrome-icon.png" width="16"/> Download the extension here: [find+ | Regex Find-in-Page Tool](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
 
-Ready for extension development? You can also install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
-
-Before you begin, ensure that you install the extension from the `master` branch. All other branches are under active development, which may not be stable.
-
-First, you will need to clone the repository to your local machine. You can do this by clicking the green `Clone or Download` button in GitHub. If you are comfortable using git, you can copy the HTTPS clone link to your clipboard and clone the repository to a location on your local machine by running the following command in the terminal:
-
-```
-cd <directory you want to clone to>
-git clone <clone link from clipboard>
-```
-<sup>Note: If you are using a Windows machine, you may need to install git [here](https://git-for-windows.github.io/).</sup>
-
-Otherwise, you can click `Download ZIP` and extract the source files to a location on your computer. Ensure you are viewing the `master` branch.
-
-To install the extension in Chrome, navigate to `chrome://extensions`. Enabling Developer Mode will show a button to `Load Unpacked`, which you can use to navigate to the parent folder of the extension. Yay! You installed the extension!
-
-<img src="installation.png"/>
+<img src="firefox-icon.png" width="16"/> Download the extension here: [{find+} – Get this Extension for 🦊 Firefox](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
 
 ## Keyboard Shortcuts
 To open the extension popup using a keyboard shortcut, you must first assign a keyboard shortcut to the extension through the Chrome settings. You can do this by following these steps:
@@ -83,6 +66,34 @@ See an issue we may have missed, or an idea for a new feature? Log an issue! We 
 
 ## Contributing
 Interested in contributing to **{find+}**? See [CONTRIBUTING](CONTRIBUTING.md).
+
+Ready for extension development? These steps will help you get started.
+
+Before you begin, you will need to fork your own copy of the find+ repository and clone the repository to your local machine. You can do this by clicking the green `Clone or Download` button in GitHub. Copy the SSH clone link to your clipboard and clone the repository to a location on your local machine by running the following command in the terminal:
+
+```
+cd <directory you want to clone to>
+git clone <clone link from clipboard>
+```
+<sup>Note: If you are using a Windows machine, you may need to install git [here](https://git-for-windows.github.io/).</sup>
+
+New features and improvents should be based off the `master` branch. All other branches are under active development, which may not be stable.
+
+To install the extension in Chrome to test your changes, navigate to `chrome://extensions`. Enabling Developer Mode will show a button to `Load Unpacked`, which you can use to navigate to the parent folder of the extension.
+
+<img src="installation.png"/>
+
+Before testing your changes in Firefox, you will first need to delete the Chrome manifest file `manifest.json`, and rename the firefox manifest file from `manifest_firefox.json` to `manifest.json`. Then, to install the extension in Firefox to test your changes, navigate to `about:debugging#addons`. Click `Load Temporary Add-on...` and select the `manifest.json` file.
+
+You can also use the build tool to package the extension for you. To package the extension:
+```
+./build.sh -m <path to manifest> -v <new version number> -o <build location>
+```
+
+Example:
+```
+./build.sh -m manifest.json -v 1.4.4 -o .build
+```
 
 ## Authors
 |[<img src="https://avatars3.githubusercontent.com/u/22732449?v=3&s=460" width="128">](https://github.com/brandon1024)|[<img src="https://avatars2.githubusercontent.com/u/27076448?v=3&s=460" width="128">](https://github.com/MikeWalz11) | [<img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" width="128">](https://github.com/brandon1024/find)
