@@ -59,10 +59,10 @@ const Find = (function () {
         callback(parent);
         if(parent && isFunction(parent.init)) {
             if(document.readyState === 'complete') {
-                parent.init(parent);
+                parent.init();
             } else {
                 window.addEventListener('load', () => {
-                    parent.init(parent);
+                    parent.init();
                 }, { once: true });
             }
         }

@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 //Support Chrome and Firefox
-window.browser_id = typeof browser !== "undefined" ? "Firefox" : "Chrome";
+window.browser_id = typeof browser !== 'undefined' ? 'Firefox' : 'Chrome';
 window.browser = (() => {
     return window.chrome || window.browser;
 })();
@@ -16,7 +16,7 @@ let installed = null;
 
 //Inject content scripts into pages on installed (not performed automatically in Chrome)
 browser.runtime.onInstalled.addListener((details) => {
-    if(browser_id === "Firefox") {
+    if(browser_id === 'Firefox') {
         return;
     }
 
@@ -50,7 +50,7 @@ browser.runtime.onConnect.addListener((port) => {
     }
 
     if(installed) {
-        port.postMessage({action: "install", details: installed.details});
+        port.postMessage({action: 'install', details: installed.details});
         installed = null;
     }
 
@@ -59,7 +59,7 @@ browser.runtime.onConnect.addListener((port) => {
 
         //Invoke action on message from popup script
         port.onMessage.addListener((message) => {
-            invokeAction(message.action, port, tabs[0].id, message);
+            invokeAction(message.action, port, tabs[0], message);
         });
 
         //Handle extension close
@@ -156,19 +156,21 @@ browser.omnibox.onInputEntered.addListener(() => {
 });
 
 //Dispatch action function
-function invokeAction(action, port, tabID, message) {
+function invokeAction(action, port, tab, message) {
     if(action === 'update') {
-        actionUpdate(port, tabID, message);
+        actionUpdate(port, tab.id, message);
     } else if(action === 'next') {
-        actionNext(port, tabID, message);
+        actionNext(port, tab.id, message);
     } else if(action === 'previous') {
-        actionPrevious(port, tabID, message);
+        actionPrevious(port, tab.id, message);
     } else if(action === 'replace_next') {
-        replaceNext(port, tabID, message);
+        replaceNext(port, tab.id, message);
     } else if(action === 'replace_all') {
-        replaceAll(port, tabID, message);
+        replaceAll(port, tab.id, message);
     } else if(action === 'follow_link') {
-        followLinkUnderFocus(port, tabID);
+        followLinkUnderFocus(port, tab.id);
+    } else if(action === 'browser_action_init') {
+        initializeBrowserAction(port, tab);
     }
 }
 
@@ -185,12 +187,12 @@ function actionUpdate(port, tabID, message) {
 
             //If searching by string, escape all regex metacharacters
             if(!options.find_by_regex) {
-                regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
             }
 
             //Ensure non-empty search
             if(regex.length === 0) {
-                port.postMessage({action: "empty_regex"});
+                port.postMessage({action: 'empty_regex'});
                 browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
                 return;
             }
@@ -230,14 +232,14 @@ function actionUpdate(port, tabID, message) {
             }
 
             port.postMessage({
-                action: "index_update",
+                action: 'index_update',
                 index: viewableIndex,
                 total: viewableTotal
             });
         }
         catch(e) {
             console.error(e);
-            port.postMessage({action: "invalid_regex", error: e.message});
+            port.postMessage({action: 'invalid_regex', error: e.message});
         }
     });
 }
@@ -265,7 +267,7 @@ function actionNext(port, tabID, message) {
     let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
     let viewableTotal = (indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length;
     port.postMessage({
-        action: "index_update",
+        action: 'index_update',
         index: viewableIndex,
         total: viewableTotal
     });
@@ -298,7 +300,7 @@ function actionPrevious(port, tabID, message) {
     let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
     let viewableTotal = (indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length;
     port.postMessage({
-        action: "index_update",
+        action: 'index_update',
         index: viewableIndex,
         total: viewableTotal
     });
@@ -352,6 +354,29 @@ function replaceAll(port, tabID, message) {
 function followLinkUnderFocus(port, tabID) {
     browser.tabs.sendMessage(tabID, {action: 'follow_link'});
     port.postMessage({action: 'close'});
+}
+
+//Build all the information required to initialize the browser extension.
+function initializeBrowserAction(port, tab) {
+    let resp = {};
+    resp.activeTab = tab;
+    console.log('initializeBrowserAction');
+
+    browser.tabs.sendMessage(tab.id, {action: 'poll'}, (response) => {
+        resp.isReachable = response && response.success;
+        console.log('poll');
+
+        if(resp.isReachable) {
+            browser.tabs.executeScript(tab.id, {code: 'window.getSelection().toString();'}, (selection) => {
+                resp.selectedText = selection[0];
+                port.postMessage({action: 'browser_action_init', response: resp});
+                console.log('reachable');
+            });
+        } else {
+            port.postMessage({action: 'browser_action_init', response: resp});
+            console.log('not reachable');
+        }
+    });
 }
 
 //Build occurrence map from DOM model and regex

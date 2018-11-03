@@ -12,7 +12,7 @@ Find.register('Popup.Storage', function (self) {
      * to the callback function. The data from the storage is passed as a single
      * argument to the callback function.
      *
-     * @paran {function} callback - The callback function to handle the data.
+     * @param {function} callback - The callback function to handle the data.
      * @return {object} The search history, or null if it does not exist or cannot be retrieved.
      * */
     self.retrieveHistory = function(callback) {
@@ -21,7 +21,7 @@ Find.register('Popup.Storage', function (self) {
         }
 
         Find.browser.storage.local.get(HISTORY_KEY, (data) => {
-            callback(data[HISTORY_KEY])
+            callback(data[HISTORY_KEY]);
         });
     };
 
@@ -30,7 +30,7 @@ Find.register('Popup.Storage', function (self) {
      * to the callback function. The data from the storage is passed as a single
      * argument to the callback function.
      *
-     * @paran {function} callback - The callback function to handle the data.
+     * @param {function} callback - The callback function to handle the data.
      * @return {object} The search history, or null if it does not exist or cannot be retrieved.
      * */
     self.retrieveOptions = function(callback) {
@@ -47,7 +47,8 @@ Find.register('Popup.Storage', function (self) {
      * Save the search history in the browser local storage, and optionally invoke
      * a callback function once the operation is complete.
      *
-     * @paran {function} callback - The callback function to execute once the
+     * @param {object} data - The data to store in local storage
+     * @param {function} callback - The callback function to execute once the
      * save operation is complete.
      * */
     self.saveHistory = function(data, callback) {
@@ -69,7 +70,8 @@ Find.register('Popup.Storage', function (self) {
      * Save the search options in the browser local storage, and optionally invoke
      * a callback function once the operation is complete.
      *
-     * @paran {function} callback - The callback function to execute once the
+     * @param {object} data - The data to store in local storage
+     * @param {function} callback - The callback function to execute once the
      * save operation is complete.
      * */
     self.saveOptions = function(data, callback) {

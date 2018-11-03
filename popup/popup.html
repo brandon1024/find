@@ -6,11 +6,11 @@
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/storage.js"></script>
     <script type="text/javascript" src="js/background-proxy.js"></script>
-    <script type="text/javascript" src="js/browser-action.js"></script>
     <script type="text/javascript" src="js/search-pane.js"></script>
     <script type="text/javascript" src="js/options-pane.js"></script>
     <script type="text/javascript" src="js/replace-pane.js"></script>
     <script type="text/javascript" src="js/message-pane.js"></script>
+    <script type="text/javascript" src="js/browser-action.js"></script>
     <link rel="stylesheet" href="css/extension.css"/>
     <link rel="stylesheet" href="css/replacepane.css"/>
     <link rel="stylesheet" href="css/messagepane.css"/>
@@ -45,19 +45,15 @@
         </div>
     </div>
     <div id="replace-body">
-        <table id="replace-body-table">
-            <tr>
-                <td id="replace-field-cell">
-                    <input class="field def-font" id="replace-field" type="text" name="replace" title="Replace Field" autocomplete="off" placeholder="Replace with.."/>
-                </td>
-                <td class="replace-button-cell">
-                    <button class="replace-button def-font" id="replace-all-button" title="Replace All" type="button" disabled>Replace All</button>
-                </td>
-                <td class="replace-button-cell">
-                    <button class="replace-button def-font" id="replace-next-button" title="Replace Next" type="button" disabled>Replace</button>
-                </td>
-            </tr>
-        </table>
+        <div id="replace-body-container">
+            <div id="replace-field-cell">
+                <input class="field def-font" id="replace-field" type="text" name="replace" title="Replace Field" autocomplete="off" placeholder="Replace with.."/>
+            </div>
+            <div id="replace-controls-cell">
+                <button class="replace-button def-font" id="replace-next-button" title="Replace Next" type="button" disabled>Replace</button>
+                <button class="replace-button def-font" id="replace-all-button" title="Replace All" type="button" disabled>Replace All</button>
+            </div>
+        </div>
     </div>
     <div id="extension-message-body">
         <table id="message-table">

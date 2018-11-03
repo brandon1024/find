@@ -18,76 +18,72 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.init = function() {
         Find.Popup.BackgroundProxy.openConnection();
+        Find.Popup.BackgroundProxy.postMessage({action: 'browser_action_init'});
 
         Find.Popup.Storage.retrieveOptions((data) => {
             if(data) {
                 options = data;
+            } else {
+                Find.Popup.Storage.saveOptions(options);
             }
 
             Find.Popup.OptionsPane.applyOptions(options);
-            Find.Popup.BrowserAction.updateOptions(options);
         });
 
         document.body.addEventListener('keyup', (e) => {
             if(e.code === 'KeyO' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+O => Toggle Options Pane
-                Find.Popup.OptionsPane.show(true);
+                Find.Popup.OptionsPane.toggle();
                 Find.Popup.ReplacePane.show(false);
             } else if(e.code === 'KeyR' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+R => Toggle Replace Pane
+                Find.Popup.ReplacePane.toggle();
                 Find.Popup.OptionsPane.show(false);
-                Find.Popup.ReplacePane.show(true);
             }
         }, true);
 
         document.getElementById('popup-body').addEventListener('click', () => {
             Find.Popup.SearchPane.focusSearchField();
         });
+    };
 
-        Find.browser.tabs.query({'active': true, currentWindow: true}, (tabs) => {
-            //Todo: move this logic into the content scripts
-            function getSelectedOrLastSearch() {
-                Find.browser.tabs.executeScript({code: "window.getSelection().toString();"}, function(selection) {
-                    if(selection[0]) {
-                        Find.Popup.SearchPane.setSearchFieldText(selection[0]);
-                        Find.Popup.SearchPane.select();
-                        Find.Popup.BrowserAction.updateSearch();
-                    } else {
-                        Find.Popup.Storage.retrieveHistory((data) => {
-                            if(data) {
-                                Find.Popup.SearchPane.setSearchFieldText(data);
-                            }
-
-                            Find.Popup.SearchPane.selectSearchField();
-                        });
-                    }
-                });
-            }
-
-            //Ensure valid url, then get text selected on page or retrieve last search
-            let url = tabs[0].url;
-            if(isWithinChromeNamespace(url)) {
-                Find.Popup.MessagePane.showChromeNamespaceErrorMessage();
-                Find.Popup.BrowserAction.error('forbidden_url');
-            } else if(isWithinWebStoreNamespace(url)) {
-                Find.Popup.MessagePane.showChromeWebStoreErrorMessage();
-                Find.Popup.BrowserAction.error('forbidden_url');
-            } else if(isPDF(url)) {
-                Find.Popup.MessagePane.showPDFSearchErrorMessage();
-                Find.Popup.BrowserAction.error('pdf_unsupported');
-            } else if(isLocalFile(url)) {
-                Find.browser.tabs.sendMessage(tabs[0].id, {action: 'poll'}, (response) => {
-                    if(!response || !response.success) {
-                        Find.Popup.MessagePane.showOfflineFileErrorMessage();
-                        Find.Popup.BrowserAction.error('offline_file');
-                    } else {
-                        getSelectedOrLastSearch();
-                    }
-                });
+    /**
+     * Initialize the browser action popup based on the current state of the active tab.
+     *
+     * If the URL is valid and reachable, the search field is either populated with the text selected
+     * in the page or the last search query pulled from local storage.
+     *
+     * If the URL is not valid or cannot be reached, an appropriate error message is shown.
+     * */
+    self.startExtension = function(initInformation) {
+        let url = initInformation.activeTab.url;
+        if(isWithinChromeNamespace(url)) {
+            Find.Popup.MessagePane.showChromeNamespaceErrorMessage();
+            Find.Popup.BrowserAction.error('forbidden_url');
+        } else if(isWithinWebStoreNamespace(url)) {
+            Find.Popup.MessagePane.showChromeWebStoreErrorMessage();
+            Find.Popup.BrowserAction.error('forbidden_url');
+        } else if(isPDF(url)) {
+            Find.Popup.MessagePane.showPDFSearchErrorMessage();
+            Find.Popup.BrowserAction.error('pdf_unsupported');
+        } else if(isLocalFile(url) && !initInformation.isReachable) {
+            Find.Popup.MessagePane.showOfflineFileErrorMessage();
+            Find.Popup.BrowserAction.error('offline_file');
+        } else {
+            if(initInformation.selectedText) {
+                Find.Popup.SearchPane.setSearchFieldText(initInformation.selectedText);
+                Find.Popup.SearchPane.selectSearchField();
+                Find.Popup.BrowserAction.updateSearch();
             } else {
-                getSelectedOrLastSearch();
+                Find.Popup.Storage.retrieveHistory((data) => {
+                    if(data) {
+                        Find.Popup.SearchPane.setSearchFieldText(data);
+                    }
+
+                    Find.Popup.SearchPane.selectSearchField();
+                });
             }
-        });
+        }
     };
 
     /**
@@ -188,8 +184,8 @@ Find.register('Popup.BrowserAction', function (self) {
         Find.Popup.SearchPane.updateIndexText(index, total);
         Find.Popup.SearchPane.showMalformedRegexIcon(false);
 
-        Find.Popup.SearchPane.enableButtons(response.total !== 0);
-        Find.Popup.ReplacePane.enableButtons(response.total !== 0);
+        Find.Popup.SearchPane.enableButtons(total !== 0);
+        Find.Popup.ReplacePane.enableButtons(total !== 0);
     };
 
     /**

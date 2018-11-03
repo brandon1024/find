@@ -22,11 +22,22 @@ Find.register('Popup.OptionsPane', function (self) {
      * */
     self.show = function(value) {
         let el = document.getElementById('regex-options');
-
         if(value === undefined || value) {
             el.style.display = 'inherit';
         } else {
             el.style.display = 'none';
+        }
+    };
+
+    /**
+     * Toggle the options pane.
+     * */
+    self.toggle = function() {
+        let el = document.getElementById('regex-options');
+        if(el.style.display === 'none' || el.style.display === '') {
+            self.show(true);
+        } else {
+            self.show(false);
         }
     };
 

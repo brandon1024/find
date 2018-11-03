@@ -38,7 +38,7 @@ Find.register('Popup.SearchPane', function (self) {
         });
 
         document.getElementById('search-toggle-options-button').addEventListener('click', () => {
-            Find.Popup.OptionsPane.show();
+            Find.Popup.OptionsPane.toggle();
         }, true);
 
         document.getElementById('close-button').addEventListener('click', () => {

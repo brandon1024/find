@@ -4,13 +4,12 @@
  * Create the Popup BackgroundProxy namespace.
  * */
 Find.register('Popup.BackgroundProxy', function (self) {
-    let port;
+    let port = Find.browser.runtime.connect({name: 'popup_to_background_port'});
 
     /**
-     * Open a port to the background script, and register the port message listener.
+     * Register the port message listener.
      * */
     self.openConnection = function() {
-        port = Find.browser.runtime.connect({name: 'popup_to_background_port'});
         registerPortListener(port);
     };
 
@@ -48,14 +47,17 @@ Find.register('Popup.BackgroundProxy', function (self) {
      * */
     function messageHandler(response) {
         switch(response.action) {
+            case 'install':
+                Find.Popup.BrowserAction.showInstallUpdateDetails(response.details);
+                break;
+            case 'browser_action_init':
+                Find.Popup.BrowserAction.startExtension(response.response);
+                break;
             case 'index_update':
                 Find.Popup.BrowserAction.updateIndex(response.index, response.total);
                 break;
             case 'invalidate':
                 Find.Popup.BrowserAction.updateSearch();
-                break;
-            case 'install':
-                Find.Popup.BrowserAction.showInstallUpdateDetails(response.details);
                 break;
             case 'close':
                 Find.Popup.BrowserAction.closeExtension();
