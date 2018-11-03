@@ -3,7 +3,7 @@
 # **{find+}**
 **{find+}** is a simple _Find-in-Page_ extension for Google Chrome hosting a the ability to search a web page or document by regular expression. It has been designed to look and behave much like the `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
 
-Our principle is simple, to deliver a reliable, robust, repeatable, performant, and native-like tool for the software and web development industry. _Perfection is simply not good enough._
+Our principle is simple: deliver a reliable, robust, repeatable, performant, and native-like tool for the software and web development industry.
 
 <img src="screenshot.png"/>
 
@@ -13,7 +13,9 @@ As a software developer, looking through lengthy stack traces, continuous integr
 The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool. This extension has become a growing project aimed at giving developers better tools to simplify certain tasks and to improve upon the functionally-limited tools currently available.
 
 ## Getting Started
-The **{find+}** Chrome extension has recently transitioned to public beta and has become available in the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions). You can install the extension [here](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
+The **{find+}** extension is available through the Chrome Web Store. Download the extension here: [find+ | Regex Find-in-Page Tool](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
+
+The extension can also be through downloaded through the Firefox Add-ons Store. Download the extension here: [{find+} – Get this Extension for 🦊 Firefox](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
 
 Ready for extension development? You can also install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
 
@@ -36,7 +38,7 @@ To install the extension in Chrome, navigate to `chrome://extensions`. Enabling 
 ## Keyboard Shortcuts
 To open the extension popup using a keyboard shortcut, you must first assign a keyboard shortcut to the extension through the Chrome settings. You can do this by following these steps:
 1. Navigate to the `Extensions` settings page in Chrome. Do this easily by typing `chrome://extensions/` in the URL navigation bar.
-2. In the top left click on the ☰ (hamburger menu icon), then click `Keyboard shortcuts`. This will make appear a dialog where you can modify the shortcuts for your installed extensions.
+2. In the top left click on the ☰  menu icon, then click `Keyboard shortcuts`. This will make appear a dialog where you can modify the shortcuts for your installed extensions.
 3. Locate the shortcut settings for find+. Click the input field located to the right of the label `Activate the extension`.
 4. Press the combination of keys you would like to use to open the extension. Once complete, press `OK`.
 
@@ -59,7 +61,7 @@ Several keyboard shortcuts exist directly in the extension for performing differ
 | CTRL-ENTER or ESC | CTRL-ENTER or ESC | Close the extension popup                                              |
 
 ## Omnibox Support
-In version 1.4.0, we enabled omnibox support! This allows you to highlight text on a page without even opening the extension. To use this feature, type `find` in your browser's address bar, press `TAB`, and then enter a regular expression. Occurrences of the regular expression will become highlighted on the page as you type.
+In version 1.4.0, we introduced omnibox support! This allows you to highlight text on a page without even opening the extension. To use this feature, type `find` in your browser's address bar, press `TAB`, and then enter a regular expression. Occurrences of the regular expression will become highlighted on the page as you type.
 
 Pressing `ENTER` will leave the highlights in the page. To remove the highlights, simply refresh the page. If you don't want to leave the highlights in the page, just erase the text entered in the address bar.
 
