@@ -360,21 +360,17 @@ function followLinkUnderFocus(port, tabID) {
 function initializeBrowserAction(port, tab) {
     let resp = {};
     resp.activeTab = tab;
-    console.log('initializeBrowserAction');
 
     browser.tabs.sendMessage(tab.id, {action: 'poll'}, (response) => {
         resp.isReachable = response && response.success;
-        console.log('poll');
 
         if(resp.isReachable) {
             browser.tabs.executeScript(tab.id, {code: 'window.getSelection().toString();'}, (selection) => {
                 resp.selectedText = selection[0];
                 port.postMessage({action: 'browser_action_init', response: resp});
-                console.log('reachable');
             });
         } else {
             port.postMessage({action: 'browser_action_init', response: resp});
-            console.log('not reachable');
         }
     });
 }

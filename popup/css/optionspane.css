@@ -17,6 +17,7 @@ span.options-text,
 span.options-group-header {
     vertical-align: middle;
     font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
     display: block;
 }
 
@@ -124,6 +125,9 @@ input:checked + .toggle-slider:before {
     background: #2196F3;
     padding: 5px 10px;
     margin-left: 8px;
+    font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
+    vertical-align: middle;
 }
 
 .slider-value:after {
