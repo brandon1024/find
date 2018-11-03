@@ -13,9 +13,10 @@ As a software developer, looking through lengthy stack traces, continuous integr
 The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool. This extension has become a growing project aimed at giving developers better tools to simplify certain tasks and to improve upon the functionally-limited tools currently available.
 
 ## Getting Started
-The **{find+}** extension is available through the Chrome Web Store. Download the extension here: [find+ | Regex Find-in-Page Tool](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
+The **{find+}** extension is available through the Chrome Web Store and through the Firefox Add-ons Store.
 
-The extension can also be through downloaded through the Firefox Add-ons Store. Download the extension here: [{find+} – Get this Extension for 🦊 Firefox](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
+<img src="chrome-icon.png" width="32/> Download the extension here: [find+ | Regex Find-in-Page Tool](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb).
+<img src="firefox-icon.png" width="32/> Download the extension here: [{find+} – Get this Extension for 🦊 Firefox](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
 
 Ready for extension development? You can also install the extension by using Developer Mode under the Chrome extension settings. These steps will help you get started.
 
