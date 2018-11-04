@@ -9,6 +9,7 @@
     "tabs",
     "activeTab",
     "storage",
+    "clipboardWrite",
     "<all_urls>"
   ],
   "icons": {

@@ -56,6 +56,9 @@ Find.register('Popup.BackgroundProxy', function (self) {
             case 'index_update':
                 Find.Popup.BrowserAction.updateIndex(response.index, response.total);
                 break;
+            case 'get_occurrence':
+                Find.Popup.BrowserAction.copyTextToClipboard(response.response);
+                break;
             case 'invalidate':
                 Find.Popup.BrowserAction.updateSearch();
                 break;

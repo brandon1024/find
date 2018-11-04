@@ -19,9 +19,11 @@ Find.register('Popup.SearchPane', function (self) {
             } else if(e.key === 'Escape' || (e.key === 'Enter' && e.ctrlKey)) {
                 //ESC OR CTRL+ENTER => Close Extension
                 Find.Popup.BrowserAction.closeExtension();
-            } else if (e.key === 'Enter' || e.key === 'F3') {
+            } else if(e.key === 'Enter' || e.key === 'F3') {
                 //ENTER => Next Highlight (seek)
                 Find.Popup.BrowserAction.seekForwards();
+            } else if(e.ctrlKey && e.altKey && e.code === 'KeyC') {
+                Find.Popup.BrowserAction.getOccurrence();
             }
         }, true);
 
@@ -124,6 +126,13 @@ Find.register('Popup.SearchPane', function (self) {
      * */
     self.showOfflineFileErrorIcon = function(flag) {
         document.getElementById('offline-file-search-err').style.display = flag ? 'initial' : 'none';
+    };
+
+    /**
+     *
+     * */
+    self.showClipboardCopyIcon = function(flag) {
+        document.getElementById('clipboard-copy-icon').style.display = flag ? 'initial' : 'none';
     };
 
     /**
