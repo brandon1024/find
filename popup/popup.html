@@ -5,6 +5,7 @@
     <title>popup.html</title>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/storage.js"></script>
+    <script type="text/javascript" src="js/i18n.js"></script>
     <script type="text/javascript" src="js/background-proxy.js"></script>
     <script type="text/javascript" src="js/search-pane.js"></script>
     <script type="text/javascript" src="js/options-pane.js"></script>
@@ -20,30 +21,28 @@
     <div id="popup-body">
         <div id="popup-body-container">
             <div id="search-field-cell">
-                <input class="field" id="search-field" type="text" name="search" title="Search Field" autocomplete="off"/>
+                <input class="field" id="search-field" type="text" name="search" autocomplete="off" data-locale-title="search_field_title"/>
                 <div id="search-info">
-                    <img class="extension-error-icon" id="invalid-regex-icon" src="/resources/exclamation.svg" title="Malformed Regex:&#013;The regular expression entered is not acceptable, as it is either:&#013;&#09;- an invalid regular expression, or&#013;&#09;- not supported according to the Javascript RegExp specification"/>
-                    <img class="extension-error-icon" id="clipboard-copy-error" src="/resources/exclamation.svg" title="Unable to copy to the clipboard due to unexpected error."/>
-                    <img class="extension-error-icon" id="clipboard-copy-icon" src="/resources/check-square.svg" title="Regex occurrence copied to clipboard"/>
-                    <img class="extension-error-icon" id="install-information" src="/resources/question-circle.svg"
-                         title="Welcome and thanks for installing our extension! Here are some tips to get you started:&#013;&#09;ENTER : Advance to the next occurrence of the regular expression in the page&#013;&#09;SHIFT-ENTER : Return to the previous occurrence of the regular expression in the page&#013;&#09;CTRL-ALT-O : Expand or Collapse Options Pane&#013;&#09;CTRL-ALT-R : Expand or Collapse Replace Text Pane&#013;&#09;CTRL-ENTER or ESC : Close the extension popup"/>
-                    <img class="extension-error-icon" id="update-information" src="/resources/question-circle.svg"
-                         title="We just updated the extension! Now it works better than ever :)&#013;Check out our GitHub page for information about this update!"/>
+                    <img class="extension-error-icon" id="invalid-regex-icon" src="/resources/exclamation.svg" data-locale-title="malformed_regex_error_title"/>
+                    <img class="extension-error-icon" id="clipboard-copy-error" src="/resources/exclamation.svg" data-locale-title="clipboard_copy_error_title"/>
+                    <img class="extension-error-icon" id="clipboard-copy-icon" src="/resources/check-square.svg" data-locale-title="clipboard_copy_title"/>
+                    <img class="extension-error-icon" id="install-information" src="/resources/question-circle.svg" data-locale-title="installation_information_title"/>
+                    <img class="extension-error-icon" id="update-information" src="/resources/question-circle.svg" data-locale-title="update_information_title"/>
                     <span class="def-font" id="index-text"></span>
                 </div>
             </div>
             <div id="controls-cell">
                 <div class="button-cell">
-                    <button class="controls-button" id="search-prev-button" title="Previous" type="button" disabled/>
+                    <button class="controls-button" id="search-prev-button" type="button" disabled data-locale-title="search_prev_title"/>
                 </div>
                 <div class="button-cell">
-                    <button class="controls-button" id="search-next-button" title="Next" type="button" disabled/>
+                    <button class="controls-button" id="search-next-button" type="button" disabled data-locale-title="search_next_title"/>
                 </div>
                 <div class="button-cell">
-                    <button class="controls-button" id="search-toggle-options-button" title="Toggle Options Pane" type="button"/>
+                    <button class="controls-button" id="search-toggle-options-button" type="button" data-locale-title="toggle_options_pane_title"/>
                 </div>
                 <div class="button-cell">
-                    <button class="controls-button" id="close-button" title="Close find+" type="button"/>
+                    <button class="controls-button" id="close-button" type="button" data-locale-title="close_extension_title"/>
                 </div>
             </div>
         </div>
@@ -51,11 +50,11 @@
     <div id="replace-body">
         <div id="replace-body-container">
             <div id="replace-field-cell">
-                <input class="field def-font" id="replace-field" type="text" name="replace" title="Replace Field" autocomplete="off" placeholder="Replace with.."/>
+                <input class="field def-font" id="replace-field" type="text" name="replace" autocomplete="off" data-locale-title="replace_field_title" data-locale-placeholder="replace_field_placeholder"/>
             </div>
             <div id="replace-controls-cell">
-                <button class="replace-button def-font" id="replace-next-button" title="Replace Next" type="button" disabled>Replace</button>
-                <button class="replace-button def-font" id="replace-all-button" title="Replace All" type="button" disabled>Replace All</button>
+                <button class="replace-button def-font" id="replace-next-button" type="button" disabled data-locale-title="replace_button_title" data-locale-text="replace_button_text"/>
+                <button class="replace-button def-font" id="replace-all-button" type="button" disabled data-locale-title="replace_all_button_title" data-locale-text="replace_all_button_text"/>
             </div>
         </div>
     </div>
@@ -66,22 +65,10 @@
                     <img id="exclamation-icon" src="/resources/exclamation.svg"/>
                 </td>
                 <td>
-                    <span class="def-font" id="extension-limitation-web-store-text">Oops! It appears you are trying to
-                        use the extension in the Chrome Web Store. Developers at Google have blocked extensions from
-                        executing here to prevent the malicious injection of code. This is a security limitation across
-                        all Chrome extensions.</span>
-                    <span class="def-font" id="extension-limitation-chrome-settings-text">Oops! It appears you are trying
-                        to use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions
-                        from executing here to prevent the malicious injection of code. This is a security limitation
-                        across all Chrome extensions.</span>
-                    <span id="extension-limitation-pdf-fileview-text">Oops! It appears you are trying to use the
-                        extension in a PDF document. Unfortunately, due to the complexity of the PDF viewer our
-                        extension is not able to handle searching through a PDF. We recommend using the native tool
-                        instead.</span>
-                    <span id="extension-limitation-offline-file-search-text">Something went wrong internally while
-                        trying to search this offline file. Luckily, we might know how to fix this. Navigate to
-                        'chrome://extensions' and locate the checkbox 'Allow access to file URLs' under the {find+}
-                        extension.</span>
+                    <span class="def-font" id="extension-limitation-web-store-text" data-locale-text="extension_limitation_web_store_text"></span>
+                    <span class="def-font" id="extension-limitation-chrome-settings-text" data-locale-text="extension_limitation_chrome_namespace_text"></span>
+                    <span id="extension-limitation-pdf-fileview-text" data-locale-text="extension_limitation_pdf_text"></span>
+                    <span id="extension-limitation-offline-file-search-text" data-locale-text="extension_limitation_offline_file_text"></span>
                 </td>
             </tr>
         </table>
@@ -90,7 +77,7 @@
         <table id="regex-options-table">
             <tbody>
                 <tr>
-                    <span id="regex-options-header" class="options-group-header">Search Options</span>
+                    <span id="regex-options-header" class="options-group-header" data-locale-text="search_options_header_text"></span>
                 </tr>
                 <tr id="regex-options-table-row-1">
                     <td class="options-table-toggle-cell">
@@ -101,9 +88,8 @@
                     </td>
                     <td>
                         <span id="regex-option-regex-disable" class="options-text">
-                            Find by Regular Expression
-                            <img class="information-hover-icon" src="/resources/question-circle.svg"
-                                 title="If enabled, text entered in the search field will be treated as a regular expression.&#013;If disabled, the text is treated as string literal."/>
+                            <span data-locale-text="search_option_find_by_regex_text"></span>
+                            <img class="information-hover-icon" src="/resources/question-circle.svg" data-locale-title="search_option_find_by_regex_title"/>
                         </span>
                     </td>
                 </tr>
@@ -116,9 +102,8 @@
                     </td>
                     <td>
                         <span id="regex-option-match-case-text" class="options-text">
-                            Match Case
-                            <img class="information-hover-icon" src="/resources/question-circle.svg"
-                            title="If enabled, the case of characters must match that of the query string.&#013;If disabled, the case of characters in the query string are not considered."/>
+                            <span data-locale-text="search_option_match_case_text"></span>
+                            <img class="information-hover-icon" src="/resources/question-circle.svg" data-locale-title="search_option_match_case_title"/>
                         </span>
                     </td>
                 </tr>
@@ -131,16 +116,15 @@
                     </td>
                     <td>
                         <span id="regex-option-persistent-highlights-text" class="options-text">
-                            Persistent Highlights
-                            <img class="information-hover-icon" src="/resources/question-circle.svg"
-                                 title="If enabled, highlights in the web page will remain after the extension closes.&#013;Remove the highlights by reloading the page or reopening the extension."/>
+                            <span data-locale-text="search_option_persistent_highlights_text"></span>
+                            <img class="information-hover-icon" src="/resources/question-circle.svg" data-locale-title="search_option_persistent_highlights_title"/>
                         </span>
                     </td>
                 </tr>
             </tbody>
         </table>
         <div id="regex-options-max-results-container">
-            <span id="regex-option-max-results-text" class="options-text">Max Highlighted Results</span>
+            <span id="regex-option-max-results-text" class="options-text" data-locale-text="search_option_max_results_text"></span>
             <input id="max-results-slider" class="slider" type="range" value="10" min="0" max="10" step="1"/>
             <span id="max-results-slider-value" class="slider-value">∞</span>
         </div>
