@@ -166,6 +166,10 @@ function nodeFilter(node) {
             return NodeFilter.FILTER_REJECT;
         }
 
+        if(node.tagName.toLowerCase() === 'math') {
+            return NodeFilter.FILTER_REJECT;
+        }
+
         return NodeFilter.FILTER_ACCEPT;
     }
 

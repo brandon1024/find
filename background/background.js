@@ -172,7 +172,7 @@ function invokeAction(action, port, tab, message) {
     } else if(action === 'browser_action_init') {
         initializeBrowserAction(port, tab);
     } else if(action === 'get_occurrence') {
-        extractCurrentOccurrence(port);
+        extractOccurrences(port, message);
     }
 }
 
@@ -375,8 +375,23 @@ function initializeBrowserAction(port, tab) {
     });
 }
 
-function extractCurrentOccurrence(port) {
-    port.postMessage({action: 'get_occurrence', response: regexOccurrenceMap.occurrenceIndexMap[index].occurrence});
+//Extract one or all occurrences and post to the popup UI.
+function extractOccurrences(port, message) {
+    let cardinality = message.options.cardinality;
+    let resp;
+
+    if(cardinality === 'all') {
+        let occurrences = [];
+        for(let occIndex = 0; occIndex < regexOccurrenceMap.length; occIndex++) {
+            occurrences.push(regexOccurrenceMap.occurrenceIndexMap[occIndex].occurrence);
+        }
+
+        resp = occurrences.join('\n');
+    } else {
+         resp = regexOccurrenceMap.occurrenceIndexMap[index].occurrence;
+    }
+
+    port.postMessage({action: 'get_occurrence', response: resp});
 }
 
 //Build occurrence map from DOM model and regex
