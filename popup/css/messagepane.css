@@ -23,10 +23,3 @@ img#exclamation-icon {
     height: 20px;
     padding: 10px;
 }
-
-img.extension-error-icon {
-    width: 10px;
-    height: 10px;
-    float: right;
-    display: none;
-}

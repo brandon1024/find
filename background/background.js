@@ -171,6 +171,8 @@ function invokeAction(action, port, tab, message) {
         followLinkUnderFocus(port, tab.id);
     } else if(action === 'browser_action_init') {
         initializeBrowserAction(port, tab);
+    } else if(action === 'get_occurrence') {
+        extractOccurrences(port, message);
     }
 }
 
@@ -236,9 +238,7 @@ function actionUpdate(port, tabID, message) {
                 index: viewableIndex,
                 total: viewableTotal
             });
-        }
-        catch(e) {
-            console.error(e);
+        } catch(e) {
             port.postMessage({action: 'invalid_regex', error: e.message});
         }
     });
@@ -375,6 +375,25 @@ function initializeBrowserAction(port, tab) {
     });
 }
 
+//Extract one or all occurrences and post to the popup UI.
+function extractOccurrences(port, message) {
+    let cardinality = message.options.cardinality;
+    let resp;
+
+    if(cardinality === 'all') {
+        let occurrences = [];
+        for(let occIndex = 0; occIndex < regexOccurrenceMap.length; occIndex++) {
+            occurrences.push(regexOccurrenceMap.occurrenceIndexMap[occIndex].occurrence);
+        }
+
+        resp = occurrences.join('\n');
+    } else {
+         resp = regexOccurrenceMap.occurrenceIndexMap[index].occurrence;
+    }
+
+    port.postMessage({action: 'get_occurrence', response: resp});
+}
+
 //Build occurrence map from DOM model and regex
 function buildOccurrenceMap(DOMModelObject, regex, options) {
     let occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
@@ -401,7 +420,6 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
 
         count += matches.length;
         occurrenceMap[groupIndex] = {
-            text: textGroup,
             uuids: uuids,
             count: matches.length,
             preformatted: preformatted
@@ -409,7 +427,7 @@ function buildOccurrenceMap(DOMModelObject, regex, options) {
 
         for(let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
             let occMapIndex = matchesIndex + (count - matches.length);
-            occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: matchesIndex};
+            occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex]};
         }
 
         groupIndex++;

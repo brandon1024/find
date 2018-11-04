@@ -40,6 +40,8 @@ Several keyboard shortcuts exist directly in the extension for performing differ
 | ENTER             | ENTER             | Advance to the next occurrence of the regular expression in the page   |
 | SHIFT-ENTER       | SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page|
 | CTRL-SHIFT-ENTER  | CTRL-SHIFT-ENTER  | Follow the first highlighted link in the current occurrence focus      |
+| CTRL-ALT-C        | CTRL-OPTION-C     | Copy to the clipboard the currently highlighted text on the page.      |
+| CTRL-ALT-A        | CTRL-OPTION-A     | Copy to the clipboard the all highlighted text on the page.            |
 | CTRL-ALT-O        | CTRL-OPTION-O     | Expand or Collapse Options Pane                                        |
 | CTRL-ALT-R        | CTRL-OPTION-R     | Expand or Collapse Replace Text Pane                                   |
 | CTRL-ENTER or ESC | CTRL-ENTER or ESC | Close the extension popup                                              |

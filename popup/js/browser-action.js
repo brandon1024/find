@@ -164,7 +164,42 @@ Find.register('Popup.BrowserAction', function (self) {
     };
 
     /**
+     * Issue a message to the background script requesting the current occurrence of the regex.
+     *
+     * @param {object} options - The options to be used by the background script.
+     * */
+    self.getOccurrence = function(options) {
+        if(!initialized) {
+            Find.Popup.BrowserAction.updateSearch();
+            return;
+        }
+
+        Find.Popup.BackgroundProxy.postMessage({action: 'get_occurrence', options: options});
+    };
+
+    /**
+     * Copy a given string to the clipboard.
+     *
+     * @param {string} text - The text to copy to the clipboard
+     * */
+    self.copyTextToClipboard = function(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            Find.Popup.SearchPane.showClipboardCopyIcon(true);
+            window.setTimeout(() => {
+                Find.Popup.SearchPane.showClipboardCopyIcon(false);
+            }, 1000);
+        }).catch(() => {
+            Find.Popup.SearchPane.showClipboardCopyErrorIcon(true);
+            window.setTimeout(() => {
+                Find.Popup.SearchPane.showClipboardCopyIcon(false);
+            }, 2000);
+        });
+    };
+
+    /**
      * Update the options, save them to the local storage, and update the search.
+     *
+     * @param {object} newOptions - The new search options
      * */
     self.updateOptions = function(newOptions) {
         options = newOptions;

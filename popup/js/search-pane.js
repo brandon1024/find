@@ -19,9 +19,13 @@ Find.register('Popup.SearchPane', function (self) {
             } else if(e.key === 'Escape' || (e.key === 'Enter' && e.ctrlKey)) {
                 //ESC OR CTRL+ENTER => Close Extension
                 Find.Popup.BrowserAction.closeExtension();
-            } else if (e.key === 'Enter' || e.key === 'F3') {
+            } else if(e.key === 'Enter' || e.key === 'F3') {
                 //ENTER => Next Highlight (seek)
                 Find.Popup.BrowserAction.seekForwards();
+            } else if(e.ctrlKey && e.altKey && e.code === 'KeyC') {
+                Find.Popup.BrowserAction.getOccurrence({cardinality: 'single'});
+            } else if(e.ctrlKey && e.altKey && e.code === 'KeyA') {
+                Find.Popup.BrowserAction.getOccurrence({cardinality: 'all'});
             }
         }, true);
 
@@ -124,6 +128,26 @@ Find.register('Popup.SearchPane', function (self) {
      * */
     self.showOfflineFileErrorIcon = function(flag) {
         document.getElementById('offline-file-search-err').style.display = flag ? 'initial' : 'none';
+    };
+
+    /**
+     * Display an icon in the index text to notify the user that text was copied to the clipboard
+     * successfully.
+     *
+     * @param {boolean} flag - Whether or not to display the icon.
+     * */
+    self.showClipboardCopyIcon = function(flag) {
+        document.getElementById('clipboard-copy-icon').style.display = flag ? 'initial' : 'none';
+    };
+
+    /**
+     * Display an icon in the index text to notify the user that text was not copied to the clipboard
+     * due to an unexpected error.
+     *
+     * @param {boolean} flag - Whether or not to display the icon.
+     * */
+    self.showClipboardCopyErrorIcon = function(flag) {
+        document.getElementById('clipboard-copy-error').style.display = flag ? 'initial' : 'none';
     };
 
     /**

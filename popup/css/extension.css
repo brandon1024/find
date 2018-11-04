@@ -50,13 +50,23 @@ input.field#search-field {
     flex: auto;
 }
 
+div#search-info {
+    min-width: 40px;
+    text-align: right;
+    user-select: none;
+    cursor: default;
+}
+
 span#index-text {
     color: #CCCCCC;
     white-space: nowrap;
-    user-select: none;
-    cursor: default;
     text-align: right;
-    min-width: 40px;
+}
+
+img.extension-error-icon {
+    width: 10px;
+    height: 10px;
+    display: none;
 }
 
 /* Button Style */
