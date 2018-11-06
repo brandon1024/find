@@ -13,7 +13,6 @@ Find.register('Popup.i18n', function (self) {
      * */
     self.init = function() {
         let localizedTitles = document.querySelectorAll('[data-locale-title]');
-        console.log(localizedTitles);
         for (let i = 0; i < localizedTitles.length; i++) {
             let el = localizedTitles[i];
             el.title = self.getLocalizedString(el.dataset.localeTitle);

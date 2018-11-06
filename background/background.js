@@ -366,7 +366,7 @@ function initializeBrowserAction(port, tab) {
 
         if(resp.isReachable) {
             browser.tabs.executeScript(tab.id, {code: 'window.getSelection().toString();'}, (selection) => {
-                resp.selectedText = selection[0];
+                resp.selectedText = selection;
                 port.postMessage({action: 'browser_action_init', response: resp});
             });
         } else {
