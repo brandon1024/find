@@ -52,7 +52,6 @@ div.toggle-slider {
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    -webkit-transition: .4s;
     transition: .4s;
 }
 
@@ -64,7 +63,6 @@ div.toggle-slider:before {
     left: 2px;
     bottom: 2px;
     background-color: white;
-    -webkit-transition: .4s;
     transition: .4s;
 }
 
@@ -77,9 +75,32 @@ input:focus + .toggle-slider {
 }
 
 input:checked + .toggle-slider:before {
-    -webkit-transform: translateX(13px);
-    -ms-transform: translateX(13px);
     transform: translateX(13px);
+}
+
+div#reset-options-container {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+#reset-options-button {
+    background-color: #e84545;
+    color: white;
+    border: 2px solid #e84545;
+    border-radius: 3px;
+    display: block;
+    font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
+    margin: auto 3px auto auto;
+}
+
+#reset-options-button:hover {
+    box-shadow: 1px 1px 12px 1px rgba(196,196,196,1);
+}
+
+#reset-options-button:focus {
+    outline: none;
 }
 
 /* Slider CSS */
@@ -183,7 +204,7 @@ input:checked + .toggle-slider:before {
 .color-indicator {
     width: 20px;
     height: 20px;
-    border-radius: 100%;
+    border-radius: 50%;
     display: inline-block;
     border: 2px solid white;
     flex: none;

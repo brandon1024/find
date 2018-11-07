@@ -54,6 +54,7 @@ Find.register('Popup.OptionsPane', function (self) {
             const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
             let sliderValue = e.target.value;
             options.max_results = rangeValues[sliderValue];
+
             applyMaxResultsSliderOptions();
         });
 
@@ -170,6 +171,21 @@ Find.register('Popup.OptionsPane', function (self) {
             applyAllHighlightColorSliderOptions();
             notifyBrowserActionOptionsChange();
         });
+
+        //Add reset all options button listener
+        let resetAllOptionsButton = document.getElementById('reset-options-button');
+        resetAllOptionsButton.addEventListener('click', () => {
+            let defaultOpts = {
+                find_by_regex: true,
+                match_case: true,
+                persistent_highlights: false,
+                max_results: 0,
+                index_highlight_color: {hue: 56, saturation: 1, value: 1, hexColor: '#fff000'},
+                all_highlight_color: {hue: 34, saturation: 0.925, value: 1, hexColor: '#ff9813'}
+            };
+            self.applyOptions(defaultOpts);
+            notifyBrowserActionOptionsChange();
+        });
     };
 
     /**
@@ -254,13 +270,18 @@ Find.register('Popup.OptionsPane', function (self) {
 
     /**
      * Notify the browser action that the user has changed the settings through the options pane.
+     *
+     * @private
      * */
     function notifyBrowserActionOptionsChange() {
         Find.Popup.BrowserAction.updateOptions(options);
     }
 
     /**
+     * Build a SimpleColor to get the hex color code for the index_highlight_color option.
      *
+     * @private
+     * @returns {string} A hex color code for the index_highlight_color option.
      * */
     function getIndexHighlightColorCode() {
         return new SimpleColor({
@@ -271,7 +292,10 @@ Find.register('Popup.OptionsPane', function (self) {
     }
 
     /**
+     * Build a SimpleColor to get the hex color code for the all_highlight_color option.
      *
+     * @private
+     * @returns {string} A hex color code for the all_highlight_color option.
      * */
     function getAllHighlightColorCode() {
         return new SimpleColor({
@@ -282,7 +306,9 @@ Find.register('Popup.OptionsPane', function (self) {
     }
 
     /**
+     * Apply the options for find_by_regex, match_case and persistent_highlights to the various related components.
      *
+     * @private
      * */
     function applyToggleOptions() {
         document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
@@ -291,7 +317,9 @@ Find.register('Popup.OptionsPane', function (self) {
     }
 
     /**
+     * Apply the options for max_results to the various related components.
      *
+     * @private
      * */
     function applyMaxResultsSliderOptions() {
         const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
@@ -304,7 +332,9 @@ Find.register('Popup.OptionsPane', function (self) {
     }
 
     /**
+     * Apply the options for index_highlight_color to the various related components.
      *
+     * @private
      * */
     function applyIndexHighlightColorSliderOptions() {
         //Index Highlight Color Options
@@ -342,7 +372,9 @@ Find.register('Popup.OptionsPane', function (self) {
     }
 
     /**
+     * Apply the options for all_highlight_color to the various related components.
      *
+     * @private
      * */
     function applyAllHighlightColorSliderOptions() {
         document.getElementById('all-highlight-hue-slider').value = options.all_highlight_color.hue;
@@ -406,21 +438,6 @@ Find.register('Popup.OptionsPane', function (self) {
             saturation = HSVColor.saturation;
             value = HSVColor.value;
         }
-
-        this.getRedComponent = function() {
-            let RGBColor = HSVToRGB(hue, saturation, value);
-            return RGBColor.red;
-        };
-
-        this.getGreenComponent = function() {
-            let RGBColor = HSVToRGB(hue, saturation, value);
-            return RGBColor.green;
-        };
-
-        this.getBlueComponent = function() {
-            let RGBColor = HSVToRGB(hue, saturation, value);
-            return RGBColor.blue;
-        };
 
         this.getHue = function() {
             return hue;
