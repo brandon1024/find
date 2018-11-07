@@ -10,16 +10,16 @@ Find.register('Popup.OptionsPane', function (self) {
         persistent_highlights: false,
         max_results: 0,
         index_highlight_color: {
-            hue: 56,
-            saturation: 1,
-            value: 1,
-            hexColor: '#fff000'
-        },
-        all_highlight_color: {
             hue: 34,
             saturation: 0.925,
             value: 1,
             hexColor: '#ff9813'
+        },
+        all_highlight_color: {
+            hue: 56,
+            saturation: 1,
+            value: 1,
+            hexColor: '#fff000'
         }
     };
 
@@ -180,8 +180,8 @@ Find.register('Popup.OptionsPane', function (self) {
                 match_case: true,
                 persistent_highlights: false,
                 max_results: 0,
-                index_highlight_color: {hue: 56, saturation: 1, value: 1, hexColor: '#fff000'},
-                all_highlight_color: {hue: 34, saturation: 0.925, value: 1, hexColor: '#ff9813'}
+                index_highlight_color: {hue: 34, saturation: 0.925, value: 1, hexColor: '#ff9813'},
+                all_highlight_color: {hue: 56, saturation: 1, value: 1, hexColor: '#fff000'}
             };
             self.applyOptions(defaultOpts);
             notifyBrowserActionOptionsChange();

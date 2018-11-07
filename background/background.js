@@ -24,7 +24,6 @@ browser.runtime.onInstalled.addListener((details) => {
 
     let manifest = browser.runtime.getManifest();
     let scripts = manifest.content_scripts[0].js;
-    let css = manifest.content_scripts[0].css;
 
     browser.tabs.query({}, (tabs) => {
         for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
@@ -35,10 +34,6 @@ browser.runtime.onInstalled.addListener((details) => {
 
             for (let i = 0; i < scripts.length; i++) {
                 browser.tabs.executeScript(tabs[tabIndex].id, {file: scripts[i]});
-            }
-
-            for (let i = 0; i < css.length; i++) {
-                browser.tabs.insertCSS(tabs[tabIndex].id, {file: css[i]});
             }
         }
     });
@@ -261,7 +256,8 @@ function actionNext(port, tabID, message) {
         action: 'highlight_seek',
         occurrenceMap: regexOccurrenceMap,
         index: index,
-        regex: regex
+        regex: regex,
+        options: options
     });
 
     let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
@@ -294,7 +290,8 @@ function actionPrevious(port, tabID, message) {
         action: 'highlight_seek',
         occurrenceMap: regexOccurrenceMap,
         index: index,
-        regex: regex
+        regex: regex,
+        options: options
     });
 
     let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;

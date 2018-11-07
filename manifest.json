@@ -33,8 +33,7 @@
     "run_at": "document_end",
     "js": ["/lib/html-entity-handler/entityhandler.js",
       "/content/content.js",
-      "/content/highlighter.js"],
-    "css": ["/content/highlighter.css"]
+      "/content/highlighter.js"]
   }],
   "omnibox": { "keyword" : "find" },
   "commands": {

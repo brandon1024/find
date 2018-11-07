@@ -4,26 +4,25 @@ window.browser = (() => {
     return window.chrome || window.browser;
 })();
 
-const yellowHighlightClass = "find-ext-highlight-yellow";
-const orangeHighlightClass = "find-ext-highlight-orange";
+const indexHighlight = "find-ext-index-highlight";
+const allHighlight = "find-ext-all-highlight";
 
-browser.runtime.onMessage.addListener((message, sender, response) => {
+browser.runtime.onMessage.addListener((message) => {
     switch(message.action) {
         case 'highlight_update':
-            restore(yellowHighlightClass, orangeHighlightClass);
+            restore(indexHighlight, allHighlight);
             highlightAll(message.occurrenceMap, message.regex, message.options);
-            seekHighlight(message.index);
+            seekHighlight(message.index, message.options);
             break;
         case 'omni_update':
-            restore(yellowHighlightClass, orangeHighlightClass);
+            restore(indexHighlight, allHighlight);
             highlightAll(message.occurrenceMap, message.regex, null);
             break;
         case 'highlight_seek':
-            restoreClass(orangeHighlightClass);
-            seekHighlight(message.index);
+            seekHighlight(message.index, message.options);
             break;
         case 'highlight_restore':
-            restore(yellowHighlightClass, orangeHighlightClass);
+            restore(indexHighlight, allHighlight);
             break;
         case 'highlight_replace':
             replace(message.index, message.replaceWith);
@@ -50,7 +49,9 @@ function highlightAll(occurrenceMap, regex, options) {
 
                 //If reached max number of occurrences to show, don't highlight text
                 if(this.maxIndex == null || this.occIndex <= this.maxIndex) {
-                    this.openingMarkup = '<span style="all: unset;" class="' + yellowHighlightClass + ' find-ext-occr' + index + '">';
+                    let style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + ';';
+                    let classList = 'find-ext-occr' + index + ' ' + allHighlight;
+                    this.openingMarkup = '<span style="' + style + '" class="' + classList + '">';
                     this.closingMarkup = '</span>';
                 } else {
                     this.openingMarkup = '';
@@ -177,7 +178,7 @@ function highlightAll(occurrenceMap, regex, options) {
             groupText = groupText.substring(offset+len);
         }
 
-        //Wrap matched characters in an element with class yellowHighlightClass and occurrenceIdentifier
+        //Wrap matched characters in an element with class indexHighlight and occurrenceIdentifier
         let matchGroup = {text: '', groupUUID: charMap[0].nodeUUID};
         let inMatch = false;
         for(let key = 0; key < charMap.length; key++) {
@@ -239,14 +240,25 @@ function highlightAll(occurrenceMap, regex, options) {
 }
 
 //Move highlight focused text to a given occurrence index
-function seekHighlight(index) {
+function seekHighlight(index, options) {
+    let previousIndex = Array.from(document.querySelectorAll('.' + indexHighlight));
+    if(previousIndex && previousIndex.length) {
+        for(let elsIndex = 0; elsIndex < previousIndex.length; elsIndex++) {
+            let style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + ';';
+            previousIndex[elsIndex].classList.remove(indexHighlight);
+            previousIndex[elsIndex].setAttribute("style", style);
+        }
+    }
+
     let els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
     if(els == null || els.length === 0) {
         return;
     }
 
     for(let elsIndex = 0; elsIndex < els.length; elsIndex++) {
-        els[elsIndex].classList.add(orangeHighlightClass);
+        let style = 'all: unset; background-color: ' + options.index_highlight_color.hexColor + ';';
+        els[elsIndex].classList.add(indexHighlight);
+        els[elsIndex].setAttribute("style", style);
     }
 
     els[0].scrollIntoView(true);
@@ -291,7 +303,7 @@ function replaceAll(replaceWith) {
 
 //Bubbling up the DOM tree, locate any highlighted anchor element and follow link once found
 function followLinkUnderFocus() {
-    let els = document.getElementsByClassName(orangeHighlightClass);
+    let els = document.getElementsByClassName(allHighlight);
     for(let index = 0; index < els.length; index ++) {
         let el = els[index];
         while (el.parentElement) {
@@ -303,7 +315,7 @@ function followLinkUnderFocus() {
     }
 }
 
-//Unwrap all elements that have the yellowHighlightClass/orangeHighlightClass class
+//Unwrap all elements that have the indexHighlight/allHighlight class
 function restore() {
     for(let argIndex = 0; argIndex < arguments.length; argIndex++) {
         let els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
