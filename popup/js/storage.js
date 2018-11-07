@@ -71,7 +71,7 @@ Find.register('Popup.Storage', function (self) {
      * a callback function once the operation is complete.
      *
      * @param {object} data - The data to store in local storage
-     * @param {function} callback - The callback function to execute once the
+     * @param {function} [callback] - The callback function to execute once the
      * save operation is complete.
      * */
     self.saveOptions = function(data, callback) {

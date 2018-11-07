@@ -123,6 +123,14 @@
   },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",
-    "description": "Text displayed beside the max highlighted results option."
+    "description": "Text displayed above the max highlighted results option."
+  },
+  "search_option_index_highlight_text": {
+    "message": "Selected Occurrence Highlight Color",
+    "description": "Text displayed above the index highlight color option."
+  },
+  "search_option_all_highlight_text": {
+    "message": "Highlight Color",
+    "description": "Text displayed above the all highlight color option."
   }
 }

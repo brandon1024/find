@@ -6,12 +6,6 @@
 Find.register('Popup.BrowserAction', function (self) {
     let initialized = false;
     let index = 0;
-    let options = {
-        'find_by_regex': true,
-        'match_case': true,
-        'persistent_highlights': false,
-        'max_results': 0
-    };
 
     /**
      * Register event handlers and initialize extension browser action.
@@ -21,12 +15,8 @@ Find.register('Popup.BrowserAction', function (self) {
         Find.Popup.BackgroundProxy.postMessage({action: 'browser_action_init'});
 
         Find.Popup.Storage.retrieveOptions((data) => {
-            if(data) {
-                options = data;
-            } else {
-                Find.Popup.Storage.saveOptions(options);
-            }
-
+            let options = Find.Popup.OptionsPane.adaptOptions(data);
+            Find.Popup.Storage.saveOptions(options);
             Find.Popup.OptionsPane.applyOptions(options);
         });
 
@@ -73,7 +63,6 @@ Find.register('Popup.BrowserAction', function (self) {
             if(initInformation.selectedText) {
                 Find.Popup.SearchPane.setSearchFieldText(initInformation.selectedText);
                 Find.Popup.SearchPane.selectSearchField();
-                Find.Popup.BrowserAction.updateSearch();
             } else {
                 Find.Popup.Storage.retrieveHistory((data) => {
                     if(data) {
@@ -101,6 +90,7 @@ Find.register('Popup.BrowserAction', function (self) {
         initialized = true;
 
         let regex = Find.Popup.SearchPane.getSearchFieldText();
+        let options = Find.Popup.OptionsPane.getOptions();
         Find.Popup.Storage.saveHistory(regex);
         Find.Popup.BackgroundProxy.postMessage({action: 'update', regex: regex, options: options});
     };
@@ -116,6 +106,7 @@ Find.register('Popup.BrowserAction', function (self) {
             return;
         }
 
+        let options = Find.Popup.OptionsPane.getOptions();
         Find.Popup.BackgroundProxy.postMessage({action: 'next', options: options});
         Find.Popup.SearchPane.focusSearchField();
     };
@@ -131,6 +122,7 @@ Find.register('Popup.BrowserAction', function (self) {
             return;
         }
 
+        let options = Find.Popup.OptionsPane.getOptions();
         Find.Popup.BackgroundProxy.postMessage({action: 'previous', options: options});
         Find.Popup.SearchPane.focusSearchField();
     };
@@ -140,6 +132,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.replaceNext = function() {
         let replaceWith = Find.Popup.ReplacePane.getReplaceFieldText();
+        let options = Find.Popup.OptionsPane.getOptions();
         Find.Popup.BackgroundProxy.postMessage({action: 'replace_next', index: index, replaceWith: replaceWith, options: options});
     };
 
@@ -148,6 +141,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.replaceAll = function() {
         let replaceWith = Find.Popup.ReplacePane.getReplaceFieldText();
+        let options = Find.Popup.OptionsPane.getOptions();
         Find.Popup.BackgroundProxy.postMessage({action: 'replace_all', replaceWith: replaceWith, options: options});
     };
 
@@ -160,6 +154,7 @@ Find.register('Popup.BrowserAction', function (self) {
             return;
         }
 
+        let options = Find.Popup.OptionsPane.getOptions();
         Find.Popup.BackgroundProxy.postMessage({action: 'follow_link', options: options});
     };
 
@@ -197,13 +192,12 @@ Find.register('Popup.BrowserAction', function (self) {
     };
 
     /**
-     * Update the options, save them to the local storage, and update the search.
+     * Save the new options to the local storage, and update the search.
      *
-     * @param {object} newOptions - The new search options
+     * @param {object} options - The new search options
      * */
-    self.updateOptions = function(newOptions) {
-        options = newOptions;
-        Find.Popup.Storage.saveOptions(newOptions);
+    self.updateOptions = function(options) {
+        Find.Popup.Storage.saveOptions(options);
         Find.Popup.BrowserAction.updateSearch();
     };
 

@@ -33,8 +33,7 @@
       "/lib/html-entity-handler/entityhandler.js",
       "/content/content.js",
       "/content/highlighter.js"
-    ],
-    "css": ["/content/highlighter.css"]
+    ]
   }],
   "omnibox": { "keyword" : "find" },
   "commands": {
