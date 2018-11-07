@@ -27,101 +27,148 @@ Find.register('Popup.OptionsPane', function (self) {
      * Register event handlers.
      * */
     self.init = function() {
-        //Toggle switches
-        document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', () => {
-            options.find_by_regex = document.getElementById('regex-option-regex-disable-toggle').checked;
+        //Add toggle switches event listeners
+        document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', (e) => {
+            options.find_by_regex = e.target.checked;
             notifyBrowserActionOptionsChange();
         });
-        document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', () => {
-            options.match_case = document.getElementById('regex-option-case-insensitive-toggle').checked;
+        document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', (e) => {
+            options.match_case = e.target.checked;
             notifyBrowserActionOptionsChange();
         });
-        document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', () => {
-            options.persistent_highlights = document.getElementById('regex-option-persistent-highlights-toggle').checked;
+        document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', (e) => {
+            options.persistent_highlights = e.target.checked;
             notifyBrowserActionOptionsChange();
         });
 
-        //Sliders Change Events
-        document.getElementById('max-results-slider').addEventListener('change', () => {
+        //Add max results slider event listeners
+        let maxResultsSlider = document.getElementById('max-results-slider');
+        maxResultsSlider.addEventListener('change', (e) => {
             const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-            let sliderValue = document.getElementById('max-results-slider').value;
+            let sliderValue = e.target.value;
             options.max_results = rangeValues[sliderValue];
 
             notifyBrowserActionOptionsChange();
         });
-        document.getElementById('index-highlight-hue-slider').addEventListener('change', () => {
-            options.index_highlight_color.hue = document.getElementById('index-highlight-hue-slider').value;
-
-            let RGBColor = HSVToRGB(options.index_highlight_color.hue, options.index_highlight_color.saturation, options.index_highlight_color.value);
-            options.index_highlight_color.hexColor = RGBToHexColorCode(RGBColor.red, RGBColor.green, RGBColor.blue);
-
-            notifyBrowserActionOptionsChange();
-        });
-        document.getElementById('all-highlight-hue-slider').addEventListener('change', () => {
-            options.all_highlight_color.hue = document.getElementById('all-highlight-hue-slider').value;
-
-            let RGBColor = HSVToRGB(options.all_highlight_color.hue, options.all_highlight_color.saturation, options.all_highlight_color.value);
-            options.all_highlight_color.hexColor = RGBToHexColorCode(RGBColor.red, RGBColor.green, RGBColor.blue);
-
-            notifyBrowserActionOptionsChange();
-        });
-
-        //Slider Value Input Events
-        document.getElementById('index-highlight-color-value').addEventListener('input', () => {
-            let hexColor = document.getElementById('index-highlight-color-value').innerText;
-            let RGB = hexColorCodeToRGB(hexColor);
-            if(!RGB) {
-                return;
-            }
-
-            let HSV = RGBToHSV(RGB.red, RGB.green, RGB.blue);
-            options.index_highlight_color.hue = HSV.hue;
-            options.index_highlight_color.saturation = HSV.saturation;
-            options.index_highlight_color.value = HSV.value;
-            options.index_highlight_color.hexColor = hexColor;
-
-            applyColorSliderOptions();
-            notifyBrowserActionOptionsChange();
-        });
-        document.getElementById('all-highlight-color-value').addEventListener('input', () => {
-            let hexColor = document.getElementById('all-highlight-color-value').innerText;
-            let RGB = hexColorCodeToRGB(hexColor);
-            if(!RGB) {
-                return;
-            }
-
-            let HSV = RGBToHSV(RGB.red, RGB.green, RGB.blue);
-            options.all_highlight_color.hue = HSV.hue;
-            options.all_highlight_color.saturation = HSV.saturation;
-            options.all_highlight_color.value = HSV.value;
-            options.all_highlight_color.hexColor = hexColor;
-
-            applyColorSliderOptions();
-            notifyBrowserActionOptionsChange();
-        });
-
-        //Slider Input Events
-        document.getElementById('max-results-slider').addEventListener('input', () => {
+        maxResultsSlider.addEventListener('input', (e) => {
             const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-            let sliderValue = document.getElementById('max-results-slider').value;
+            let sliderValue = e.target.value;
             options.max_results = rangeValues[sliderValue];
             applyMaxResultsSliderOptions();
         });
-        document.getElementById('index-highlight-hue-slider').addEventListener('input', () => {
-            options.index_highlight_color.hue = document.getElementById('index-highlight-hue-slider').value;
 
-            let RGBColor = HSVToRGB(options.index_highlight_color.hue, options.index_highlight_color.saturation, options.index_highlight_color.value);
-            options.index_highlight_color.hexColor = RGBToHexColorCode(RGBColor.red, RGBColor.green, RGBColor.blue);
+        //Add index highlight color slider listeners
+        let indexHighlightHueSlider = document.getElementById('index-highlight-hue-slider');
+        indexHighlightHueSlider.addEventListener('change', (e) => {
+            options.index_highlight_color.hue = e.target.value;
+            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
 
-            applyColorSliderOptions();
+            notifyBrowserActionOptionsChange();
         });
-        document.getElementById('all-highlight-hue-slider').addEventListener('input', () => {
-            options.all_highlight_color.hue = document.getElementById('all-highlight-hue-slider').value;
+        indexHighlightHueSlider.addEventListener('input', (e) => {
+            options.index_highlight_color.hue = e.target.value;
+            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
 
-            let RGBColor = HSVToRGB(options.all_highlight_color.hue, options.all_highlight_color.saturation, options.all_highlight_color.value);
-            options.all_highlight_color.hexColor = RGBToHexColorCode(RGBColor.red, RGBColor.green, RGBColor.blue);
+            applyIndexHighlightColorSliderOptions();
+        });
+        let indexHighlightSaturationSlider = document.getElementById('index-highlight-saturation-slider');
+        indexHighlightSaturationSlider.addEventListener('change', (e) => {
+            options.index_highlight_color.saturation = e.target.value;
+            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
 
-            applyColorSliderOptions();
+            notifyBrowserActionOptionsChange();
+        });
+        indexHighlightSaturationSlider.addEventListener('input', (e) => {
+            options.index_highlight_color.saturation = e.target.value;
+            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+
+            applyIndexHighlightColorSliderOptions();
+        });
+        let indexHighlightValueSlider = document.getElementById('index-highlight-value-slider');
+        indexHighlightValueSlider.addEventListener('change', (e) => {
+            options.index_highlight_color.value = e.target.value;
+            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+
+            notifyBrowserActionOptionsChange();
+        });
+        indexHighlightValueSlider.addEventListener('input', (e) => {
+            options.index_highlight_color.value = e.target.value;
+            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+
+            applyIndexHighlightColorSliderOptions();
+        });
+        let indexHighlightColorHexCodeField = document.getElementById('index-highlight-color-value');
+        indexHighlightColorHexCodeField.addEventListener('input', (e) => {
+            let hexColor = e.target.innerText;
+            if(!hexColor.match(/#[0-9a-f]{6}/)) {
+                return;
+            }
+
+            let color = new SimpleColor({hexCode: hexColor});
+            options.index_highlight_color.hue = color.getHue();
+            options.index_highlight_color.saturation = color.getSaturation();
+            options.index_highlight_color.value = color.getValue();
+            options.index_highlight_color.hexColor = hexColor;
+
+            applyIndexHighlightColorSliderOptions();
+            notifyBrowserActionOptionsChange();
+        });
+
+        //Add all highlight color slider listeners
+        let allHighlightHueSlider = document.getElementById('all-highlight-hue-slider');
+        allHighlightHueSlider.addEventListener('change', (e) => {
+            options.all_highlight_color.hue = e.target.value;
+            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+
+            notifyBrowserActionOptionsChange();
+        });
+        allHighlightHueSlider.addEventListener('input', (e) => {
+            options.all_highlight_color.hue = e.target.value;
+            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+
+            applyAllHighlightColorSliderOptions();
+        });
+        let allHighlightSaturationSlider = document.getElementById('all-highlight-saturation-slider');
+        allHighlightSaturationSlider.addEventListener('change', (e) => {
+            options.all_highlight_color.saturation = e.target.value;
+            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+
+            notifyBrowserActionOptionsChange();
+        });
+        allHighlightSaturationSlider.addEventListener('input', (e) => {
+            options.all_highlight_color.saturation = e.target.value;
+            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+
+            applyAllHighlightColorSliderOptions();
+        });
+        let allHighlightValueSlider = document.getElementById('all-highlight-value-slider');
+        allHighlightValueSlider.addEventListener('change', (e) => {
+            options.all_highlight_color.saturation = e.target.value;
+            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+
+            notifyBrowserActionOptionsChange();
+        });
+        allHighlightValueSlider.addEventListener('input', (e) => {
+            options.all_highlight_color.value = e.target.value;
+            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+
+            applyAllHighlightColorSliderOptions();
+        });
+        let allHighlightColorHexCodeField = document.getElementById('all-highlight-color-value');
+        allHighlightColorHexCodeField.addEventListener('input', (e) => {
+            let hexColor = e.target.innerText;
+            if(!hexColor.match(/#[0-9a-f]{6}/)) {
+                return;
+            }
+
+            let color = new SimpleColor({hexCode: hexColor});
+            options.all_highlight_color.hue = color.getHue();
+            options.all_highlight_color.saturation = color.getSaturation();
+            options.all_highlight_color.value = color.getValue();
+            options.all_highlight_color.hexColor = hexColor;
+
+            applyAllHighlightColorSliderOptions();
+            notifyBrowserActionOptionsChange();
         });
     };
 
@@ -169,7 +216,8 @@ Find.register('Popup.OptionsPane', function (self) {
         options = newOptions;
         applyToggleOptions();
         applyMaxResultsSliderOptions();
-        applyColorSliderOptions();
+        applyIndexHighlightColorSliderOptions();
+        applyAllHighlightColorSliderOptions();
     };
 
     /**
@@ -214,6 +262,28 @@ Find.register('Popup.OptionsPane', function (self) {
     /**
      *
      * */
+    function getIndexHighlightColorCode() {
+        return new SimpleColor({
+            hue: options.index_highlight_color.hue,
+            saturation: options.index_highlight_color.saturation,
+            value: options.index_highlight_color.value
+        }).getHexColorCode();
+    }
+
+    /**
+     *
+     * */
+    function getAllHighlightColorCode() {
+        return new SimpleColor({
+            hue: options.all_highlight_color.hue,
+            saturation: options.all_highlight_color.saturation,
+            value: options.all_highlight_color.value
+        }).getHexColorCode();
+    }
+
+    /**
+     *
+     * */
     function applyToggleOptions() {
         document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
         document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
@@ -236,148 +306,254 @@ Find.register('Popup.OptionsPane', function (self) {
     /**
      *
      * */
-    function applyColorSliderOptions() {
+    function applyIndexHighlightColorSliderOptions() {
         //Index Highlight Color Options
         document.getElementById('index-highlight-hue-slider').value = options.index_highlight_color.hue;
         document.getElementById('index-highlight-saturation-slider').value = options.index_highlight_color.saturation;
-
-        let lowerColor = HSVToRGB(options.index_highlight_color.hue, 0, options.index_highlight_color.value);
-        let lowerHex = RGBToHexColorCode(lowerColor.red, lowerColor.green, lowerColor.blue);
-        let upperColor = HSVToRGB(options.index_highlight_color.hue, 1, options.index_highlight_color.value);
-        let upperHex = RGBToHexColorCode(upperColor.red, upperColor.green, upperColor.blue);
-        document.getElementById('index-highlight-saturation-slider').setAttribute("style", "background: linear-gradient(to right," + lowerHex + "," + upperHex + ");");
         document.getElementById('index-highlight-value-slider').value = options.index_highlight_color.value;
-
-        lowerColor = HSVToRGB(options.index_highlight_color.hue, options.index_highlight_color.saturation, 0);
-        lowerHex = RGBToHexColorCode(lowerColor.red, lowerColor.green, lowerColor.blue);
-        upperColor = HSVToRGB(options.index_highlight_color.hue, options.index_highlight_color.saturation, 1);
-        upperHex = RGBToHexColorCode(upperColor.red, upperColor.green, upperColor.blue);
-        document.getElementById('index-highlight-value-slider').setAttribute("style", "background: linear-gradient(to right," + lowerHex + "," + upperHex + ");");
         document.getElementById('index-highlight-color-value').innerText = options.index_highlight_color.hexColor;
         document.getElementById('index-highlight-color-indicator').setAttribute("style", "background: " + options.index_highlight_color.hexColor + ";");
 
-        //All Highlight Color Options
+        let indexLowerSaturationColor = new SimpleColor({
+            hue: options.index_highlight_color.hue,
+            saturation: 0,
+            value: options.index_highlight_color.value
+        });
+        let indexUpperSaturationColor = new SimpleColor({
+            hue: options.index_highlight_color.hue,
+            saturation: 1,
+            value: options.index_highlight_color.value
+        });
+        document.getElementById('index-highlight-saturation-slider').setAttribute("style",
+            "background: linear-gradient(to right," + indexLowerSaturationColor.getHexColorCode() + "," + indexUpperSaturationColor.getHexColorCode() + ");");
+
+        let indexLowerValueColor = new SimpleColor({
+            hue: options.index_highlight_color.hue,
+            saturation: options.index_highlight_color.saturation,
+            value: 0
+        });
+        let indexUpperValueColor = new SimpleColor({
+            hue: options.index_highlight_color.hue,
+            saturation: options.index_highlight_color.saturation,
+            value: 1
+        });
+        document.getElementById('index-highlight-value-slider').setAttribute("style",
+            "background: linear-gradient(to right," + indexLowerValueColor.getHexColorCode() + "," + indexUpperValueColor.getHexColorCode() + ");");
+    }
+
+    /**
+     *
+     * */
+    function applyAllHighlightColorSliderOptions() {
         document.getElementById('all-highlight-hue-slider').value = options.all_highlight_color.hue;
         document.getElementById('all-highlight-saturation-slider').value = options.all_highlight_color.saturation;
         document.getElementById('all-highlight-value-slider').value = options.all_highlight_color.value;
         document.getElementById('all-highlight-color-value').innerText = options.all_highlight_color.hexColor;
         document.getElementById('all-highlight-color-indicator').setAttribute("style", "background: " + options.all_highlight_color.hexColor + ";");
+
+        let allLowerSaturationColor = new SimpleColor({
+            hue: options.all_highlight_color.hue,
+            saturation: 0,
+            value: options.all_highlight_color.value
+        });
+        let allUpperSaturationColor = new SimpleColor({
+            hue: options.all_highlight_color.hue,
+            saturation: 1,
+            value: options.all_highlight_color.value
+        });
+        document.getElementById('all-highlight-saturation-slider').setAttribute("style",
+            "background: linear-gradient(to right," + allLowerSaturationColor.getHexColorCode() + "," + allUpperSaturationColor.getHexColorCode() + ");");
+
+        let allLowerValueColor = new SimpleColor({
+            hue: options.all_highlight_color.hue,
+            saturation: options.all_highlight_color.saturation,
+            value: 0
+        });
+        let allUpperValueColor = new SimpleColor({
+            hue: options.all_highlight_color.hue,
+            saturation: options.all_highlight_color.saturation,
+            value: 1
+        });
+        document.getElementById('all-highlight-value-slider').setAttribute("style",
+            "background: linear-gradient(to right," + allLowerValueColor.getHexColorCode() + "," + allUpperValueColor.getHexColorCode() + ");");
     }
 
     /**
-     * Convert a color in HSV to RGB.
+     * Constructor for an immutable color object representing an RGB or HSV color.
      *
-     * @param {number} hue - An integer value from 0 (inclusive) degrees to 360 (exclusive)
-     * @param {number} saturation - A value between 0 and 1.
-     * @param {number} value - A value between 0 and 1.
-     * @return {object} an object with three fields, red green and blue, where each are integers between 0
-     * and 255 (inclusive)
+     * @constructor
+     * @param {object} [properties] - Properties used to initialize the color object. If the properties object does not
+     * take any of the forms above, it will by default use hue 0, saturation 0 and value 0.
      * */
-    function HSVToRGB(hue, saturation, value) {
-        let chroma = value * saturation;
-        let intermediate = chroma * (1 - Math.abs((hue / 60) % 2 - 1));
-        let match = value - chroma;
+    let SimpleColor = function(properties) {
+        let hue = 0;
+        let saturation = 0;
+        let value = 0;
 
-        let rgb = {};
-        if (hue >= 0 && hue < 60) {
-            rgb.red = chroma;
-            rgb.green = intermediate;
-            rgb.blue = 0;
-        } else if (hue >= 60 && hue < 120) {
-            rgb.red = intermediate;
-            rgb.green = chroma;
-            rgb.blue = 0;
-        } else if (hue >= 120 && hue < 180) {
-            rgb.red = 0;
-            rgb.green = chroma;
-            rgb.blue = intermediate;
-        } else if (hue >= 180 && hue < 240) {
-            rgb.red = 0;
-            rgb.green = intermediate;
-            rgb.blue = chroma;
-        } else if (hue >= 240 && hue < 300) {
-            rgb.red = intermediate;
-            rgb.green = 0;
-            rgb.blue = chroma;
-        } else if (hue >= 300 && hue < 360) {
-            rgb.red = chroma;
-            rgb.green = 0;
-            rgb.blue = intermediate;
+        if('hue' in properties && 'saturation' in properties && 'value' in properties) {
+            hue = properties.hue;
+            saturation = properties.saturation;
+            value = properties.value;
+        } else if('red' in properties && 'green' in properties && 'blue' in properties) {
+            let HSVColor = RGBToHSV(properties.red, properties.green, properties.blue);
+            hue = HSVColor.hue;
+            saturation = HSVColor.saturation;
+            value = HSVColor.value;
+        } else if('hexCode' in properties) {
+            let RGBColor = hexColorCodeToRGB(properties.hexCode);
+            let HSVColor = RGBToHSV(RGBColor.red, RGBColor.green, RGBColor.blue);
+            hue = HSVColor.hue;
+            saturation = HSVColor.saturation;
+            value = HSVColor.value;
         }
 
-        rgb.red = Math.floor((rgb.red + match) * 255);
-        rgb.green = Math.floor((rgb.green + match) * 255);
-        rgb.blue = Math.floor((rgb.blue + match) * 255);
-
-        return rgb;
-    }
-
-    /**
-     * Convert a color in RGB format to HSV.
-     *
-     * @param {number} red - An integer between 0 and 255 (inclusive)
-     * @param {number} green - An integer between 0 and 255 (inclusive)
-     * @param {number} blue - An integer between 0 and 255 (inclusive)
-     * @return {object} an object with three keys, hue saturation and value.
-     * */
-    function RGBToHSV(red, green, blue) {
-        red = red / 255;
-        green = green / 255;
-        blue = blue / 255;
-
-        let maxChroma = Math.max(red, green, blue);
-        let minChroma = Math.min(red, green, blue);
-        let delta = maxChroma - minChroma;
-
-        let hue;
-        if(delta === 0) {
-            hue = 0;
-        } else if(maxChroma === red) {
-            hue = 60 * (((green - blue) / delta) % 6);
-        } else if(maxChroma === green) {
-            hue = 60 * (((blue - red) / delta) + 2);
-        } else if(maxChroma === blue) {
-            hue = 60 * (((red - green) / delta) + 4);
-        }
-
-        hue = Math.floor(hue);
-
-        return {
-            hue: hue < 0 ? hue + 360 : hue,
-            saturation: maxChroma !== 0 ? delta / maxChroma : 0,
-            value: maxChroma
-        }
-    }
-
-    /**
-     * Convert an RGB triplet in hexadecimal format to their individual RGB components.
-     *
-     * @param {string} hexCode - A hex color code with a length of 6, optionally preceded by #
-     * @return {object} An object with red green and blue keys, or undefined if the hex code is not valid.
-     * */
-    function hexColorCodeToRGB(hexCode) {
-        hexCode = hexCode.replace('#','');
-        if(!hexCode.match(/[0-9a-f]{6}/)) {
-            return undefined;
-        }
-
-        let bigint = parseInt(hexCode, 16);
-        return {
-            red: (bigint >> 16) & 255,
-            green: (bigint >> 8) & 255,
-            blue: bigint & 255
+        this.getRedComponent = function() {
+            let RGBColor = HSVToRGB(hue, saturation, value);
+            return RGBColor.red;
         };
-    }
 
-    /**
-     * Convert RGB components into a hex color code.
-     *
-     * @param {red} red - An integer between 0 and 255 inclusive
-     * @param {red} green - An integer between 0 and 255 inclusive
-     * @param {red} blue - An integer between 0 and 255 inclusive
-     * @return {string} hex color code from RGB values.
-     * */
-    function RGBToHexColorCode(red, green, blue) {
-        return "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
-    }
+        this.getGreenComponent = function() {
+            let RGBColor = HSVToRGB(hue, saturation, value);
+            return RGBColor.green;
+        };
+
+        this.getBlueComponent = function() {
+            let RGBColor = HSVToRGB(hue, saturation, value);
+            return RGBColor.blue;
+        };
+
+        this.getHue = function() {
+            return hue;
+        };
+
+        this.getSaturation = function() {
+            return saturation;
+        };
+
+        this.getValue = function() {
+            return value;
+        };
+
+        this.getHexColorCode = function() {
+            let RGBColor = HSVToRGB(hue, saturation, value);
+            return RGBToHexColorCode(RGBColor.red, RGBColor.green, RGBColor.blue);
+        };
+
+        /**
+         * Convert a color in HSV to RGB.
+         *
+         * @param {number} hue - An integer value from 0 (inclusive) degrees to 360 (exclusive)
+         * @param {number} saturation - A value between 0 and 1.
+         * @param {number} value - A value between 0 and 1.
+         * @return {object} an object with three fields, red green and blue, where each are integers between 0
+         * and 255 (inclusive)
+         * */
+        function HSVToRGB(hue, saturation, value) {
+            let chroma = value * saturation;
+            let intermediate = chroma * (1 - Math.abs((hue / 60) % 2 - 1));
+            let match = value - chroma;
+
+            let rgb = {};
+            if (hue >= 0 && hue < 60) {
+                rgb.red = chroma;
+                rgb.green = intermediate;
+                rgb.blue = 0;
+            } else if (hue >= 60 && hue < 120) {
+                rgb.red = intermediate;
+                rgb.green = chroma;
+                rgb.blue = 0;
+            } else if (hue >= 120 && hue < 180) {
+                rgb.red = 0;
+                rgb.green = chroma;
+                rgb.blue = intermediate;
+            } else if (hue >= 180 && hue < 240) {
+                rgb.red = 0;
+                rgb.green = intermediate;
+                rgb.blue = chroma;
+            } else if (hue >= 240 && hue < 300) {
+                rgb.red = intermediate;
+                rgb.green = 0;
+                rgb.blue = chroma;
+            } else if (hue >= 300 && hue < 360) {
+                rgb.red = chroma;
+                rgb.green = 0;
+                rgb.blue = intermediate;
+            }
+
+            rgb.red = Math.floor((rgb.red + match) * 255);
+            rgb.green = Math.floor((rgb.green + match) * 255);
+            rgb.blue = Math.floor((rgb.blue + match) * 255);
+
+            return rgb;
+        }
+
+        /**
+         * Convert a color in RGB format to HSV.
+         *
+         * @param {number} red - An integer between 0 and 255 (inclusive)
+         * @param {number} green - An integer between 0 and 255 (inclusive)
+         * @param {number} blue - An integer between 0 and 255 (inclusive)
+         * @return {object} an object with three keys, hue saturation and value.
+         * */
+        function RGBToHSV(red, green, blue) {
+            red = red / 255;
+            green = green / 255;
+            blue = blue / 255;
+
+            let maxChroma = Math.max(red, green, blue);
+            let minChroma = Math.min(red, green, blue);
+            let delta = maxChroma - minChroma;
+
+            let hue;
+            if(delta === 0) {
+                hue = 0;
+            } else if(maxChroma === red) {
+                hue = 60 * (((green - blue) / delta) % 6);
+            } else if(maxChroma === green) {
+                hue = 60 * (((blue - red) / delta) + 2);
+            } else if(maxChroma === blue) {
+                hue = 60 * (((red - green) / delta) + 4);
+            }
+
+            hue = Math.floor(hue);
+
+            return {
+                hue: hue < 0 ? hue + 360 : hue,
+                saturation: maxChroma !== 0 ? delta / maxChroma : 0,
+                value: maxChroma
+            }
+        }
+
+        /**
+         * Convert an RGB triplet in hexadecimal format to their individual RGB components.
+         *
+         * @param {string} hexCode - A hex color code with a length of 6, optionally preceded by #
+         * @return {object} An object with red green and blue keys, or undefined if the hex code is not valid.
+         * */
+        function hexColorCodeToRGB(hexCode) {
+            hexCode = hexCode.replace('#','');
+            if(!hexCode.match(/[0-9a-f]{6}/)) {
+                return undefined;
+            }
+
+            let bigint = parseInt(hexCode, 16);
+            return {
+                red: (bigint >> 16) & 255,
+                green: (bigint >> 8) & 255,
+                blue: bigint & 255
+            };
+        }
+
+        /**
+         * Convert RGB components into a hex color code.
+         *
+         * @param {red} red - An integer between 0 and 255 inclusive
+         * @param {red} green - An integer between 0 and 255 inclusive
+         * @param {red} blue - An integer between 0 and 255 inclusive
+         * @return {string} hex color code from RGB values.
+         * */
+        function RGBToHexColorCode(red, green, blue) {
+            return "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
+        }
+    };
 });
