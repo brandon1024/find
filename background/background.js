@@ -1,201 +1,86 @@
 'use strict';
 
-//Support Chrome and Firefox
-window.browser_id = typeof browser !== 'undefined' ? 'Firefox' : 'Chrome';
-window.browser = (() => {
-    return window.chrome || window.browser;
-})();
+/**
+ * Create the Background namespace. The background coordinates activities between the browser
+ * action popup and the content in the web page. The background keeps track of the state of the
+ * search, along with other necessary data to seek, replace, and perform other actions efficiently.
+ * */
+Find.register("Background", function(self) {
 
-let DOMModelObject = null;
-let regexOccurrenceMap = null;
-let options = null;
-let index = null;
-let regex = null;
+    /**
+     * Allocated on the namespace to allow the BrowserActionProxy to communicate installation
+     * details to the browser action popup if the extension was recently installed or updated.
+     * */
+    self.installationDetails = null;
+    self.options = null;
 
-let installed = null;
+    let documentRepresentation = null;
+    let regexOccurrenceMap = null;
+    let index = null;
 
-//Inject content scripts into pages on installed (not performed automatically in Chrome)
-browser.runtime.onInstalled.addListener((details) => {
-    if(browser_id === 'Firefox') {
-        return;
-    }
+    /**
+     * Inject content scripts into pages once installed (not performed automatically in Chrome)
+     */
+    Find.browser.runtime.onInstalled.addListener((installation) => {
+        self.installationDetails = installation.details;
 
-    installed = {details: details};
-
-    let manifest = browser.runtime.getManifest();
-    let scripts = manifest.content_scripts[0].js;
-
-    browser.tabs.query({}, (tabs) => {
-        for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
-            let url = tabs[tabIndex].url;
-            if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
-                continue;
-            }
-
-            for (let i = 0; i < scripts.length; i++) {
-                browser.tabs.executeScript(tabs[tabIndex].id, {file: scripts[i]});
-            }
+        if(Find.browserId === 'Firefox') {
+            return;
         }
-    });
-});
 
-browser.runtime.onConnect.addListener((port) => {
-    if(port.name !== 'popup_to_background_port') {
-        return;
-    }
+        let scripts =  Find.browser.runtime.getManifest().content_scripts[0].js;
+        Find.browser.tabs.query({}, (tabs) => {
+            for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+                let url = tabs[tabIndex].url;
+                if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
+                    continue;
+                }
 
-    if(installed) {
-        port.postMessage({action: 'install', details: installed.details});
-        installed = null;
-    }
-
-    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
-
-        //Invoke action on message from popup script
-        port.onMessage.addListener((message) => {
-            invokeAction(message.action, port, tabs[0], message);
-        });
-
-        //Handle extension close
-        port.onDisconnect.addListener(() => {
-            if(!options || !options.persistent_highlights) {
-                browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
-            }
-
-            let uuids = getUUIDsFromModelObject(DOMModelObject);
-            browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
-
-            DOMModelObject = null;
-            regexOccurrenceMap = null;
-            index = null;
-            regex = null;
-        });
-
-        //Perform init action
-        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, (response) => {
-            if(response && response.model) {
-                DOMModelObject = response.model;
-                index = 0;
+                for (let i = 0; i < scripts.length; i++) {
+                    Find.Background.ContentProxy.executeScript(tabs[tabIndex], {file: scripts[i]});
+                }
             }
         });
     });
-});
 
-//Omnibox support
-browser.omnibox.setDefaultSuggestion({description: 'Enter a regular expression'});
-
-browser.omnibox.onInputStarted.addListener(() => {
-    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        //Perform init action
-        browser.tabs.sendMessage(tabs[0].id, {action: 'init'}, (response) => {
-            if(response && response.model) {
-                DOMModelObject = response.model;
-            }
-        });
-    });
-});
-
-browser.omnibox.onInputChanged.addListener((regex) => {
-    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    /**
+     * Update the search when the search query or search options change. Builds a new occurrence map from the
+     * documentRepresentation object, highlight the occurrence in the page, and send the indices
+     * to the browser action popup through the sendResponse function.
+     *
+     * If the background has not been initialized properly (documentRepresentation is null), simply returns.
+     *
+     * If the regex is invalid, removes all highlights from the page and sends appropriate response
+     * to the popup.
+     *
+     * @param {object} message - The message containing the details about the search, including the search
+     * options and search query.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.updateSearch = function(message, tab, sendResponse) {
         try {
-            if (!DOMModelObject) {
+            if(!documentRepresentation) {
                 return;
             }
 
-            //Ensure non-empty search
-            if (regex.length === 0) {
-                browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
-                return;
-            }
-
-            //Build occurrence map, reposition index if necessary
-            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, null);
-
-            //Invoke highlight_update action, index_update action
-            browser.tabs.sendMessage(tabs[0].id, {
-                action: 'omni_update',
-                occurrenceMap: regexOccurrenceMap,
-                regex: regex
-            });
-        }
-        catch (e) {
-            browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
-        }
-    });
-});
-
-browser.omnibox.onInputCancelled.addListener(() => {
-    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        browser.tabs.sendMessage(tabs[0].id, {action: 'highlight_restore'});
-        let uuids = getUUIDsFromModelObject(DOMModelObject);
-        browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
-
-        DOMModelObject = null;
-        regexOccurrenceMap = null;
-        index = null;
-        regex = null;
-    });
-});
-
-browser.omnibox.onInputEntered.addListener(() => {
-    browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        let uuids = getUUIDsFromModelObject(DOMModelObject);
-        browser.tabs.sendMessage(tabs[0].id, {action: 'restore', uuids: uuids});
-
-        DOMModelObject = null;
-        regexOccurrenceMap = null;
-        index = null;
-        regex = null;
-    });
-});
-
-//Dispatch action function
-function invokeAction(action, port, tab, message) {
-    if(action === 'update') {
-        actionUpdate(port, tab.id, message);
-    } else if(action === 'next') {
-        actionNext(port, tab.id, message);
-    } else if(action === 'previous') {
-        actionPrevious(port, tab.id, message);
-    } else if(action === 'replace_next') {
-        replaceNext(port, tab.id, message);
-    } else if(action === 'replace_all') {
-        replaceAll(port, tab.id, message);
-    } else if(action === 'follow_link') {
-        followLinkUnderFocus(port, tab.id);
-    } else if(action === 'browser_action_init') {
-        initializeBrowserAction(port, tab);
-    } else if(action === 'get_occurrence') {
-        extractOccurrences(port, message);
-    }
-}
-
-//Action Update
-function actionUpdate(port, tabID, message) {
-    browser.tabs.sendMessage(tabID, {action: 'update'}, (response) => {
-        try {
-            if(!DOMModelObject) {
-                return;
-            }
-
-            options = message.options;
-            regex = message.regex;
+            self.options = message.options;
+            let regex = message.regex;
 
             //If searching by string, escape all regex metacharacters
-            if(!options.find_by_regex) {
+            if(!self.options.find_by_regex) {
                 regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
             }
 
             //Ensure non-empty search
             if(regex.length === 0) {
-                port.postMessage({action: 'empty_regex'});
-                browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+                sendResponse({action: 'empty_regex'});
+                Find.Background.ContentProxy.clearPageHighlights(tab);
                 return;
             }
 
             //Build occurrence map, reposition index if necessary
-            regexOccurrenceMap = buildOccurrenceMap(DOMModelObject, regex, options);
+            regexOccurrenceMap = buildOccurrenceMap(documentRepresentation, regex, self.options);
             if(index > regexOccurrenceMap.length-1) {
                 if(regexOccurrenceMap.length !== 0) {
                     index = regexOccurrenceMap.length - 1;
@@ -204,17 +89,12 @@ function actionUpdate(port, tabID, message) {
                 }
             }
 
-            if(options.max_results !== 0 && index >= options.max_results)
-                index = options.max_results - 1;
+            if(self.options.max_results !== 0 && index >= self.options.max_results) {
+                index = self.options.max_results - 1;
+            }
 
             //Invoke highlight_update action, index_update action
-            browser.tabs.sendMessage(tabID, {
-                action: 'highlight_update',
-                occurrenceMap: regexOccurrenceMap,
-                index: index,
-                regex: regex,
-                options: options
-            });
+            Find.Background.ContentProxy.updatePageHighlights(tab, regex, index, regexOccurrenceMap, self.options);
 
             //If occurrence map empty, viewable index is zero
             let viewableIndex = index + 1;
@@ -224,233 +104,341 @@ function actionUpdate(port, tabID, message) {
 
             //if occurrence map larger than max results, viewable total is max results
             let viewableTotal = regexOccurrenceMap.length;
-            if(options.max_results !== 0 && options.max_results <= regexOccurrenceMap.length) {
-                viewableTotal = options.max_results;
+            if(self.options.max_results !== 0 && self.options.max_results <= regexOccurrenceMap.length) {
+                viewableTotal = self.options.max_results;
             }
 
-            port.postMessage({
+            sendResponse({
                 action: 'index_update',
                 index: viewableIndex,
                 total: viewableTotal
             });
         } catch(e) {
-            port.postMessage({action: 'invalid_regex', error: e.message});
+            sendResponse({action: 'invalid_regex', error: e.message});
+            Find.Background.ContentProxy.clearPageHighlights(tab);
         }
-    });
-}
+    };
 
-//Action Next
-function actionNext(port, tabID, message) {
-    options = message.options;
-    let indexCap = options.max_results !== 0;
+    /**
+     * Move forward or backward the current search index, and respond to the popup
+     * the new search index.
+     *
+     * @param {object} message - The message containing the details about the search options.
+     * @param {boolean} seekForward - Specifies whether to seek forward or backward.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.seekSearch = function(message, seekForward, tab, sendResponse) {
+        self.options= message.options;
+        let indexCap = self.options.max_results !== 0;
 
-    //If reached end, reset index
-    if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1)) {
-        index = 0;
-    } else {
-        index++;
-    }
-
-    //Invoke highlight_seek action, index_update action
-    browser.tabs.sendMessage(tabID, {
-        action: 'highlight_seek',
-        occurrenceMap: regexOccurrenceMap,
-        index: index,
-        regex: regex,
-        options: options
-    });
-
-    let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
-    let viewableTotal = (indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length;
-    port.postMessage({
-        action: 'index_update',
-        index: viewableIndex,
-        total: viewableTotal
-    });
-}
-
-//Action Previous
-function actionPrevious(port, tabID, message) {
-    options = message.options;
-    let indexCap = options.max_results !== 0;
-
-    //If reached start, set index to last occurrence
-    if(index <= 0) {
-        if(indexCap && options.max_results <= regexOccurrenceMap.length) {
-            index = options.max_results - 1;
+        //If reached end, reset index
+        if(seekForward) {
+            index = computeSubsequentIndex(index, regexOccurrenceMap, self.options);
         } else {
-            index = regexOccurrenceMap.length - 1;
+            index = computePrecedingIndex(index, regexOccurrenceMap, self.options);
         }
-    } else {
-        index--;
-    }
 
-    //Invoke highlight_seek action, index_update action
-    browser.tabs.sendMessage(tabID, {
-        action: 'highlight_seek',
-        occurrenceMap: regexOccurrenceMap,
-        index: index,
-        regex: regex,
-        options: options
-    });
+        //Invoke highlight_seek action, index_update action
+        Find.Background.ContentProxy.seekHighlight(tab, index, self.options);
 
-    let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
-    let viewableTotal = (indexCap && options.max_results <= regexOccurrenceMap.length) ? options.max_results : regexOccurrenceMap.length;
-    port.postMessage({
-        action: 'index_update',
-        index: viewableIndex,
-        total: viewableTotal
-    });
-}
-
-function replaceNext(port, tabID, message) {
-    browser.tabs.sendMessage(tabID, {
-        action: 'highlight_replace',
-        index: message.index - 1,
-        replaceWith: message.replaceWith,
-        options: message.options
-    });
-
-    //Restore Web Page
-    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
-
-    let uuids = getUUIDsFromModelObject(DOMModelObject);
-    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, (response) => {
-        //Rebuild DOMModelObject and invalidate
-        browser.tabs.sendMessage(tabID, {action: 'init'}, (response) => {
-            if(response && response.model) {
-                DOMModelObject = response.model;
-                port.postMessage({action: 'invalidate'});
-            }
+        let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
+        let viewableTotal = (indexCap && self.options.max_results <= regexOccurrenceMap.length) ?
+            self.options.max_results : regexOccurrenceMap.length;
+        sendResponse({
+            action: 'index_update',
+            index: viewableIndex,
+            total: viewableTotal
         });
-    });
-}
+    };
 
-function replaceAll(port, tabID, message) {
-    browser.tabs.sendMessage(tabID, {
-        action: 'highlight_replace_all',
-        replaceWith: message.replaceWith,
-        options: message.options
-    });
+    /**
+     * Replace the occurrence of the search query with a given replacement string, and invalidate the search
+     * state.
+     *
+     * @param {object} message - The message containing the details about the action, including the index to
+     * replace, the replacement string, and the search options.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.replaceNext = function(message, tab, sendResponse) {
+        Find.Background.ContentProxy.replaceOccurrence(tab, message.index - 1, message.replaceWith, message.options);
 
-    //Restore Web Page
-    browser.tabs.sendMessage(tabID, {action: 'highlight_restore'});
+        //Restore Web Page
+        Find.Background.ContentProxy.clearPageHighlights(tab);
 
-    let uuids = getUUIDsFromModelObject(DOMModelObject);
-    browser.tabs.sendMessage(tabID, {action: 'restore', uuids: uuids}, (response) => {
-        //Rebuild DOMModelObject and invalidate
-        browser.tabs.sendMessage(tabID, {action: 'init'}, (response) => {
-            if(response && response.model) {
-                DOMModelObject = response.model;
-                port.postMessage({action: 'invalidate'});
-            }
-        });
-    });
-}
-
-function followLinkUnderFocus(port, tabID) {
-    browser.tabs.sendMessage(tabID, {action: 'follow_link'});
-    port.postMessage({action: 'close'});
-}
-
-//Build all the information required to initialize the browser extension.
-function initializeBrowserAction(port, tab) {
-    let resp = {};
-    resp.activeTab = tab;
-
-    browser.tabs.sendMessage(tab.id, {action: 'poll'}, (response) => {
-        resp.isReachable = response && response.success;
-
-        if(resp.isReachable) {
-            browser.tabs.executeScript(tab.id, {code: 'window.getSelection().toString();'}, (selection) => {
-                resp.selectedText = selection;
-                port.postMessage({action: 'browser_action_init', response: resp});
+        let uuids = getUUIDsFromModelObject(documentRepresentation);
+        Find.Background.ContentProxy.restoreWebPage(tab, uuids, () => {
+            //Rebuild documentRepresentation and invalidate
+            Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
+                documentRepresentation = model;
+                sendResponse({action: 'invalidate'});
             });
+        });
+    };
+
+    /**
+     * Replace all occurrences of the search query with a given replacement string, and invalidate the search
+     * state.
+     *
+     * @param {object} message - The message containing the details about the action, the replacement string,
+     * and the search options.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.replaceAll = function(message, tab, sendResponse) {
+        Find.Background.ContentProxy.replaceAllOccurrences(tab, message.replaceWith, message.options);
+
+        //Restore Web Page
+        Find.Background.ContentProxy.clearPageHighlights(tab);
+
+        let uuids = getUUIDsFromModelObject(documentRepresentation);
+        Find.Background.ContentProxy.restoreWebPage(tab, uuids, () => {
+            //Rebuild documentRepresentation and invalidate
+            Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
+                documentRepresentation = model;
+                sendResponse({action: 'invalidate'});
+            });
+        });
+    };
+
+    /**
+     * Follow the link at the current occurrence index in the page.
+     *
+     * @param {object} message - The message containing the details about the action.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.followLinkUnderFocus = function(message, tab, sendResponse) {
+        Find.Background.ContentProxy.followLinkUnderFocus(tab);
+        sendResponse({action: 'close'});
+    };
+
+    /**
+     * Extract from the regex occurrence map the current or all occurrences of the search query
+     * and respond to the popup. Used to allow the occurrences to be copied to the clipboard.
+     *
+     * If the cardinality is 'all', a line feed separated string of occurrences is returned.
+     * Otherwise, only the current occurrence is returned.
+     *
+     * @param {object} message - The message containing the details about the action.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.extractOccurrences = function(message, tab, sendResponse) {
+        let cardinality = message.options.cardinality;
+        let resp;
+
+        if(cardinality === 'all') {
+            let occurrences = [];
+            for(let occIndex = 0; occIndex < regexOccurrenceMap.length; occIndex++) {
+                occurrences.push(regexOccurrenceMap.occurrenceIndexMap[occIndex].occurrence);
+            }
+
+            resp = occurrences.join('\n');
         } else {
-            port.postMessage({action: 'browser_action_init', response: resp});
-        }
-    });
-}
-
-//Extract one or all occurrences and post to the popup UI.
-function extractOccurrences(port, message) {
-    let cardinality = message.options.cardinality;
-    let resp;
-
-    if(cardinality === 'all') {
-        let occurrences = [];
-        for(let occIndex = 0; occIndex < regexOccurrenceMap.length; occIndex++) {
-            occurrences.push(regexOccurrenceMap.occurrenceIndexMap[occIndex].occurrence);
+            resp = regexOccurrenceMap.occurrenceIndexMap[index].occurrence;
         }
 
-        resp = occurrences.join('\n');
-    } else {
-         resp = regexOccurrenceMap.occurrenceIndexMap[index].occurrence;
+        sendResponse({action: 'get_occurrence', response: resp});
+    };
+
+    /**
+     * Initialize the browser action. Polls the web page to ensure that the content scripts
+     * have been properly injected. If the content script responds, the selected text is retrieved
+     * from the page and included in the response to the popup.
+     *
+     * @param {object} message - The message containing the details about the action.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.initializeBrowserAction = function(message, tab, sendResponse) {
+        let resp = {};
+        resp.activeTab = tab;
+
+        Find.Background.ContentProxy.poll(tab, (response) => {
+            resp.isReachable = response && response.success;
+
+            if(resp.isReachable) {
+                Find.Background.ContentProxy.executeScript(tab, {code: 'window.getSelection().toString();'}, (selection) => {
+                    resp.selectedText = selection;
+                    sendResponse({action: 'browser_action_init', response: resp});
+                });
+            } else {
+                sendResponse({action: 'browser_action_init', response: resp});
+            }
+        });
+    };
+
+    /**
+     * Initialize the extension by constructing the page document representation.
+     *
+     * @param {object} tab - Information about the active tab in the current window.
+     * */
+    self.initializePage = function(tab) {
+        Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
+            documentRepresentation = model;
+            index = 0;
+        });
+    };
+
+    /**
+     * Remove any highlights and markup from the active tab in the current window. Also resets
+     * any state variables, such as the current index, document representation and occurrence map.
+     *
+     * @param {boolean} restoreHighlights - If undefined or true, remove highlights. If false,
+     * highlights are not removed, and are persisted in the page.
+     * */
+    self.restorePageState = function(restoreHighlights) {
+        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            if(restoreHighlights === undefined || restoreHighlights) {
+                Find.Background.ContentProxy.clearPageHighlights(tabs[0]);
+            }
+
+            let uuids = getUUIDsFromModelObject(documentRepresentation);
+            Find.Background.ContentProxy.restoreWebPage(tabs[0], uuids);
+
+            documentRepresentation = null;
+            regexOccurrenceMap = null;
+            index = null;
+        });
+    };
+
+    /**
+     * Construct an occurrence map object from a document representation and regular expression.
+     * The occurrence map is used to map occurrences of a given regex to nodes in the DOM.
+     *
+     * The occurrence map will have the following format:
+     * {
+     *     occurrenceIndexMap: {
+     *          1: {
+     *              groupIndex: _index to the parent group of this occurrence_,
+     *              subIndex: _the occurrence subindex of the parent group_,
+     *              occurrence: _the matched text_
+     *          }, ...
+     *     },
+     *     length: _number of occurrences of the regex_,
+     *     groups: _number of occurrence groups_,
+     *     1: {
+     *         uuids: [...],
+     *         count: _number of matches in this group_,
+     *         preformated: _whether or not the text node in the DOM is preformatted_
+     *     }, ...
+     * }
+     *
+     * @private
+     * @param {object} documentRepresentation - The representation of the page's DOM
+     * @param {string} regex - A regular expression
+     * @param {object} options - Options used to alter the creation of the occurrence map.
+     * @return {object} occurrence map
+     * */
+    function buildOccurrenceMap(documentRepresentation, regex, options) {
+        let occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
+        let count = 0;
+        let groupIndex = 0;
+
+        regex = regex.replace(/ /g, '\\s');
+        regex = (options.match_case) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
+
+        //Loop over all text nodes in documentRepresentation
+        for(let key in documentRepresentation) {
+            let textNodes = documentRepresentation[key].group, preformatted = documentRepresentation[key].preformatted;
+            let textGroup = '';
+            let uuids = [];
+            for(let nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
+                textGroup += textNodes[nodeIndex].text;
+                uuids.push(textNodes[nodeIndex].elementUUID);
+            }
+
+            let matches = textGroup.match(regex);
+            if(!matches) {
+                continue;
+            }
+
+            count += matches.length;
+            occurrenceMap[groupIndex] = {
+                uuids: uuids,
+                count: matches.length,
+                preformatted: preformatted
+            };
+
+            for(let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
+                let occMapIndex = matchesIndex + (count - matches.length);
+                occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex]};
+            }
+
+            groupIndex++;
+
+            //If reached maxIndex, exit
+            if(options.max_results !== 0 && count >= options.max_results) {
+                break;
+            }
+        }
+
+        occurrenceMap.length = count;
+        occurrenceMap.groups = groupIndex;
+        return occurrenceMap;
     }
 
-    port.postMessage({action: 'get_occurrence', response: resp});
-}
+    /**
+     * Increment the given index, wrapping back to zero if reached end of occurrence map or index cap.
+     *
+     * @private
+     * @param {number} index - The current index
+     * @param {object} regexOccurrenceMap - The occurrence map object
+     * @param {object} options - The search options
+     * @return {number} the new index
+     * */
+    function computeSubsequentIndex(index, regexOccurrenceMap, options) {
+        //If reached end, reset index
+        let indexCap = self.options.max_results !== 0;
+        if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1)) {
+            return 0;
+        }
 
-//Build occurrence map from DOM model and regex
-function buildOccurrenceMap(DOMModelObject, regex, options) {
-    let occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
-    let count = 0;
-    let groupIndex = 0;
+        return index + 1;
+    }
 
-    regex = regex.replace(/ /g, '\\s');
-    regex = (options && options.match_case) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
+    /**
+     * Decrement the given index, wrapping back to the end if reached zero.
+     *
+     * @private
+     * @param {number} index - The current index
+     * @param {object} regexOccurrenceMap - The occurrence map object
+     * @param {object} options - The search options
+     * @return {number} the new index
+     * */
+    function computePrecedingIndex(index, regexOccurrenceMap, options) {
+        //If reached start, set index to last occurrence
+        let indexCap = self.options.max_results !== 0;
+        if(index <= 0) {
+            if(indexCap && options.max_results <= regexOccurrenceMap.length) {
+                return options.max_results - 1;
+            }
 
-    //Loop over all text nodes in DOMModelObject
-    for(let key in DOMModelObject) {
-        let textNodes = DOMModelObject[key].group, preformatted = DOMModelObject[key].preformatted;
-        let textGroup = '';
+            return regexOccurrenceMap.length - 1;
+        } else {
+            return index - 1;
+        }
+    }
+
+    /**
+     * Extract UUIDs from the document representation object.
+     *
+     * @private
+     * @param {object} documentRepresentation - The document representation object
+     * @return {array} a list of UUIDs
+     * */
+    function getUUIDsFromModelObject(documentRepresentation) {
         let uuids = [];
-        for(let nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
-            textGroup += textNodes[nodeIndex].text;
-            uuids.push(textNodes[nodeIndex].elementUUID);
+
+        for(let key in documentRepresentation) {
+            let textNodes = documentRepresentation[key].group;
+            for(let index = 0; index < textNodes.length; index++) {
+                uuids.push(textNodes[index].elementUUID);
+            }
         }
 
-        let matches = textGroup.match(regex);
-        if(!matches) {
-            continue;
-        }
-
-        count += matches.length;
-        occurrenceMap[groupIndex] = {
-            uuids: uuids,
-            count: matches.length,
-            preformatted: preformatted
-        };
-
-        for(let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
-            let occMapIndex = matchesIndex + (count - matches.length);
-            occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex]};
-        }
-
-        groupIndex++;
-
-        //If reached maxIndex, exit
-        if(options && options.max_results !== 0 && count >= options.max_results) {
-            break;
-        }
+        return uuids;
     }
-
-    occurrenceMap.length = count;
-    occurrenceMap.groups = groupIndex;
-    return occurrenceMap;
-}
-
-//Get all group uuids from model object
-function getUUIDsFromModelObject(modelObject) {
-    let uuids = [];
-
-    for(let key in modelObject) {
-        let textNodes = modelObject[key].group;
-        for(let index = 0; index < textNodes.length; index++) {
-            uuids.push(textNodes[index].elementUUID);
-        }
-    }
-
-    return uuids;
-}
-
+});

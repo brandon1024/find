@@ -24,18 +24,28 @@
     "default_popup": "popup/popup.html"
   },
   "background": {
-    "scripts": ["/background/background.js"],
+    "scripts": [
+      "app.js",
+      "/background/browser-action-proxy.js",
+      "/background/content-proxy.js",
+      "/background/background.js",
+      "/background/omni.js"
+    ],
     "persistent": false
   },
   "content_scripts": [{
     "matches": ["<all_urls>"],
     "all_frames": false,
     "run_at": "document_end",
-    "js": ["/lib/html-entity-handler/entityhandler.js",
+    "js": [
+      "/lib/html-entity-handler/entityhandler.js",
       "/content/content.js",
-      "/content/highlighter.js"]
+      "/content/highlighter.js"
+    ]
   }],
-  "omnibox": { "keyword" : "find" },
+  "omnibox": {
+    "keyword" : "find"
+  },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
