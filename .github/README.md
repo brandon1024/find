@@ -1,6 +1,10 @@
 <img src="../resources/icon.png" align="right" width="128" />
 
 # **{find+}**
+![Monthly Users](https://img.shields.io/chrome-web-store/users/fddffkdncgkkdjobemgbpojjeffmmofb.svg?style=flat)
+![Last Commit on GitHub](https://img.shields.io/github/last-commit/brandon1024/find.svg?style=flat)
+![Commit Activity](https://img.shields.io/github/commit-activity/y/brandon1024/find.svg?style=flat)
+
 **{find+}** is a simple _Find-in-Page_ extension for Google Chrome hosting a the ability to search a web page or document by regular expression. It has been designed to look and behave much like the `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
 
 Our principle is simple: deliver a reliable, robust, repeatable, performant, and native-like tool for the software and web development industry.
