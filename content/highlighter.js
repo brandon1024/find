@@ -14,10 +14,6 @@ browser.runtime.onMessage.addListener((message) => {
             highlightAll(message.occurrenceMap, message.regex, message.options);
             seekHighlight(message.index, message.options);
             break;
-        case 'omni_update':
-            restore(indexHighlight, allHighlight);
-            highlightAll(message.occurrenceMap, message.regex, null);
-            break;
         case 'highlight_seek':
             seekHighlight(message.index, message.options);
             break;
@@ -241,6 +237,10 @@ function highlightAll(occurrenceMap, regex, options) {
 
 //Move highlight focused text to a given occurrence index
 function seekHighlight(index, options) {
+    if(index === null || options == null) {
+        return;
+    }
+
     let previousIndex = Array.from(document.querySelectorAll('.' + indexHighlight));
     if(previousIndex && previousIndex.length) {
         for(let elsIndex = 0; elsIndex < previousIndex.length; elsIndex++) {
