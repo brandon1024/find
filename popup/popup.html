@@ -11,75 +11,110 @@
         <script type="text/javascript" src="js/options-pane.js"></script>
         <script type="text/javascript" src="js/replace-pane.js"></script>
         <script type="text/javascript" src="js/message-pane.js"></script>
+        <script type="text/javascript" src="js/history-pane.js"></script>
         <script type="text/javascript" src="js/browser-action.js"></script>
         <link rel="stylesheet" href="css/extension.css"/>
+        <link rel="stylesheet" href="css/searchpane.css"/>
         <link rel="stylesheet" href="css/replacepane.css"/>
         <link rel="stylesheet" href="css/messagepane.css"/>
         <link rel="stylesheet" href="css/optionspane.css"/>
+        <link rel="stylesheet" href="css/historypane.css"/>
     </head>
     <body>
         <div id="popup-body">
             <div id="popup-body-container">
-                <div id="search-field-cell">
-                    <input class="field" id="search-field" type="text" name="search" autocomplete="off" data-locale-title="search_field_title"/>
+                <div id="search-field-container">
+                    <input class="field" id="search-field" type="text" name="search" autocomplete="off"
+                           data-locale-title="search_field_title"/>
+
+                    <!-- Area for search warnings, errors, and current index information -->
                     <div id="search-info">
-                        <img class="extension-error-icon" id="invalid-regex-icon" src="/resources/exclamation.svg" data-locale-title="malformed_regex_error_title"/>
-                        <img class="extension-error-icon" id="clipboard-copy-error" src="/resources/exclamation.svg" data-locale-title="clipboard_copy_error_title"/>
-                        <img class="extension-error-icon" id="clipboard-copy-icon" src="/resources/check-square.svg" data-locale-title="clipboard_copy_title"/>
-                        <img class="extension-error-icon" id="install-information" src="/resources/question-circle.svg" data-locale-title="installation_information_title"/>
-                        <img class="extension-error-icon" id="update-information" src="/resources/question-circle.svg" data-locale-title="update_information_title"/>
+                        <img class="extension-error-icon" id="invalid-regex-icon" src="/resources/exclamation.svg"
+                             data-locale-title="malformed_regex_error_title"/>
+                        <img class="extension-error-icon" id="clipboard-copy-error" src="/resources/exclamation.svg"
+                             data-locale-title="clipboard_copy_error_title"/>
+                        <img class="extension-error-icon" id="clipboard-copy-icon" src="/resources/check-square.svg"
+                             data-locale-title="clipboard_copy_title"/>
+                        <img class="extension-error-icon" id="install-information" src="/resources/question-circle.svg"
+                             data-locale-title="installation_information_title"/>
+                        <img class="extension-error-icon" id="update-information" src="/resources/question-circle.svg"
+                             data-locale-title="update_information_title"/>
                         <span class="def-font" id="index-text"></span>
                     </div>
                 </div>
-                <div id="controls-cell">
-                    <div class="button-cell">
-                        <button class="controls-button" id="search-prev-button" type="button" disabled data-locale-title="search_prev_title"/>
+
+                <!--  Area for search controls, such as seek, toggle options or history, and close extension -->
+                <div id="search-controls-container">
+                    <div class="controls-button-cell">
+                        <button class="controls-button" id="search-prev-button" type="button" disabled
+                                data-locale-title="search_prev_title"/>
                     </div>
-                    <div class="button-cell">
-                        <button class="controls-button" id="search-next-button" type="button" disabled data-locale-title="search_next_title"/>
+                    <div class="controls-button-cell">
+                        <button class="controls-button" id="search-next-button" type="button" disabled
+                                data-locale-title="search_next_title"/>
                     </div>
-                    <div class="button-cell">
-                        <button class="controls-button" id="search-toggle-options-button" type="button" data-locale-title="toggle_options_pane_title"/>
+                    <div class="controls-button-cell">
+                        <button class="controls-button" id="search-toggle-options-button" type="button"
+                                data-locale-title="toggle_options_pane_title"/>
                     </div>
-                    <div class="button-cell">
-                        <button class="controls-button" id="close-button" type="button" data-locale-title="close_extension_title"/>
+                    <div class="controls-button-cell">
+                        <button class="controls-button" id="history-toggle-button" type="button"
+                                data-locale-title="toggle_history_button"/>
+                    </div>
+                    <div class="controls-button-cell">
+                        <button class="controls-button" id="close-button" type="button"
+                                data-locale-title="close_extension_title"/>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="replace-body">
+
+        <div class="pane" id="replace-body">
             <div id="replace-body-container">
-                <div id="replace-field-cell">
-                    <input class="field def-font" id="replace-field" type="text" name="replace" autocomplete="off" data-locale-title="replace_field_title" data-locale-placeholder="replace_field_placeholder"/>
+                <div id="replace-field-container">
+                    <input class="field def-font" id="replace-field" type="text" name="replace" autocomplete="off"
+                           data-locale-title="replace_field_title" data-locale-placeholder="replace_field_placeholder"/>
                 </div>
-                <div id="replace-controls-cell">
-                    <button class="replace-button def-font" id="replace-next-button" type="button" disabled data-locale-title="replace_button_title" data-locale-text="replace_button_text"/>
-                    <button class="replace-button def-font" id="replace-all-button" type="button" disabled data-locale-title="replace_all_button_title" data-locale-text="replace_all_button_text"/>
+                <div id="replace-controls-container">
+                    <button class="replace-button def-font" id="replace-next-button" type="button" disabled
+                            data-locale-title="replace_button_title" data-locale-text="replace_button_text"/>
+                    <button class="replace-button def-font" id="replace-all-button" type="button" disabled
+                            data-locale-title="replace_all_button_title" data-locale-text="replace_all_button_text"/>
                 </div>
             </div>
         </div>
-        <div id="extension-message-body">
+
+        <div class="pane" id="extension-message-body">
+            <!-- Area special warning messages -->
             <table id="message-table">
                 <tr>
-                    <td id="exclamation-icon-cell">
+                    <td>
                         <img id="exclamation-icon" src="/resources/exclamation.svg"/>
                     </td>
                     <td>
-                        <span class="def-font" id="extension-limitation-web-store-text" data-locale-text="extension_limitation_web_store_text"></span>
-                        <span class="def-font" id="extension-limitation-chrome-settings-text" data-locale-text="extension_limitation_chrome_namespace_text"></span>
-                        <span id="extension-limitation-pdf-fileview-text" data-locale-text="extension_limitation_pdf_text"></span>
-                        <span id="extension-limitation-offline-file-search-text" data-locale-text="extension_limitation_offline_file_text"></span>
+                        <span class="def-font" id="extension-limitation-web-store-text"
+                              data-locale-text="extension_limitation_web_store_text"></span>
+                        <span class="def-font" id="extension-limitation-chrome-settings-text"
+                              data-locale-text="extension_limitation_chrome_namespace_text"></span>
+                        <span class="def-font" id="extension-limitation-pdf-fileview-text"
+                              data-locale-text="extension_limitation_pdf_text"></span>
+                        <span class="def-font" id="extension-limitation-offline-file-search-text"
+                              data-locale-text="extension_limitation_offline_file_text"></span>
                     </td>
                 </tr>
             </table>
         </div>
-        <div id="regex-options">
+
+        <div class="pane" id="options-body">
             <table id="regex-options-table">
                 <tbody>
                     <tr>
-                        <span id="regex-options-header" class="options-group-header" data-locale-text="search_options_header_text"></span>
+                        <span class="pane-header" id="regex-options-header"
+                              data-locale-text="search_options_header_text"></span>
                     </tr>
-                    <tr id="regex-options-table-row-1">
+
+                    <!-- Find by Regex Option -->
+                    <tr>
                         <td class="options-table-toggle-cell">
                             <label class="switch">
                                 <input id="regex-option-regex-disable-toggle" type="checkbox"/>
@@ -87,13 +122,14 @@
                             </label>
                         </td>
                         <td>
-                            <span id="regex-option-regex-disable" class="options-text">
-                                <span data-locale-text="search_option_find_by_regex_text"></span>
-                                <img class="information-hover-icon" src="/resources/question-circle.svg" data-locale-title="search_option_find_by_regex_title"/>
-                            </span>
+                            <span class="def-font" data-locale-text="search_option_find_by_regex_text"></span>
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                                 data-locale-title="search_option_find_by_regex_title"/>
                         </td>
                     </tr>
-                    <tr id="regex-options-table-row-2">
+
+                    <!-- Match Case Option -->
+                    <tr>
                         <td class="options-table-toggle-cell">
                             <label class="switch">
                                 <input id="regex-option-case-insensitive-toggle" type="checkbox"/>
@@ -101,13 +137,14 @@
                             </label>
                         </td>
                         <td>
-                            <span id="regex-option-match-case-text" class="options-text">
-                                <span data-locale-text="search_option_match_case_text"></span>
-                                <img class="information-hover-icon" src="/resources/question-circle.svg" data-locale-title="search_option_match_case_title"/>
-                            </span>
+                            <span class="def-font" data-locale-text="search_option_match_case_text"></span>
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                                 data-locale-title="search_option_match_case_title"/>
                         </td>
                     </tr>
-                    <tr id="regex-options-table-row-3">
+
+                    <!-- Persistent Highlights Option -->
+                    <tr>
                         <td class="options-table-toggle-cell">
                             <label class="switch">
                                 <input id="regex-option-persistent-highlights-toggle" type="checkbox"/>
@@ -115,55 +152,86 @@
                             </label>
                         </td>
                         <td>
-                            <span id="regex-option-persistent-highlights-text" class="options-text">
-                                <span data-locale-text="search_option_persistent_highlights_text"></span>
-                                <img class="information-hover-icon" src="/resources/question-circle.svg" data-locale-title="search_option_persistent_highlights_title"/>
-                            </span>
+                            <span class="def-font"
+                                  data-locale-text="search_option_persistent_highlights_text"></span>
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                                 data-locale-title="search_option_persistent_highlights_title"/>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div id="regex-options-max-results-container">
-                <span id="regex-option-max-results-text" class="options-text" data-locale-text="search_option_max_results_text"></span>
+
+            <!-- Max Results Option -->
+            <div>
+                <span class="pane-header" data-locale-text="search_option_max_results_text"></span>
                 <div class="slider-container">
-                    <input id="max-results-slider" class="slider" type="range" value="10" min="0" max="10" step="1"/>
-                    <span id="max-results-slider-value" class="slider-value">∞</span>
+                    <input class="slider" id="max-results-slider" type="range" value="10" min="0" max="10" step="1"/>
+                    <span class="slider-value def-font" id="max-results-slider-value">∞</span>
                 </div>
             </div>
-            <div id="regex-options-index-highlight-color-container">
-                <span id="regex-option-index-highlight-color-text" class="options-text" data-locale-text="search_option_index_highlight_text"></span>
+
+            <!-- Index Highlight Color Option -->
+            <div>
+                <span class="pane-header" data-locale-text="search_option_index_highlight_text"></span>
                 <div class="slider-container">
                     <span class="color-indicator" id="index-highlight-color-indicator"></span>
                     <div>
                         <div class="slider-container">
-                            <input id="index-highlight-hue-slider" class="slider color-slider" type="range" value="359" min="0" max="359" step="1"/>
+                            <input class="slider color-slider" id="index-highlight-hue-slider" type="range"
+                                   value="359" min="0" max="359" step="1"/>
                         </div>
                         <div class="slider-container">
-                            <input id="index-highlight-saturation-slider" class="slider color-saturation-slider" type="range" value="1" min="0" max="1" step="0.01"/>
-                            <input id="index-highlight-value-slider" class="slider color-value-slider" type="range" value="1" min="0" max="1" step="0.01"/>
+                            <input class="slider color-saturation-slider" id="index-highlight-saturation-slider"
+                                   type="range" value="1" min="0" max="1" step="0.01"/>
+                            <input class="slider color-value-slider" id="index-highlight-value-slider" type="range"
+                                   value="1" min="0" max="1" step="0.01"/>
                         </div>
                     </div>
-                    <span id="index-highlight-color-value" class="slider-value color-slider-value" contenteditable="true" spellcheck="false">#ff9813</span>
+                    <span class="slider-value color-slider-value def-font" id="index-highlight-color-value"
+                          contenteditable="true" spellcheck="false">#ff9813</span>
                 </div>
             </div>
-            <div id="regex-options-all-highlight-color-container">
-                <span id="regex-option-all-highlight-color-text" class="options-text" data-locale-text="search_option_all_highlight_text"></span>
+
+            <!-- All Highlight Color Option -->
+            <div>
+                <span class="pane-header" data-locale-text="search_option_all_highlight_text"></span>
                 <div class="slider-container">
                     <span class="color-indicator" id="all-highlight-color-indicator"></span>
                     <div>
                         <div class="slider-container">
-                            <input id="all-highlight-hue-slider" class="slider color-slider" type="range" value="359" min="0" max="359" step="1"/>
+                            <input class="slider color-slider" id="all-highlight-hue-slider" type="range"
+                                   value="359" min="0" max="359" step="1"/>
                         </div>
                         <div class="slider-container">
-                            <input id="all-highlight-saturation-slider" class="slider color-saturation-slider" type="range" value="1" min="0" max="1" step="0.01"/>
-                            <input id="all-highlight-value-slider" class="slider color-value-slider" type="range" value="1" min="0" max="1" step="0.01"/>
+                            <input class="slider color-saturation-slider" id="all-highlight-saturation-slider"
+                                   type="range" value="1" min="0" max="1" step="0.01"/>
+                            <input class="slider color-value-slider" id="all-highlight-value-slider" type="range"
+                                   value="1" min="0" max="1" step="0.01"/>
                         </div>
                     </div>
-                    <span id="all-highlight-color-value" class="slider-value color-slider-value" contenteditable="true" spellcheck="false">#fff000</span>
+                    <span class="slider-value color-slider-value def-font" id="all-highlight-color-value"
+                          contenteditable="true" spellcheck="false">#fff000</span>
                 </div>
             </div>
-            <div id="reset-options-container">
-                <button id="reset-options-button">Reset All Options</button>
+
+            <!-- Option Pane Controls -->
+            <div id="options-controls-container">
+                <button class="text-btn warn def-font" id="reset-options-button" data-locale-text="reset_options_button_text"></button>
+            </div>
+        </div>
+
+        <div class="pane" id="history-body">
+            <div id="history-body-header-container">
+                <span class="pane-header" id="history-body-header" data-locale-text="history_body_header"></span>
+            </div>
+            <div id="history-entry-list">
+                <!-- History Entry List -->
+            </div>
+            <div id="history-body-controls">
+                <button class="text-btn warn def-font" id="clear-history-button" type="button"
+                        data-locale-title="clear_history_button_title">Clear History</button>
+                <button class="text-btn def-font" id="save-history-entry-button" type="button"
+                        data-locale-title="save_history_button_title">Save Regex</button>
             </div>
         </div>
     </body>

@@ -45,6 +45,10 @@
     "message": "Toggle Options Pane",
     "description": "Tooltip text for the toggle options pane button."
   },
+  "toggle_history_button": {
+    "message": "Show History",
+    "description": "Tooltip text for the show history button."
+  },
   "close_extension_title": {
     "message": "Close find+",
     "description": "Tooltip text for the close extension button."
@@ -72,6 +76,22 @@
   "search_option_persistent_highlights_title": {
     "message": "If enabled, highlights in the web page will remain after the extension closes.\nRemove the highlights by reloading the page or reopening the extension.",
     "description": "Tooltip text for the persistent highlights option description icon."
+  },
+  "history_entry_icon_title": {
+    "message": "Load this regex",
+    "description": "Tooltip text for a history entry icon."
+  },
+  "delete_history_entry_icon_title": {
+    "message": "Delete this regex",
+    "description": "Tooltip text for a delete history entry icon."
+  },
+  "clear_history_button_title": {
+    "message": "Clear All History Entries",
+    "description": "Tooltip text for the clear history button."
+  },
+  "save_history_button_title": {
+    "message": "Save Regex in Search Field",
+    "description": "Tooltip text for the save regex button."
   },
 
 
@@ -106,8 +126,12 @@
     "description": "Text displayed in the message pane when the extension is used in an offline file without adequate permissions for parsing file contents."
   },
   "search_options_header_text": {
-    "message": "Search Options",
+    "message": "Regex Options",
     "description": "Header text displayed in the options pane."
+  },
+  "history_body_header": {
+    "message": "History",
+    "description": "Header text displayed in the history pane."
   },
   "search_option_find_by_regex_text": {
     "message": "Find by Regular Expression",
@@ -132,5 +156,9 @@
   "search_option_all_highlight_text": {
     "message": "Highlight Color",
     "description": "Text displayed above the all highlight color option."
+  },
+  "reset_options_button_text": {
+    "message": "Reset All Options",
+    "description": "Text displayed in the reset options button."
   }
 }

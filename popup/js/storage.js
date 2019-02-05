@@ -13,7 +13,7 @@ Find.register('Popup.Storage', function (self) {
      * argument to the callback function.
      *
      * @param {function} callback - The callback function to handle the data.
-     * @return {object} The search history, or null if it does not exist or cannot be retrieved.
+     * @return {object} The search history, or null if it cannot be retrieved.
      * */
     self.retrieveHistory = function(callback) {
         if(Find.incognito) {
@@ -21,7 +21,12 @@ Find.register('Popup.Storage', function (self) {
         }
 
         Find.browser.storage.local.get(HISTORY_KEY, (data) => {
-            callback(data[HISTORY_KEY]);
+            //Ensure backwards compatibility
+            if(Array.isArray(data[HISTORY_KEY])) {
+                callback(data[HISTORY_KEY]);
+            } else {
+                callback([]);
+            }
         });
     };
 

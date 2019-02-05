@@ -1,0 +1,44 @@
+/* extension message style */
+div#history-body {
+    overflow: hidden;
+}
+
+div#history-body-header-container {
+    margin-bottom: 5px;
+}
+
+div#history-entry-list {
+    max-height: 300px;
+    overflow: auto;
+}
+
+div.history-entry {
+    margin: 3px 3px 5px 3px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);
+    border-radius: 3px;
+    background-color: #fff;
+    display: flex;
+}
+
+button.history-entry-button {
+    width: 100%;
+    text-align: left;
+    padding-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+span.history-entry-regex-text {
+    margin-left: 5px;
+}
+
+div#history-body-controls {
+    float: right;
+    margin-top: 5px;
+}
+
+button.controls-button.delete-history-entry-button {
+    background-image: url(/resources/cross.svg);
+    background-size: 12px 12px;
+}

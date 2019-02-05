@@ -261,7 +261,7 @@ Find.register("Background", function(self) {
 
             if(resp.isReachable) {
                 Find.Background.ContentProxy.executeScript(tab, {code: 'window.getSelection().toString();'}, (selection) => {
-                    resp.selectedText = selection;
+                    resp.selectedText = selection[0];
                     sendResponse({action: 'browser_action_init', response: resp});
                 });
             } else {
