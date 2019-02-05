@@ -44,6 +44,14 @@ Find.register('Popup.SearchPane', function (self) {
         document.getElementById('search-toggle-options-button').addEventListener('click', () => {
             Find.Popup.OptionsPane.toggle();
             Find.Popup.ReplacePane.show(false);
+            Find.Popup.HistoryPane.show(false);
+        }, true);
+
+
+        document.getElementById('history-toggle-button').addEventListener('click', () => {
+            Find.Popup.HistoryPane.toggle();
+            Find.Popup.ReplacePane.show(false);
+            Find.Popup.OptionsPane.show(false);
         }, true);
 
         document.getElementById('close-button').addEventListener('click', () => {

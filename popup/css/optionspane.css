@@ -1,24 +1,7 @@
 /* Extension Options Pane */
-div#regex-options {
-    display: none;
-    background-color: #eeeeee;
-    border-radius: 3px;
-    padding: 3px;
-    margin-top: 3px;
-    margin-bottom: 3px;
-}
-
 table#regex-options-table {
     width: 100%;
     padding: 5px;
-}
-
-span.options-text,
-span.options-group-header {
-    vertical-align: middle;
-    font-family: "Arial", Arial, sans-serif;
-    font-size: 12px;
-    display: block;
 }
 
 td.options-table-toggle-cell {
@@ -78,29 +61,15 @@ input:checked + .toggle-slider:before {
     transform: translateX(13px);
 }
 
-div#reset-options-container {
+div#options-controls-container {
     width: 100%;
     margin-top: 10px;
     margin-bottom: 5px;
+    overflow: hidden;
 }
 
-#reset-options-button {
-    background-color: #e84545;
-    color: white;
-    border: 2px solid #e84545;
-    border-radius: 3px;
-    display: block;
-    font-family: "Arial", Arial, sans-serif;
-    font-size: 12px;
-    margin: auto 3px auto auto;
-}
-
-#reset-options-button:hover {
-    box-shadow: 1px 1px 12px 1px rgba(196,196,196,1);
-}
-
-#reset-options-button:focus {
-    outline: none;
+button#reset-options-button {
+    float: right;
 }
 
 /* Slider CSS */

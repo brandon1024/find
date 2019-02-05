@@ -194,7 +194,7 @@ Find.register('Popup.OptionsPane', function (self) {
      * @param {boolean} value - Undefined or true to display the options pane, false to hide.
      * */
     self.show = function(value) {
-        let el = document.getElementById('regex-options');
+        let el = document.getElementById('options-body');
         if(value === undefined || value) {
             el.style.display = 'inherit';
         } else {
@@ -206,7 +206,7 @@ Find.register('Popup.OptionsPane', function (self) {
      * Toggle the options pane.
      * */
     self.toggle = function() {
-        let el = document.getElementById('regex-options');
+        let el = document.getElementById('options-body');
         if(el.style.display === 'none' || el.style.display === '') {
             self.show(true);
         } else {

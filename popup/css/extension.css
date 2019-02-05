@@ -1,42 +1,33 @@
-/* Popup Style */
+/* Styles Common to Entire Extension */
+
 body {
     margin: 3px;
-    width: 340px;
+    width: 360px;
 }
 
+div.pane {
+    display: none;
+    background-color: #eeeeee;
+    border-radius: 3px;
+    padding: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+/* Fonts */
 .def-font {
     font-family: "Segoe UI", Tahoma, sans-serif;
     font-size: smaller;
 }
 
-div#popup-body {
-    width: 340px;
+.pane-header {
+    vertical-align: middle;
+    font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
+    display: block;
 }
 
-div#popup-body-container {
-    width: 100%;
-    display: flex;
-    justify-content: center; /* align horizontal */
-    align-items: center; /* align vertical */
-}
-
-div#search-field-cell,
-div#controls-cell {
-    display: inline-flex;
-    align-items: center;
-}
-
-div#search-field-cell {
-    width: 100%;
-    padding-right: 5px;
-}
-
-div#controls-cell {
-    border-left: 1px solid #e0e0e0;
-    padding-left: 5px;
-}
-
-/* Search Field Style */
+/* Input Field */
 input.field {
     background-color: transparent;
     border: 0 solid;
@@ -50,31 +41,34 @@ input.field#search-field {
     flex: auto;
 }
 
-div#search-info {
-    min-width: 40px;
-    text-align: right;
-    user-select: none;
-    cursor: default;
-}
-
-span#index-text {
-    color: #CCCCCC;
+/* Text Button */
+button.text-btn {
     white-space: nowrap;
-    text-align: right;
+    background-color: white;
+    color: black;
+    border: 2px solid white;
+    border-radius: 3px;
+    font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
+    margin: auto 3px auto auto;
+    vertical-align: middle;
 }
 
-img.extension-error-icon {
-    width: 10px;
-    height: 10px;
-    display: none;
+button.text-btn:hover {
+    box-shadow: 1px 1px 12px 1px rgba(196,196,196,1);
 }
 
-/* Button Style */
-div.button-cell {
-    width: 25px;
-    height: 25px;
+button.text-btn:focus {
+    outline: none;
 }
 
+button.text-btn.warn {
+    background-color: #e84545;
+    color: white;
+    border: 2px solid #e84545;
+}
+
+/* Controls Button */
 button.controls-button {
     background: transparent no-repeat center;
     border-width: 0;
@@ -93,31 +87,16 @@ button.controls-button:hover {
 }
 
 button.controls-button:active {
-    border-radius: 30px;
+    border-radius: 25px;
     background-color: #dadada;
-}
-
-button.controls-button#search-prev-button {
-    background-image: url(/resources/chevron-up.svg);
-    background-size: 12px 12px;
-}
-
-button.controls-button#search-next-button {
-    background-image: url(/resources/chevron-down.svg);
-    background-size: 12px 12px;
-}
-
-button.controls-button#search-toggle-options-button {
-    background-image: url(/resources/wrench.svg);
-    background-size: 12px 12px;
-}
-
-button.controls-button#close-button {
-    background-image: url(/resources/cross.svg);
-    background-size: 10px 10px;
 }
 
 button.controls-button:disabled {
     background-color: transparent;
     opacity: 0.2;
+}
+
+div.controls-button-cell {
+    width: 25px;
+    height: 25px;
 }

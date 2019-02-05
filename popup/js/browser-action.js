@@ -25,10 +25,17 @@ Find.register('Popup.BrowserAction', function (self) {
                 //CTRL+ALT+O => Toggle Options Pane
                 Find.Popup.OptionsPane.toggle();
                 Find.Popup.ReplacePane.show(false);
+                Find.Popup.HistoryPane.show(false);
             } else if(e.code === 'KeyR' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+R => Toggle Replace Pane
                 Find.Popup.ReplacePane.toggle();
                 Find.Popup.OptionsPane.show(false);
+                Find.Popup.HistoryPane.show(false);
+            } else if(e.code === 'KeyH' && e.ctrlKey && e.altKey) {
+                //CTRL+ALT+R => Toggle Replace Pane
+                Find.Popup.HistoryPane.toggle();
+                Find.Popup.OptionsPane.show(false);
+                Find.Popup.ReplacePane.show(false);
             }
         }, true);
 
@@ -44,6 +51,8 @@ Find.register('Popup.BrowserAction', function (self) {
      * in the page or the last search query pulled from local storage.
      *
      * If the URL is not valid or cannot be reached, an appropriate error message is shown.
+     *
+     * @param {object} initInformation - An object that contains information about the current session.
      * */
     self.startExtension = function(initInformation) {
         let url = initInformation.activeTab.url;
@@ -65,8 +74,8 @@ Find.register('Popup.BrowserAction', function (self) {
                 Find.Popup.SearchPane.selectSearchField();
             } else {
                 Find.Popup.Storage.retrieveHistory((data) => {
-                    if(data) {
-                        Find.Popup.SearchPane.setSearchFieldText(data);
+                    if(data && data.length) {
+                        Find.Popup.SearchPane.setSearchFieldText(data[0]);
                     }
 
                     Find.Popup.SearchPane.selectSearchField();
@@ -91,7 +100,6 @@ Find.register('Popup.BrowserAction', function (self) {
 
         let regex = Find.Popup.SearchPane.getSearchFieldText();
         let options = Find.Popup.OptionsPane.getOptions();
-        Find.Popup.Storage.saveHistory(regex);
         Find.Popup.BackgroundProxy.postMessage({action: 'update', regex: regex, options: options});
     };
 

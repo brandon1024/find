@@ -48,6 +48,7 @@ Several keyboard shortcuts exist directly in the extension for performing differ
 | CTRL-ALT-A        | CTRL-OPTION-A     | Copy to the clipboard the all highlighted text on the page.            |
 | CTRL-ALT-O        | CTRL-OPTION-O     | Expand or Collapse Options Pane                                        |
 | CTRL-ALT-R        | CTRL-OPTION-R     | Expand or Collapse Replace Text Pane                                   |
+| CTRL-ALT-H        | CTRL-OPTION-H     | Expand or Collapse History Pane                                        |
 | CTRL-ENTER or ESC | CTRL-ENTER or ESC | Close the extension popup                                              |
 
 ## Omnibox Support

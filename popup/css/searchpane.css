@@ -1,0 +1,71 @@
+/* Search Pane Style */
+div#popup-body {
+    width: 100%;
+}
+
+div#popup-body-container {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div#search-field-container,
+div#search-controls-container {
+    display: inline-flex;
+    align-items: center;
+}
+
+div#search-field-container {
+    width: 100%;
+    padding-right: 5px;
+}
+
+div#search-controls-container {
+    border-left: 1px solid #e0e0e0;
+    padding-left: 5px;
+}
+
+div#search-info {
+    min-width: 40px;
+    text-align: right;
+    user-select: none;
+    cursor: default;
+}
+
+span#index-text {
+    color: #CCCCCC;
+    white-space: nowrap;
+    text-align: right;
+}
+
+img.extension-error-icon {
+    width: 10px;
+    height: 10px;
+    display: none;
+}
+
+button.controls-button#search-prev-button {
+    background-image: url(/resources/chevron-up.svg);
+    background-size: 12px 12px;
+}
+
+button.controls-button#search-next-button {
+    background-image: url(/resources/chevron-down.svg);
+    background-size: 12px 12px;
+}
+
+button.controls-button#search-toggle-options-button {
+    background-image: url(/resources/wrench.svg);
+    background-size: 12px 12px;
+}
+
+button.controls-button#history-toggle-button {
+    background-image: url(/resources/bookmark.svg);
+    background-size: 12px 12px;
+}
+
+button.controls-button#close-button {
+    background-image: url(/resources/cross.svg);
+    background-size: 10px 10px;
+}
