@@ -238,7 +238,7 @@ Find.register('Popup.OptionsPane', function (self) {
 
     /**
      * Adapt a given object to represent a set of extension options. The main purpose of this function is to ensure
-     * that option objects persisted in local storage have all the necessary fields.
+     * that option objects persisted in local storage have all the necessary fields, for backwards compatibility.
      *
      * If a key or value is missing in the object, it is created and assigned a default value.
      *
@@ -256,13 +256,13 @@ Find.register('Popup.OptionsPane', function (self) {
         if(options.index_highlight_color !== undefined) {
             newOptions.index_highlight_color = options.index_highlight_color;
         } else {
-            newOptions.index_highlight_color = {hue: 56, saturation: 1, value: 1, hexColor: '#fff000'};
+            newOptions.index_highlight_color = {hue: 56, saturation: 1, value: 1, hexColor: '#ff9813'};
         }
 
         if(options.all_highlight_color !== undefined) {
             newOptions.all_highlight_color = options.all_highlight_color;
         } else {
-            newOptions.all_highlight_color = {hue: 34, saturation: 0.925, value: 1, hexColor: '#ff9813'};
+            newOptions.all_highlight_color = {hue: 34, saturation: 0.925, value: 1, hexColor: '#fff000'};
         }
 
         return newOptions;
