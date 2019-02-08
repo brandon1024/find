@@ -5,16 +5,14 @@
 ![Firefox Users](https://img.shields.io/amo/users/brandon1024-find.svg?label=firefox%20users&style=flat)
 ![Last Commit on GitHub](https://img.shields.io/github/last-commit/brandon1024/find.svg?style=flat)
 
-**{find+}** is a simple _Find-in-Page_ extension for Google Chrome hosting a the ability to search a web page or document by regular expression. It has been designed to look and behave much like the `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
-
-Our principle is simple: deliver a reliable, robust, repeatable, performant, and native-like tool for the software and web development industry.
+**{find+}** is a powerful _Find-in-Page_ extension for Google Chrome hosting the ability to search a web page or document by regular expression. It has been designed to look and behave much like the native `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
 
 <img src="screenshot.png"/>
 
 ## Motivation
 As a software developer, looking through lengthy stack traces, continuous integration build history, or large text files is something we do very regularly. The Chrome _Find-in-Page_ tool works well in most cases, but offers very little when looking for very specific (or very general) keywords.
 
-The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool. This extension has become a growing project aimed at giving developers better tools to simplify certain tasks and to improve upon the functionally-limited tools currently available.
+The idea to build this tool spawned as a response to poorly designed or dysfunctional regex-search extensions currently available, and the limited usefulness of the native tool.
 
 ## Getting Started
 The **{find+}** extension is available through the Chrome Web Store and through the Firefox Add-ons Store.
@@ -58,18 +56,8 @@ Pressing `ENTER` will leave the highlights in the page. To remove the highlights
 
 <img src="omni.png"/>
 
-## Firefox Support
-This extension is now compatible with Mozilla Firefox. You can install the extension [here](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
-
-<sup>Note: Although the extension is supported in Firefox, the extension was designed to be used in Chrome. As such, the user interface in Firefox is not as polished and refined. For the best user experience, use this extension in Chrome.</sup>
-
 ## Wiki
 We are continuously updating [our wiki](https://github.com/brandon1024/find/wiki) to provide help for new users and developers. Having an issue using the extension? Check out our [Frequently Asked Questions](https://github.com/brandon1024/find/wiki/FAQ-:-General) wiki!
-
-## A Small Notice
-Since **{find+}** is still in beta, you may experience bugs or issues while using the extension. We are hard at work fixing these issues, but we encourage you to continue using our extension in the meantime. You can keep an eye on current issues in progress by monitoring our GitHub page.
-
-See an issue we may have missed, or an idea for a new feature? Log an issue! We love to hear your feedback, it helps us make this project better.
 
 ## Contributing
 Interested in contributing to **{find+}**? See [CONTRIBUTING](CONTRIBUTING.md).
@@ -84,7 +72,7 @@ git clone <clone link from clipboard>
 ```
 <sup>Note: If you are using a Windows machine, you may need to install git [here](https://git-for-windows.github.io/).</sup>
 
-New features and improvents should be based off the `master` branch. All other branches are under active development, which may not be stable.
+New features and improvements should be based off the `master` branch. All other branches are under active development, which may not be stable.
 
 To install the extension in Chrome to test your changes, navigate to `chrome://extensions`. Enabling Developer Mode will show a button to `Load Unpacked`, which you can use to navigate to the parent folder of the extension.
 
