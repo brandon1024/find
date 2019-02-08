@@ -19,22 +19,16 @@ Find.register('Popup.HistoryPane', function (self) {
 		});
 
 		let parentEl = document.getElementById('history-entry-list');
-		if(Find.incognito) {
-			parentEl.appendChild(buildNullHistoryEntryElement('No history entries when incognito.'));
-			document.getElementById('clear-history-button').disabled = true;
-			document.getElementById('save-history-entry-button').disabled = true;
-		} else {
-			Find.Popup.Storage.retrieveHistory((data) => {
-				if(data.length) {
-					for(let index = 0; index < data.length; index++) {
-						let entryEl = buildHistoryEntryElement(data[index], index);
-						parentEl.appendChild(entryEl);
-					}
-				} else {
-					parentEl.appendChild(buildNullHistoryEntryElement());
+		Find.Popup.Storage.retrieveHistory((data) => {
+			if(data && data.length) {
+				for(let index = 0; index < data.length; index++) {
+					let entryEl = buildHistoryEntryElement(data[index]);
+					parentEl.appendChild(entryEl);
 				}
-			});
-		}
+			} else {
+				parentEl.appendChild(buildNullHistoryEntryElement());
+			}
+		});
 	};
 
 	/**
@@ -73,25 +67,23 @@ Find.register('Popup.HistoryPane', function (self) {
 	 * at the top.
 	 * */
 	self.saveEntry = function() {
-		if(Find.incognito) {
-			return;
-		}
-
 		let regex = Find.Popup.SearchPane.getSearchFieldText();
 		if(!regex) {
 			return;
 		}
 
 		Find.Popup.Storage.retrieveHistory((data) => {
-			//Remove existing entry, if it exists
-			for(let index = 0; index < data.length; index++) {
-				if(data[index] === regex) {
-					data.splice(index, 1);
-					break;
+			if(data) {
+				//Remove existing entry, if it exists
+				for(let index = 0; index < data.length; index++) {
+					if(data[index] === regex) {
+						data.splice(index, 1);
+						break;
+					}
 				}
-			}
 
-			data.unshift(regex);
+				data.unshift(regex);
+			}
 
 			//Add new entry as first child
 			let parentEl = document.getElementById('history-entry-list');
@@ -102,7 +94,7 @@ Find.register('Popup.HistoryPane', function (self) {
 				}
 			}
 
-			let entryEl = buildHistoryEntryElement(regex, data.length);
+			let entryEl = buildHistoryEntryElement(regex);
 			parentEl.insertBefore(entryEl, parentEl.firstChild);
 
 			//Remove null entry, if it exists
@@ -121,10 +113,6 @@ Find.register('Popup.HistoryPane', function (self) {
 	 * exist.
 	 * */
 	self.clearHistory = function() {
-		if(Find.incognito) {
-			return;
-		}
-
 		let parentEl = document.getElementById('history-entry-list');
 		while (parentEl.firstChild) {
 			parentEl.removeChild(parentEl.firstChild);
@@ -141,9 +129,8 @@ Find.register('Popup.HistoryPane', function (self) {
 	 *
 	 * @private
 	 * @param {string} regex - The regular expression to display in the entry body.
-	 * @param {number} index - Index of the regex in the local storage.
 	 * */
-	function buildHistoryEntryElement(regex, index) {
+	function buildHistoryEntryElement(regex) {
 		// Set search field with regex and update search. Also invoke saveEntry(), which
 		// will place regex at top of history and update local storage.
 		let useEntryHandler = (e) => {
@@ -162,16 +149,18 @@ Find.register('Popup.HistoryPane', function (self) {
 			entry.parentNode.removeChild(entry);
 
 			Find.Popup.Storage.retrieveHistory((data) => {
-				//Remove existing entry, if it exists
-				for(let index = 0; index < data.length; index++) {
-					if(data[index] === regex) {
-						data.splice(index, 1);
-						break;
+				if(data) {
+					//Remove existing entry, if it exists
+					for(let index = 0; index < data.length; index++) {
+						if(data[index] === regex) {
+							data.splice(index, 1);
+							break;
+						}
 					}
 				}
 
-				if(!data.length) {
-					let parentEl = document.getElementById('history-entry-list');
+				let parentEl = document.getElementById('history-entry-list');
+				if(!parentEl.children.length) {
 					parentEl.appendChild(buildNullHistoryEntryElement());
 				}
 
@@ -182,7 +171,6 @@ Find.register('Popup.HistoryPane', function (self) {
 		return ElementBuilder.create(document)
 			.createElement('div')
 			.addClass('history-entry')
-			.setAttribute('data-index', index)
 			.setAttribute('data-regex', regex)
 			.appendChild(ElementBuilder.create(document)
 				.createElement('button')
@@ -196,7 +184,7 @@ Find.register('Popup.HistoryPane', function (self) {
 					.build())
 				.appendChild(ElementBuilder.create(document)
 					.createElement('span')
-					.addClass('history-entry-regex-text')
+					.addClass('history-entry-regex-text', 'def-font')
 					.setInnerText(regex)
 					.build())
 				.build())
@@ -237,7 +225,7 @@ Find.register('Popup.HistoryPane', function (self) {
 					.build())
 				.appendChild(ElementBuilder.create(document)
 					.createElement('span')
-					.addClass('history-entry-regex-text')
+					.addClass('history-entry-regex-text', 'def-font')
 					.setAttribute('id', 'null-entry-text')
 					.setInnerText(text ? text : 'No history entries found.')
 					.build())

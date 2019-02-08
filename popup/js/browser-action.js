@@ -4,6 +4,7 @@
  * Create the Popup BrowserAction namespace.
  * */
 Find.register('Popup.BrowserAction', function (self) {
+
     let initialized = false;
     let index = 0;
 
@@ -13,12 +14,6 @@ Find.register('Popup.BrowserAction', function (self) {
     self.init = function() {
         Find.Popup.BackgroundProxy.openConnection();
         Find.Popup.BackgroundProxy.postMessage({action: 'browser_action_init'});
-
-        Find.Popup.Storage.retrieveOptions((data) => {
-            let options = Find.Popup.OptionsPane.adaptOptions(data);
-            Find.Popup.Storage.saveOptions(options);
-            Find.Popup.OptionsPane.applyOptions(options);
-        });
 
         document.body.addEventListener('keyup', (e) => {
             if(e.code === 'KeyO' && e.ctrlKey && e.altKey) {
@@ -197,16 +192,6 @@ Find.register('Popup.BrowserAction', function (self) {
                 Find.Popup.SearchPane.showClipboardCopyIcon(false);
             }, 2000);
         });
-    };
-
-    /**
-     * Save the new options to the local storage, and update the search.
-     *
-     * @param {object} options - The new search options
-     * */
-    self.updateOptions = function(options) {
-        Find.Popup.Storage.saveOptions(options);
-        Find.Popup.BrowserAction.updateSearch();
     };
 
     /**

@@ -24,7 +24,7 @@
         <div id="popup-body">
             <div id="popup-body-container">
                 <div id="search-field-container">
-                    <input class="field" id="search-field" type="text" name="search" autocomplete="off"
+                    <input class="field def-font" id="search-field" type="text" name="search" autocomplete="off"
                            data-locale-title="search_field_title"/>
 
                     <!-- Area for search warnings, errors, and current index information -->
@@ -156,6 +156,22 @@
                                   data-locale-text="search_option_persistent_highlights_text"></span>
                             <img class="information-hover-icon" src="/resources/question-circle.svg"
                                  data-locale-title="search_option_persistent_highlights_title"/>
+                        </td>
+                    </tr>
+
+                    <!-- Persistent Storage in Incognito Option -->
+                    <tr>
+                        <td class="options-table-toggle-cell">
+                            <label class="switch">
+                                <input id="regex-option-persistent-storage-incognito-toggle" type="checkbox"/>
+                                <div class="toggle-slider"/>
+                            </label>
+                        </td>
+                        <td>
+                            <span class="def-font"
+                                  data-locale-text="extension_option_persistent_storage_incognito_text"></span>
+                            <img class="information-hover-icon" src="/resources/question-circle.svg"
+                                 data-locale-title="extension_option_persistent_storage_incognito_title"/>
                         </td>
                     </tr>
                 </tbody>
