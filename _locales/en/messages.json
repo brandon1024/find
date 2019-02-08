@@ -77,6 +77,10 @@
     "message": "If enabled, highlights in the web page will remain after the extension closes.\nRemove the highlights by reloading the page or reopening the extension.",
     "description": "Tooltip text for the persistent highlights option description icon."
   },
+  "extension_option_persistent_storage_incognito_title": {
+    "message": "If enabled, history and options will be persisted in regular and incognito sessions. If disabled, no session information will be saved while incognito.",
+    "description": "Tooltip text for the persistent storage incognito option description icon."
+  },
   "history_entry_icon_title": {
     "message": "Load this regex",
     "description": "Tooltip text for a history entry icon."
@@ -144,6 +148,10 @@
   "search_option_persistent_highlights_text": {
     "message": "Persistent Highlights",
     "description": "Text displayed beside the persistent highlights option."
+  },
+  "extension_option_persistent_storage_incognito_text": {
+    "message": "Persistent Storage (Incognito)",
+    "description": "Text displayed beside the persistent storage option."
   },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",

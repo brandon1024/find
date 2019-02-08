@@ -4,41 +4,72 @@
  * Create the Popup OptionsPane namespace.
  * */
 Find.register('Popup.OptionsPane', function (self) {
-    let options = {
+
+    /**
+     * Default options. This object and all of it's properties are immutable.
+     * To use this object, it must be cloned into a mutable object.
+     *
+     * To clone this object:
+     * let mutableOptions = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
+     * */
+    const DEFAULT_OPTIONS = Object.freeze({
         find_by_regex: true,
         match_case: true,
         persistent_highlights: false,
+        persistent_storage_incognito: false,
         max_results: 0,
-        index_highlight_color: {
+        index_highlight_color: Object.freeze({
             hue: 34,
             saturation: 0.925,
             value: 1,
             hexColor: '#ff9813'
-        },
-        all_highlight_color: {
+        }),
+        all_highlight_color: Object.freeze({
             hue: 56,
             saturation: 1,
             value: 1,
             hexColor: '#fff000'
-        }
-    };
+        })
+    });
+
+    let options = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
 
     /**
-     * Register event handlers.
+     * Register event handlers and initialize options pane.
      * */
     self.init = function() {
+        Find.Popup.Storage.retrieveOptions((data) => {
+            options = adaptOptions(data);
+            applyOptions(options);
+
+            Find.Popup.Storage.saveOptions(options);
+            if(Find.incognito) {
+                Find.Popup.Storage.lockStorage(!options.persistent_storage_incognito);
+            }
+        });
+
         //Add toggle switches event listeners
         document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', (e) => {
             options.find_by_regex = e.target.checked;
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', (e) => {
             options.match_case = e.target.checked;
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', (e) => {
             options.persistent_highlights = e.target.checked;
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
+        });
+        document.getElementById('regex-option-persistent-storage-incognito-toggle').addEventListener('change', (e) => {
+            options.persistent_storage_incognito = e.target.checked;
+
+            Find.Popup.Storage.lockStorage(false);
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.Storage.lockStorage(!options.persistent_storage_incognito);
         });
 
         //Add max results slider event listeners
@@ -48,7 +79,8 @@ Find.register('Popup.OptionsPane', function (self) {
             let sliderValue = e.target.value;
             options.max_results = rangeValues[sliderValue];
 
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         maxResultsSlider.addEventListener('input', (e) => {
             const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
@@ -64,7 +96,8 @@ Find.register('Popup.OptionsPane', function (self) {
             options.index_highlight_color.hue = e.target.value;
             options.index_highlight_color.hexColor = getIndexHighlightColorCode();
 
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         indexHighlightHueSlider.addEventListener('input', (e) => {
             options.index_highlight_color.hue = e.target.value;
@@ -77,7 +110,8 @@ Find.register('Popup.OptionsPane', function (self) {
             options.index_highlight_color.saturation = e.target.value;
             options.index_highlight_color.hexColor = getIndexHighlightColorCode();
 
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         indexHighlightSaturationSlider.addEventListener('input', (e) => {
             options.index_highlight_color.saturation = e.target.value;
@@ -90,7 +124,8 @@ Find.register('Popup.OptionsPane', function (self) {
             options.index_highlight_color.value = e.target.value;
             options.index_highlight_color.hexColor = getIndexHighlightColorCode();
 
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         indexHighlightValueSlider.addEventListener('input', (e) => {
             options.index_highlight_color.value = e.target.value;
@@ -112,7 +147,8 @@ Find.register('Popup.OptionsPane', function (self) {
             options.index_highlight_color.hexColor = hexColor;
 
             applyIndexHighlightColorSliderOptions();
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
 
         //Add all highlight color slider listeners
@@ -121,7 +157,8 @@ Find.register('Popup.OptionsPane', function (self) {
             options.all_highlight_color.hue = e.target.value;
             options.all_highlight_color.hexColor = getAllHighlightColorCode();
 
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         allHighlightHueSlider.addEventListener('input', (e) => {
             options.all_highlight_color.hue = e.target.value;
@@ -134,7 +171,8 @@ Find.register('Popup.OptionsPane', function (self) {
             options.all_highlight_color.saturation = e.target.value;
             options.all_highlight_color.hexColor = getAllHighlightColorCode();
 
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         allHighlightSaturationSlider.addEventListener('input', (e) => {
             options.all_highlight_color.saturation = e.target.value;
@@ -147,7 +185,8 @@ Find.register('Popup.OptionsPane', function (self) {
             options.all_highlight_color.saturation = e.target.value;
             options.all_highlight_color.hexColor = getAllHighlightColorCode();
 
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
         allHighlightValueSlider.addEventListener('input', (e) => {
             options.all_highlight_color.value = e.target.value;
@@ -169,22 +208,18 @@ Find.register('Popup.OptionsPane', function (self) {
             options.all_highlight_color.hexColor = hexColor;
 
             applyAllHighlightColorSliderOptions();
-            notifyBrowserActionOptionsChange();
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
 
         //Add reset all options button listener
         let resetAllOptionsButton = document.getElementById('reset-options-button');
         resetAllOptionsButton.addEventListener('click', () => {
-            let defaultOpts = {
-                find_by_regex: true,
-                match_case: true,
-                persistent_highlights: false,
-                max_results: 0,
-                index_highlight_color: {hue: 34, saturation: 0.925, value: 1, hexColor: '#ff9813'},
-                all_highlight_color: {hue: 56, saturation: 1, value: 1, hexColor: '#fff000'}
-            };
-            self.applyOptions(defaultOpts);
-            notifyBrowserActionOptionsChange();
+            options = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
+            applyOptions(options);
+
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
     };
 
@@ -226,55 +261,60 @@ Find.register('Popup.OptionsPane', function (self) {
     /**
      * Apply an object representing a set of options to the options pane.
      *
+     * @private
      * @param {object} newOptions - The options to apply to the options pane.
      * */
-    self.applyOptions = function(newOptions) {
-        options = newOptions;
+    function applyOptions(newOptions) {
         applyToggleOptions();
         applyMaxResultsSliderOptions();
         applyIndexHighlightColorSliderOptions();
         applyAllHighlightColorSliderOptions();
-    };
+    }
 
     /**
      * Adapt a given object to represent a set of extension options. The main purpose of this function is to ensure
      * that option objects persisted in local storage have all the necessary fields, for backwards compatibility.
      *
-     * If a key or value is missing in the object, it is created and assigned a default value.
+     * If a key or value is missing in the object, it is created and assigned a default value. If newOptions
+     * is null or undefined, the options object is created.
      *
-     * @param {object} [options] - The options object to adapt
+     * @private
+     * @param {object} [newOptions] - The options object to adapt
      * @return {object} A new object with the fields from the previous object, or default values if missing.
      * */
-    self.adaptOptions = function(options) {
-        let newOptions = {};
-        options = options || {};
-        newOptions.find_by_regex = (options.find_by_regex !== undefined) ? options.find_by_regex : true;
-        newOptions.match_case = (options.match_case !== undefined) ? options.match_case: true;
-        newOptions.persistent_highlights = (options.persistent_highlights !== undefined) ? options.persistent_highlights : false;
-        newOptions.max_results = (options.max_results !== undefined) ? options.max_results : 0;
+    function adaptOptions(newOptions) {
+        const defaultOptions = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
+        newOptions = newOptions || {};
 
-        if(options.index_highlight_color !== undefined) {
-            newOptions.index_highlight_color = options.index_highlight_color;
-        } else {
-            newOptions.index_highlight_color = {hue: 56, saturation: 1, value: 1, hexColor: '#ff9813'};
+        if(newOptions.find_by_regex === undefined) {
+            newOptions.find_by_regex = defaultOptions.find_by_regex;
         }
 
-        if(options.all_highlight_color !== undefined) {
-            newOptions.all_highlight_color = options.all_highlight_color;
-        } else {
-            newOptions.all_highlight_color = {hue: 34, saturation: 0.925, value: 1, hexColor: '#fff000'};
+        if(newOptions.match_case === undefined) {
+            newOptions.match_case = defaultOptions.match_case;
+        }
+
+        if(newOptions.persistent_highlights === undefined) {
+            newOptions.persistent_highlights = defaultOptions.persistent_highlights;
+        }
+
+        if(newOptions.persistent_storage_incognito === undefined) {
+            newOptions.persistent_storage_incognito = defaultOptions.persistent_storage_incognito;
+        }
+
+        if(newOptions.max_results === undefined) {
+            newOptions.max_results = defaultOptions.max_results;
+        }
+
+        if(newOptions.index_highlight_color === undefined) {
+            newOptions.index_highlight_color = defaultOptions.index_highlight_color;
+        }
+
+        if(newOptions.all_highlight_color === undefined) {
+            newOptions.all_highlight_color = defaultOptions.all_highlight_color;
         }
 
         return newOptions;
-    };
-
-    /**
-     * Notify the browser action that the user has changed the settings through the options pane.
-     *
-     * @private
-     * */
-    function notifyBrowserActionOptionsChange() {
-        Find.Popup.BrowserAction.updateOptions(options);
     }
 
     /**
@@ -314,6 +354,7 @@ Find.register('Popup.OptionsPane', function (self) {
         document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
         document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
         document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
+        document.getElementById('regex-option-persistent-storage-incognito-toggle').checked = options.persistent_storage_incognito;
     }
 
     /**
