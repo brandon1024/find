@@ -5,9 +5,11 @@
 ![Firefox Users](https://img.shields.io/amo/users/brandon1024-find.svg?label=firefox%20users&style=flat)
 ![Last Commit on GitHub](https://img.shields.io/github/last-commit/brandon1024/find.svg?style=flat)
 
-**{find+}** is a powerful _Find-in-Page_ extension for Google Chrome hosting the ability to search a web page or document by regular expression. It has been designed to look and behave much like the native `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool.
+**{find+}** is a powerful _Find-in-Page_ extension for Google Chrome hosting the ability to search a web page or document by regular expression. It has been designed to look and behave much like the native `CTRL-F` function, but extended to provide a feature-rich and robust user experience with the aim of completely replacing the native _Find-in-Page_ tool. 
 
-<img src="screenshot.png"/>
+With **{find+}**, you can match a regular expression against text in the page, use find-and-replace to replace text in the page, copy occurrences of a regex to your clipboard, store frequently used expressions, and configure the extension the way you like.
+
+![](screencast.gif)
 
 ## Motivation
 As a software developer, looking through lengthy stack traces, continuous integration build history, or large text files is something we do very regularly. The Chrome _Find-in-Page_ tool works well in most cases, but offers very little when looking for very specific (or very general) keywords.
@@ -30,24 +32,24 @@ To open the extension popup using a keyboard shortcut, you must first assign a k
 
 Here's what we recommend for displaying the extension popup.
 
-| Windows Shortcut  | macOS Shortcut    | Notes                                                                  |
-| :---------------- | :---------------- | :--------------------------------------------------------------------- |
-| CTRL-SHIFT-F      | CTRL-SHIFT-F      | Recommended: This shortcut will not have any conflicts with Chrome     |
-| CTRL-F            | COMMAND-F         | This shortcut will override the native find-in-page tool               |
+| Windows Shortcut                              | macOS Shortcut                                | Notes                                                                  |
+| :-------------------------------------------- | :-------------------------------------------- | :--------------------------------------------------------------------- |
+| <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd>     | <kbd>^</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd>        | Recommended: This shortcut will not have any conflicts with Chrome     |
+| <kbd>CTRL</kbd>+<kbd>F</kbd>                  | <kbd>⌘</kbd>+<kbd>F</kbd>                     | This shortcut will override the native find-in-page tool               |
 
 Several keyboard shortcuts exist directly in the extension for performing different actions. These shortcuts are built directly into the extension and are not managed through Chrome. As a result, these settings cannot be remapped. Below is a list of the current keyboard shortcuts.
 
-| Windows Shortcut  | macOS Shortcut    | Action                                                                 |
-| :---------------- | :---------------- | :--------------------------------------------------------------------- |
-| ENTER             | ENTER             | Advance to the next occurrence of the regular expression in the page   |
-| SHIFT-ENTER       | SHIFT-ENTER       | Return to the previous occurrence of the regular expression in the page|
-| CTRL-SHIFT-ENTER  | CTRL-SHIFT-ENTER  | Follow the first highlighted link in the current occurrence focus      |
-| CTRL-ALT-C        | CTRL-OPTION-C     | Copy to the clipboard the currently highlighted text on the page.      |
-| CTRL-ALT-A        | CTRL-OPTION-A     | Copy to the clipboard the all highlighted text on the page.            |
-| CTRL-ALT-O        | CTRL-OPTION-O     | Expand or Collapse Options Pane                                        |
-| CTRL-ALT-R        | CTRL-OPTION-R     | Expand or Collapse Replace Text Pane                                   |
-| CTRL-ALT-H        | CTRL-OPTION-H     | Expand or Collapse History Pane                                        |
-| CTRL-ENTER or ESC | CTRL-ENTER or ESC | Close the extension popup                                              |
+| Windows Shortcut                                   | macOS Shortcut                                     | Action                                                                 |
+| :------------------------------------------------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
+| <kbd>↵</kbd>                                       | <kbd>↵</kbd>                                       | Advance to the next occurrence of the regular expression in the page   |
+| <kbd>⇧</kbd>+<kbd>↵</kbd>                          | <kbd>SHIFT</kbd>+<kbd>↵</kbd>                      | Return to the previous occurrence of the regular expression in the page|
+| <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>↵</kbd>          | <kbd>^</kbd>+<kbd>⇧</kbd>+<kbd>↵</kbd>             | Follow the first highlighted link in the current occurrence focus      |
+| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>C</kbd>        | <kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>C</kbd>             | Copy to the clipboard the currently highlighted text on the page.      |
+| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>A</kbd>        | <kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>A</kbd>             | Copy to the clipboard the all highlighted text on the page.            |
+| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>O</kbd>        | <kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>O</kbd>             | Expand or Collapse Options Pane                                        |
+| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>R</kbd>        | <kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>R</kbd>             | Expand or Collapse Replace Text Pane                                   |
+| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>H</kbd>        | <kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>H</kbd>             | Expand or Collapse History Pane                                        |
+| <kbd>CTRL</kbd>+<kbd>↵</kbd> or <kbd>ESC</kbd>     | <kbd>^</kbd>+<kbd>↵</kbd> or <kbd>ESC</kbd>        | Close the extension popup                                              |
 
 ## Omnibox Support
 In version 1.4.0, we introduced omnibox support! This allows you to highlight text on a page without even opening the extension. To use this feature, type `find` in your browser's address bar, press `TAB`, and then enter a regular expression. Occurrences of the regular expression will become highlighted on the page as you type.
