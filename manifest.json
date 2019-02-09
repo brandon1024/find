@@ -38,6 +38,7 @@
     "all_frames": false,
     "run_at": "document_end",
     "js": [
+      "app.js",
       "/lib/html-entity-handler/entityhandler.js",
       "/content/content.js",
       "/content/highlighter.js"

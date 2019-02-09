@@ -44,6 +44,68 @@ Find.register("Background", function(self) {
     });
 
     /**
+     * Initialize the browser action. Polls the web page to ensure that the content scripts
+     * have been properly injected. If the content script responds, the selected text is retrieved
+     * from the page and included in the response to the popup.
+     *
+     * If the content script still has state variables, such as the index and regex of the last search,
+     * this information is used to initialize the extension.
+     *
+     * @param {object} message - The message containing the details about the action.
+     * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} sendResponse - Function used to issue a response back to the popup.
+     * */
+    self.initializeBrowserAction = function(message, tab, sendResponse) {
+        let resp = {};
+        resp.activeTab = tab;
+
+        Find.Background.ContentProxy.poll(tab, (response) => {
+            resp.isReachable = response && response.success;
+            if(resp.isReachable) {
+                resp.selectedText = response.selection;
+                resp.regex = response.regex;
+                index = response.index || 0;
+            }
+
+            sendResponse({action: 'browser_action_init', response: resp});
+        });
+    };
+
+    /**
+     * Initialize the extension by constructing the page document representation.
+     *
+     * @param {object} tab - Information about the active tab in the current window.
+     * */
+    self.initializePage = function(tab) {
+        Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
+            documentRepresentation = model;
+            index = 0;
+        });
+    };
+
+    /**
+     * Remove any highlights and markup from the active tab in the current window. Also resets
+     * any state variables, such as the current index, document representation and occurrence map.
+     *
+     * @param {boolean} restoreHighlights - If undefined or true, remove highlights. If false,
+     * highlights are not removed, and are persisted in the page.
+     * */
+    self.restorePageState = function(restoreHighlights) {
+        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            if(restoreHighlights === undefined || restoreHighlights) {
+                Find.Background.ContentProxy.clearPageHighlights(tabs[0]);
+            }
+
+            let uuids = getUUIDsFromModelObject(documentRepresentation);
+            Find.Background.ContentProxy.restoreWebPage(tabs[0], uuids);
+
+            documentRepresentation = null;
+            regexOccurrenceMap = null;
+            index = null;
+        });
+    };
+
+    /**
      * Update the search when the search query or search options change. Builds a new occurrence map from the
      * documentRepresentation object, highlight the occurrence in the page, and send the indices
      * to the browser action popup through the sendResponse function.
@@ -80,6 +142,7 @@ Find.register("Background", function(self) {
             }
 
             //Build occurrence map, reposition index if necessary
+            console.log(index);
             regexOccurrenceMap = buildOccurrenceMap(documentRepresentation, regex, self.options);
             if(index > regexOccurrenceMap.length-1) {
                 if(regexOccurrenceMap.length !== 0) {
@@ -241,67 +304,6 @@ Find.register("Background", function(self) {
         }
 
         sendResponse({action: 'get_occurrence', response: resp});
-    };
-
-    /**
-     * Initialize the browser action. Polls the web page to ensure that the content scripts
-     * have been properly injected. If the content script responds, the selected text is retrieved
-     * from the page and included in the response to the popup.
-     *
-     * @param {object} message - The message containing the details about the action.
-     * @param {object} tab - Information about the active tab in the current window.
-     * @param {function} sendResponse - Function used to issue a response back to the popup.
-     * */
-    self.initializeBrowserAction = function(message, tab, sendResponse) {
-        let resp = {};
-        resp.activeTab = tab;
-
-        Find.Background.ContentProxy.poll(tab, (response) => {
-            resp.isReachable = response && response.success;
-
-            if(resp.isReachable) {
-                Find.Background.ContentProxy.executeScript(tab, {code: 'window.getSelection().toString();'}, (selection) => {
-                    resp.selectedText = selection[0];
-                    sendResponse({action: 'browser_action_init', response: resp});
-                });
-            } else {
-                sendResponse({action: 'browser_action_init', response: resp});
-            }
-        });
-    };
-
-    /**
-     * Initialize the extension by constructing the page document representation.
-     *
-     * @param {object} tab - Information about the active tab in the current window.
-     * */
-    self.initializePage = function(tab) {
-        Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
-            documentRepresentation = model;
-            index = 0;
-        });
-    };
-
-    /**
-     * Remove any highlights and markup from the active tab in the current window. Also resets
-     * any state variables, such as the current index, document representation and occurrence map.
-     *
-     * @param {boolean} restoreHighlights - If undefined or true, remove highlights. If false,
-     * highlights are not removed, and are persisted in the page.
-     * */
-    self.restorePageState = function(restoreHighlights) {
-        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if(restoreHighlights === undefined || restoreHighlights) {
-                Find.Background.ContentProxy.clearPageHighlights(tabs[0]);
-            }
-
-            let uuids = getUUIDsFromModelObject(documentRepresentation);
-            Find.Background.ContentProxy.restoreWebPage(tabs[0], uuids);
-
-            documentRepresentation = null;
-            regexOccurrenceMap = null;
-            index = null;
-        });
     };
 
     /**
