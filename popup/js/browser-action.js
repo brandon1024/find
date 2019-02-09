@@ -67,6 +67,10 @@ Find.register('Popup.BrowserAction', function (self) {
             if(initInformation.selectedText) {
                 Find.Popup.SearchPane.setSearchFieldText(initInformation.selectedText);
                 Find.Popup.SearchPane.selectSearchField();
+                self.updateSearch();
+            } else if(initInformation.regex != null) {
+                Find.Popup.SearchPane.setSearchFieldText(initInformation.regex);
+                self.updateSearch();
             } else {
                 Find.Popup.Storage.retrieveHistory((data) => {
                     if(data && data.length) {

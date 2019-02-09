@@ -132,7 +132,7 @@ Find.register("Background.ContentProxy", function(self) {
      * indicates that the content scripts were loaded successfully.
      *
      * @param {object} tab - The tab to poll.
-     * @param {function} [callback] - Callback invoked once the operation is complete.
+     * @param {function} callback - Callback invoked once the operation is complete.
      * */
     self.poll = function(tab, callback) {
         Find.browser.tabs.sendMessage(tab.id, {action: 'poll'}, callback);
