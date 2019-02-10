@@ -53,23 +53,28 @@ Find.register('Popup.BrowserAction', function (self) {
         let url = initInformation.activeTab.url;
         if(isWithinChromeNamespace(url)) {
             Find.Popup.MessagePane.showChromeNamespaceErrorMessage();
-            Find.Popup.BrowserAction.error('forbidden_url');
+            self.error('forbidden_url');
         } else if(isWithinWebStoreNamespace(url)) {
             Find.Popup.MessagePane.showChromeWebStoreErrorMessage();
-            Find.Popup.BrowserAction.error('forbidden_url');
+            self.error('forbidden_url');
         } else if(isPDF(url)) {
             Find.Popup.MessagePane.showPDFSearchErrorMessage();
-            Find.Popup.BrowserAction.error('pdf_unsupported');
+            self.error('pdf_unsupported');
         } else if(isLocalFile(url) && !initInformation.isReachable) {
             Find.Popup.MessagePane.showOfflineFileErrorMessage();
-            Find.Popup.BrowserAction.error('offline_file');
+            self.error('offline_file');
         } else {
+            if(initInformation.iframes > 0) {
+                Find.Popup.SearchPane.flashIframesFoundWarningIcon();
+            }
+
             if(initInformation.selectedText) {
                 Find.Popup.SearchPane.setSearchFieldText(initInformation.selectedText);
                 Find.Popup.SearchPane.selectSearchField();
                 self.updateSearch();
             } else if(initInformation.regex != null) {
                 Find.Popup.SearchPane.setSearchFieldText(initInformation.regex);
+                Find.Popup.SearchPane.selectSearchField();
                 self.updateSearch();
             } else {
                 Find.Popup.Storage.retrieveHistory((data) => {
@@ -109,7 +114,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.seekForwards = function() {
         if(!initialized) {
-            Find.Popup.BrowserAction.updateSearch();
+            self.updateSearch();
             return;
         }
 
@@ -125,7 +130,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.seekBackwards = function() {
         if(!initialized) {
-            Find.Popup.BrowserAction.updateSearch();
+            self.updateSearch();
             return;
         }
 
@@ -157,7 +162,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.followLink = function() {
         if(!initialized) {
-            Find.Popup.BrowserAction.updateSearch();
+            self.updateSearch();
             return;
         }
 
@@ -172,7 +177,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.getOccurrence = function(options) {
         if(!initialized) {
-            Find.Popup.BrowserAction.updateSearch();
+            self.updateSearch();
             return;
         }
 
@@ -186,15 +191,9 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.copyTextToClipboard = function(text) {
         navigator.clipboard.writeText(text).then(() => {
-            Find.Popup.SearchPane.showClipboardCopyIcon(true);
-            window.setTimeout(() => {
-                Find.Popup.SearchPane.showClipboardCopyIcon(false);
-            }, 1000);
+            Find.Popup.SearchPane.flashClipboardCopyIcon();
         }).catch(() => {
-            Find.Popup.SearchPane.showClipboardCopyErrorIcon(true);
-            window.setTimeout(() => {
-                Find.Popup.SearchPane.showClipboardCopyIcon(false);
-            }, 2000);
+            Find.Popup.SearchPane.flashClipboardCopyErrorIcon();
         });
     };
 
@@ -234,57 +233,14 @@ Find.register('Popup.BrowserAction', function (self) {
     /**
      * Momentarily display the install/update icon in the search pane.
      *
-     * The icon will be shown for 3000ms, and will be hidden unless the user hovers the mouse over the icon to
-     * display the tooltip. In this case, the internal timer will be reset and the icon will remain visible for
-     * another 3000ms.
-     *
-     * Once the icon disappears, the event handlers are removed.
-     *
      * @param {object} details - A simple object containing a single key 'reason', with the value 'install' or 'update'.
      * */
     self.showInstallUpdateDetails = function(details) {
-        let el = null;
         if(details.reason === 'install') {
-            el = document.getElementById('install-information');
+            Find.Popup.SearchPane.flashInstallInformationIcon();
         } else if(details.reason === 'update') {
-            el = document.getElementById('update-information');
-        } else {
-            return;
+            Find.Popup.SearchPane.flashUpdateInformationIcon();
         }
-
-        let timeoutFunction = () => {
-            el.style.display = 'none';
-        };
-
-        //Show information icon
-        el.style.display = 'initial';
-
-        //Hide icon after 3 seconds
-        let timeoutHandle = window.setTimeout(timeoutFunction, 3000);
-
-        //Self de-registering event handler
-        let handler = (event) => {
-            if(el === event.target) {
-                return;
-            }
-
-            timeoutFunction();
-            window.clearTimeout(timeoutHandle);
-            document.getElementById('popup-body').removeEventListener('click', handler);
-            document.getElementById('popup-body').removeEventListener('keyup', handler);
-        };
-
-        //Add event listeners
-        document.getElementById('popup-body').addEventListener('click', handler);
-        document.getElementById('popup-body').addEventListener('keyup', handler);
-
-        el.addEventListener('mouseover', () => {
-            window.clearTimeout(timeoutHandle);
-        });
-
-        el.addEventListener('mouseout', () => {
-            timeoutHandle = window.setTimeout(timeoutFunction, 3000);
-        });
     };
 
     /**

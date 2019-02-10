@@ -64,6 +64,7 @@ Find.register("Background", function(self) {
             if(resp.isReachable) {
                 resp.selectedText = response.selection;
                 resp.regex = response.regex;
+                resp.iframes = response.iframes;
                 index = response.index || 0;
             }
 

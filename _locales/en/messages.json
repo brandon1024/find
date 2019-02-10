@@ -21,6 +21,10 @@
     "message": "Unable to copy to the clipboard due to unexpected error.",
     "description": "Tooltip text for the clipboard copy error icon."
   },
+  "iframes_found_warning_title": {
+    "message": "One or more iframes were encountered in the page. As a result, some occurrences of your search query may not be highlighted in the page.",
+    "description": "Tooltip text for the iframes encountered warning icon."
+  },
   "clipboard_copy_title": {
     "message": "Regex occurrence copied to clipboard.",
     "description": "Tooltip text for the clipboard copy successful icon."

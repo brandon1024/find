@@ -49,7 +49,8 @@ Find.register('Content.Highlighter', function(self) {
                     success: true,
                     selection: window.getSelection().toString(),
                     regex: regex,
-                    index: index
+                    index: index,
+                    iframes: document.getElementsByTagName('iframe').length
                 });
                 return true;
         }

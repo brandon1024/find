@@ -121,7 +121,7 @@ Find.register('Popup.SearchPane', function (self) {
     };
 
     /**
-     * Display an error icon in the index text to notify the user that the regex is invalid.
+     * Display an error icon in the notification area to notify the user that the regex is invalid.
      *
      * @param {boolean} flag - Whether or not to display the icon.
      * */
@@ -130,7 +130,7 @@ Find.register('Popup.SearchPane', function (self) {
     };
 
     /**
-     * Display an error icon in the index text to notify the user that the extension does not have
+     * Display an error icon in the notification area to notify the user that the extension does not have
      * permission to search in offline files.
      *
      * @param {boolean} flag - Whether or not to display the icon.
@@ -140,24 +140,96 @@ Find.register('Popup.SearchPane', function (self) {
     };
 
     /**
-     * Display an icon in the index text to notify the user that text was copied to the clipboard
+     * Momentarily display an icon in the notification area to notify the user that text was copied to the clipboard
      * successfully.
-     *
-     * @param {boolean} flag - Whether or not to display the icon.
      * */
-    self.showClipboardCopyIcon = function(flag) {
-        document.getElementById('clipboard-copy-icon').style.display = flag ? 'initial' : 'none';
+    self.flashClipboardCopyIcon = function() {
+        let el = document.getElementById('clipboard-copy-icon');
+        flashElement(el);
     };
 
     /**
-     * Display an icon in the index text to notify the user that text was not copied to the clipboard
+     * Momentarily display an icon in the inotification area to notify the user that text was not copied to the clipboard
      * due to an unexpected error.
-     *
-     * @param {boolean} flag - Whether or not to display the icon.
      * */
-    self.showClipboardCopyErrorIcon = function(flag) {
-        document.getElementById('clipboard-copy-error').style.display = flag ? 'initial' : 'none';
+    self.flashClipboardCopyErrorIcon = function() {
+        let el = document.getElementById('clipboard-copy-error');
+        flashElement(el);
     };
+
+    /**
+     * Momentarily display an icon in the notification area to notify the user that an iframe was encountered, and
+     * that some occurrences of the regex may not be highlighted in the page.
+     * */
+    self.flashIframesFoundWarningIcon = function() {
+        let el = document.getElementById('iframes-found-icon');
+        flashElement(el);
+    };
+
+    /**
+     * Momentarily display an icon in the notification area to provide an installation message to the user.
+     * */
+    self.flashInstallInformationIcon = function() {
+        let el = document.getElementById('install-information');
+        flashElement(el);
+    };
+
+    /**
+     * Momentarily display an icon in the notification area to provide update information message to the user.
+     * */
+    self.flashUpdateInformationIcon = function() {
+        let el = document.getElementById('update-information');
+        flashElement(el);
+    };
+
+    /**
+     * Momentarily display an icon or element. This is primarily used for flashing
+     * notification information in the search pane.
+     *
+     * The icon will be shown for 3000ms, and will be hidden unless the user hovers the mouse over the icon to
+     * display the tooltip. In this case, the internal timer will be reset and the icon will remain visible for
+     * another 3000ms.
+     *
+     * Once the icon disappears, the event handlers are removed.
+     *
+     * @private
+     * @param {Element} el - The element to flash
+     * */
+    function flashElement(el) {
+        let timeoutFunction = () => {
+            el.style.display = 'none';
+        };
+
+        //Show information icon
+        el.style.display = 'initial';
+
+        //Hide icon after 3 seconds
+        let timeoutHandle = window.setTimeout(timeoutFunction, 3000);
+
+        //Self de-registering event handler
+        let handler = (event) => {
+            if(el === event.target) {
+                return;
+            }
+
+            timeoutFunction();
+            window.clearTimeout(timeoutHandle);
+            document.getElementById('popup-body').removeEventListener('click', handler);
+            document.getElementById('popup-body').removeEventListener('keyup', handler);
+        };
+
+        //Add event listeners
+        document.getElementById('popup-body').addEventListener('click', handler);
+        document.getElementById('popup-body').addEventListener('keyup', handler);
+
+        el.addEventListener('mouseover', () => {
+            window.clearTimeout(timeoutHandle);
+        });
+
+        el.addEventListener('mouseout', () => {
+            timeoutHandle = window.setTimeout(timeoutFunction, 3000);
+        });
+    }
 
     /**
      * Format a number as a string with thousands separators.
