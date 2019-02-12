@@ -44,7 +44,7 @@ Find.register("Background", function(self) {
     });
 
     /**
-     * Initialize the browser action. Polls the web page to ensure that the content scripts
+     * Initialize the browser action. Fetches the web page to ensure that the content scripts
      * have been properly injected. If the content script responds, the selected text is retrieved
      * from the page and included in the response to the popup.
      *
@@ -59,7 +59,7 @@ Find.register("Background", function(self) {
         let resp = {};
         resp.activeTab = tab;
 
-        Find.Background.ContentProxy.poll(tab, (response) => {
+        Find.Background.ContentProxy.fetch(tab, (response) => {
             resp.isReachable = response && response.success;
             if(resp.isReachable) {
                 resp.selectedText = response.selection;
@@ -88,7 +88,7 @@ Find.register("Background", function(self) {
      * Remove any highlights and markup from the active tab in the current window. Also resets
      * any state variables, such as the current index, document representation and occurrence map.
      *
-     * @param {boolean} restoreHighlights - If undefined or true, remove highlights. If false,
+     * @param {boolean} [restoreHighlights] - If undefined or true, remove highlights. If false,
      * highlights are not removed, and are persisted in the page.
      * */
     self.restorePageState = function(restoreHighlights) {
@@ -157,7 +157,7 @@ Find.register("Background", function(self) {
                 index = self.options.max_results - 1;
             }
 
-            //Invoke highlight_update action, index_update action
+            //Invoke update action
             Find.Background.ContentProxy.updatePageHighlights(tab, regex, index, regexOccurrenceMap, self.options);
 
             //If occurrence map empty, viewable index is zero
@@ -203,7 +203,7 @@ Find.register("Background", function(self) {
             index = computePrecedingIndex(index, regexOccurrenceMap, self.options);
         }
 
-        //Invoke highlight_seek action, index_update action
+        //Invoke seek action
         Find.Background.ContentProxy.seekHighlight(tab, index, self.options);
 
         let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;

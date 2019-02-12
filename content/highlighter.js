@@ -10,55 +10,6 @@ Find.register('Content.Highlighter', function(self) {
     const allHighlight = 'find-ext-all-highlight';
 
     /**
-     * State variables, used to recover the extension state if the extension
-     * is closed accidentally.
-     * */
-    let regex = null;
-    let index = null;
-
-    /**
-     * Register a message listener to the extension background script.
-     * */
-    Find.browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        switch (message.action) {
-            case 'highlight_update':
-                regex = message.regex;
-                index = message.index;
-                restore(indexHighlight, allHighlight);
-                highlightAll(message.occurrenceMap, message.regex, message.options);
-                seekHighlight(message.index, message.options);
-                break;
-            case 'highlight_seek':
-                index = message.index;
-                seekHighlight(message.index, message.options);
-                break;
-            case 'highlight_restore':
-                restore(indexHighlight, allHighlight);
-                break;
-            case 'highlight_replace':
-                replace(message.index, message.replaceWith);
-                break;
-            case 'highlight_replace_all':
-                replaceAll(message.replaceWith);
-                break;
-            case 'follow_link':
-                followLinkUnderFocus();
-                break;
-            case 'poll':
-                sendResponse({
-                    success: true,
-                    selection: window.getSelection().toString(),
-                    regex: regex,
-                    index: index,
-                    iframes: document.getElementsByTagName('iframe').length
-                });
-                return true;
-        }
-
-        return false;
-    });
-
-    /**
      * Highlight all occurrences of a regex in the page, using an occurrence map and regex.
      *
      * @private
@@ -66,7 +17,7 @@ Find.register('Content.Highlighter', function(self) {
      * @param {string} regex - The regular expression
      * @param {object} options - The search and highlight options
      * */
-    function highlightAll(occurrenceMap, regex, options) {
+    self.highlightAll = function(occurrenceMap, regex, options) {
         const tags = {
             occIndex: null,
             maxIndex: null,
@@ -266,7 +217,7 @@ Find.register('Content.Highlighter', function(self) {
                 }
             }
         }
-    }
+    };
 
     /**
      * Seek the search to the given index.
@@ -275,7 +226,7 @@ Find.register('Content.Highlighter', function(self) {
      * @param {number} index - The index to seek to
      * @param {object} options - The search options
      * */
-    function seekHighlight(index, options) {
+    self.seekHighlight = function(index, options) {
         if (index === null || options == null) {
             return;
         }
@@ -307,7 +258,7 @@ Find.register('Content.Highlighter', function(self) {
         if (bottomScrollPos + 100 < docHeight) {
             window.scrollBy(0, -100);
         }
-    }
+    };
 
     /**
      * Replace a given occurrence of a regex with a given string.
@@ -316,7 +267,7 @@ Find.register('Content.Highlighter', function(self) {
      * @param {number} index - The index of the occurrence that will be replaced
      * @param {string} replaceWith - The text that will replace the given occurrence of the regex
      * */
-    function replace(index, replaceWith) {
+    self.replace = function(index, replaceWith) {
         let els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
 
         if (els.length === 0) {
@@ -327,7 +278,7 @@ Find.register('Content.Highlighter', function(self) {
         for (let elsIndex = 0; elsIndex < els.length; elsIndex++) {
             els[elsIndex].innerText = '';
         }
-    }
+    };
 
     /**
      * Replace all occurrences of a regex with a given string.
@@ -335,7 +286,7 @@ Find.register('Content.Highlighter', function(self) {
      * @private
      * @param {string} replaceWith - The text that will replace all occurrences of the regex
      * */
-    function replaceAll(replaceWith) {
+    self.replaceAll = function(replaceWith) {
         let els = Array.from(document.querySelectorAll("[class*='find-ext-occr']"));
 
         let currentOccurrence = null;
@@ -351,14 +302,14 @@ Find.register('Content.Highlighter', function(self) {
                 el.innerText = '';
             }
         }
-    }
+    };
 
     /**
      * Follow the link that is currently highlighted.
      *
      * @private
      * */
-    function followLinkUnderFocus() {
+    self.followLinkUnderFocus = function() {
         let els = document.getElementsByClassName(indexHighlight);
         for (let index = 0; index < els.length; index++) {
             let el = els[index];
@@ -369,16 +320,17 @@ Find.register('Content.Highlighter', function(self) {
                 }
             }
         }
-    }
+    };
 
     /**
      * Restore the page by removing any highlighting markup.
      *
      * @private
      * */
-    function restore() {
-        for (let argIndex = 0; argIndex < arguments.length; argIndex++) {
-            let els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
+    self.restore = function() {
+        let classes = [indexHighlight, allHighlight];
+        for (let classIndex = 0; classIndex < classes.length; classIndex++) {
+            let els = Array.from(document.querySelectorAll('.' + classes[classIndex]));
 
             for (let elsIndex = 0; elsIndex < els.length; elsIndex++) {
                 let el = els[elsIndex];
@@ -392,21 +344,5 @@ Find.register('Content.Highlighter', function(self) {
                 parent.normalize();
             }
         }
-    }
-
-    /**
-     * Remove a given class from all elements that have that class.
-     *
-     * @private
-     * @param {...string} - Classes to remove.
-     * */
-    function restoreClass() {
-        for (let argIndex = 0; argIndex < arguments.length; argIndex++) {
-            let els = Array.from(document.querySelectorAll('.' + arguments[argIndex]));
-
-            for (let elsIndex = 0; elsIndex < els.length; elsIndex++) {
-                els[elsIndex].classList.remove(arguments[argIndex]);
-            }
-        }
-    }
+    };
 });

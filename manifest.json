@@ -41,6 +41,7 @@
       "app.js",
       "/lib/html-entity-handler/entityhandler.js",
       "/content/content.js",
+      "/content/parser.js",
       "/content/highlighter.js"
     ]
   }],
