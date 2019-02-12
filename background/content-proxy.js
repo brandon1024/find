@@ -49,7 +49,7 @@ Find.register("Background.ContentProxy", function(self) {
      * */
     self.updatePageHighlights = function(tab, regex, index, occurrenceMap, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
-            action: 'highlight_update',
+            action: 'update',
             occurrenceMap: occurrenceMap,
             index: index,
             regex: regex,
@@ -67,7 +67,7 @@ Find.register("Background.ContentProxy", function(self) {
      * */
     self.seekHighlight = function(tab, index, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
-            action: 'highlight_seek',
+            action: 'seek',
             index: index,
             options: options
         }, callback);
@@ -94,7 +94,7 @@ Find.register("Background.ContentProxy", function(self) {
      * */
     self.replaceOccurrence = function(tab, index, replaceWith, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
-            action: 'highlight_replace',
+            action: 'replace',
             index: index,
             replaceWith: replaceWith,
             options: options
@@ -111,7 +111,7 @@ Find.register("Background.ContentProxy", function(self) {
      * */
     self.replaceAllOccurrences = function(tab, replaceWith, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
-            action: 'highlight_replace_all',
+            action: 'replace_all',
             replaceWith: replaceWith,
             options: options
         }, callback);
@@ -128,14 +128,14 @@ Find.register("Background.ContentProxy", function(self) {
     };
 
     /**
-     * Send a poll message to the given tab to ensure that it responds. A successful response
+     * Send a fetch message to the given tab to ensure that it responds. A successful response
      * indicates that the content scripts were loaded successfully.
      *
-     * @param {object} tab - The tab to poll.
+     * @param {object} tab - The tab to fetch.
      * @param {function} callback - Callback invoked once the operation is complete.
      * */
-    self.poll = function(tab, callback) {
-        Find.browser.tabs.sendMessage(tab.id, {action: 'poll'}, callback);
+    self.fetch = function(tab, callback) {
+        Find.browser.tabs.sendMessage(tab.id, {action: 'fetch'}, callback);
     };
 
     /**

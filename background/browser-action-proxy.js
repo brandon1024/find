@@ -21,7 +21,6 @@ Find.register("Background.BrowserActionProxy", function(self) {
 
         Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
             let tab = tabs[0];
-            Find.Background.ContentProxy.clearPageHighlights(tab);
 
             //Invoke action on message from popup script
             browserActionPort.onMessage.addListener((message) => {

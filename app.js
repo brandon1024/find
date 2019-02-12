@@ -26,6 +26,12 @@ const Find = (function () {
     })();
 
     /**
+     * This callback function is used to initialize the namespace.
+     * @callback registerCallback
+     * @param {object} self - Object used to create public functions and variables.
+     * */
+
+    /**
      * Register a new namespace, and initialize it using a callback function.
      *
      * The callback function is invoked with the new namespace as an argument. This argument
@@ -40,7 +46,7 @@ const Find = (function () {
      * would allow you to reference this namespace through Find.Popup.Storage.
      *
      * @param {string} path - The namespace path.
-     * @param {function} callback - A function that initializes the namespace.
+     * @param {registerCallback} callback - A function that initializes the namespace.
      * @return the namespace
      * */
     self.register = function(path, callback) {
