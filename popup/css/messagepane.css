@@ -1,8 +1,6 @@
-/* extension message style */
-div#extension-message-body {
-    width: 320px;
-    display: none;
-    margin-bottom: 3px;
+/* Message Pane Style */
+div.pane#extension-message-body {
+    padding: 0;
 }
 
 table#message-table {
@@ -13,7 +11,8 @@ table#message-table {
 
 span#extension-limitation-web-store-text,
 span#extension-limitation-chrome-settings-text,
-span#extension-limitation-pdf-fileview-text{
+span#extension-limitation-pdf-fileview-text,
+span#extension-limitation-offline-file-search-text {
     color: #FF0000;
     display: none;
 }
@@ -22,11 +21,4 @@ img#exclamation-icon {
     width: 20px;
     height: 20px;
     padding: 10px;
-}
-
-img.extension-error-icon {
-    width: 10px;
-    height: 10px;
-    float: right;
-    display: none;
 }

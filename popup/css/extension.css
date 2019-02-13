@@ -1,0 +1,103 @@
+/* Styles Common to Entire Extension */
+
+body {
+    margin: 3px;
+    width: 365px;
+}
+
+div.pane {
+    display: none;
+    background-color: #eeeeee;
+    border-radius: 3px;
+    padding: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+/* Fonts */
+.def-font {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: smaller;
+    color: black;
+}
+
+.pane-header {
+    vertical-align: middle;
+    font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
+    display: block;
+}
+
+/* Input Field */
+input.field {
+    background-color: transparent;
+    border: 0 solid;
+}
+
+input.field textarea:focus, input:focus {
+    outline: none;
+}
+
+input.field#search-field {
+    flex: auto;
+}
+
+/* Text Button */
+button.text-btn {
+    white-space: nowrap;
+    background-color: white;
+    color: black;
+    border: 2px solid white;
+    border-radius: 3px;
+    font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
+    margin: auto 3px auto auto;
+    vertical-align: middle;
+}
+
+button.text-btn:hover {
+    box-shadow: 1px 1px 12px 1px rgba(196,196,196,1);
+}
+
+button.text-btn:focus {
+    outline: none;
+}
+
+button.text-btn.warn {
+    background-color: #e84545;
+    color: white;
+    border: 2px solid #e84545;
+}
+
+/* Controls Button */
+button.controls-button {
+    background: transparent no-repeat center;
+    border-width: 0;
+    border-radius: 2px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+}
+
+button.controls-button:focus {
+    outline: none;
+}
+
+button.controls-button:hover {
+    background-color: #eaeaea;
+}
+
+button.controls-button:active {
+    border-radius: 25px;
+    background-color: #dadada;
+}
+
+button.controls-button:disabled {
+    background-color: transparent;
+    opacity: 0.2;
+}
+
+div.controls-button-cell {
+    width: 25px;
+    height: 25px;
+}

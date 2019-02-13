@@ -1,0 +1,189 @@
+/* Extension Options Pane */
+table#regex-options-table {
+    width: 100%;
+    padding: 5px;
+}
+
+td.options-table-toggle-cell {
+    width: 32px;
+    height: 17px;
+    padding: 0;
+}
+
+img.information-hover-icon {
+    width: 10px;
+    height: 10px;
+}
+
+/* Switch and Slider Components */
+label.switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 17px;
+}
+
+label.switch input {
+    display:none;
+}
+
+div.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+div.toggle-slider:before {
+    position: absolute;
+    content: '';
+    height: 13px;
+    width: 13px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .toggle-slider {
+    background-color: #ff9600;
+}
+
+input:focus + .toggle-slider {
+    box-shadow: 0 0 1px #ff9600;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(13px);
+}
+
+div#options-controls-container {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+button#reset-options-button {
+    float: right;
+}
+
+/* Slider CSS */
+.slider-container {
+    display: inline-flex;
+    width: 100%;
+}
+
+.slider {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 5px;
+    background: #ff9600;
+    outline: none;
+    margin: auto auto auto 3px;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: #666;
+    cursor: pointer;
+    transition: background .15s ease-in-out;
+}
+
+.slider::-moz-range-thumb {
+    -moz-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: #666;
+    cursor: pointer;
+    transition: background .15s ease-in-out;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    background: #eee;
+}
+
+.slider::-webkit-slider-thumb:active {
+    background: #eee;
+}
+
+.slider::-moz-range-track {
+    background: none;
+    border: none;
+}
+
+.slider-value {
+    display: inline-block;
+    position: relative;
+    min-width: 40px;
+    color: #fff;
+    line-height: 10px;
+    text-align: center;
+    border-radius: 3px;
+    background: #ff9600;
+    padding: 5px 10px;
+    font-family: "Arial", Arial, sans-serif;
+    font-size: 12px;
+    vertical-align: middle;
+    margin: auto 4px auto 8px;
+}
+
+.slider-value:after {
+    position: absolute;
+    top: 5px;
+    left: -5px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-right: 5px solid #ff9600;
+    border-bottom: 5px solid transparent;
+    content: '';
+}
+
+.color-slider {
+    background: linear-gradient(to right,hsl(0,100%,50%),hsl(60,100%,50%),hsl(120,100%,50%),hsl(180,100%,50%),hsl(240,100%,50%),hsl(300,100%,50%),hsl(360,100%,50%));
+}
+
+.color-saturation-slider {
+    background: linear-gradient(to right,hsl(0,0%,100%),hsl(0,0%,0%));
+}
+
+.color-value-slider {
+    background: linear-gradient(to right,hsl(0,0%,0%),hsl(0,0%,100%));
+}
+
+.color-slider-value {
+    width: 45px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 2px solid white;
+    flex: none;
+    margin: 3px auto;
+}
+
+.color-indicator#index-highlight-color-indicator {
+    background: #fff000;
+}
+
+.color-indicator#all-highlight-color-indicator {
+    background: #ff9813;
+}

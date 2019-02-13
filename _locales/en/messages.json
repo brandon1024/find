@@ -1,0 +1,176 @@
+{
+  "extension_name": {
+    "message": "find+ | Regex Find-in-Page Tool",
+    "description": "The extension name in the manifest file."
+  },
+  "extension_description": {
+    "message": "A find-in-page extension for Google Chrome with support for regular expressions.",
+    "description": "Short description of the extension in the manifest file."
+  },
+
+
+  "search_field_title": {
+    "message": "Search Field",
+    "description": "Tooltip text for the search field."
+  },
+  "malformed_regex_error_title": {
+    "message": "Malformed Regex:\nThe regular expression entered is not acceptable, as it is either an invalid regular expression, or not supported according to the Javascript RegExp specification",
+    "description": "Tooltip text for the invalid regex icon."
+  },
+  "clipboard_copy_error_title": {
+    "message": "Unable to copy to the clipboard due to unexpected error.",
+    "description": "Tooltip text for the clipboard copy error icon."
+  },
+  "iframes_found_warning_title": {
+    "message": "One or more iframes were encountered in the page. As a result, some occurrences of your search query may not be highlighted in the page.",
+    "description": "Tooltip text for the iframes encountered warning icon."
+  },
+  "clipboard_copy_title": {
+    "message": "Regex occurrence copied to clipboard.",
+    "description": "Tooltip text for the clipboard copy successful icon."
+  },
+  "installation_information_title": {
+    "message": "Welcome and thanks for installing our extension! Here are some tips to get you started:\n\tENTER : Advance to the next occurrence of the regular expression in the page\n\tSHIFT-ENTER : Return to the previous occurrence of the regular expression in the page\n\tCTRL-ALT-O : Expand or Collapse Options Pane\n\tCTRL-ALT-R : Expand or Collapse Replace Text Pane\n\tCTRL-ENTER or ESC : Close the extension popup",
+    "description": "Tooltip text for the install information icon."
+  },
+  "update_information_title": {
+    "message": "We just updated the extension! Now it works better than ever :)\nCheck out our GitHub page for information about this update!",
+    "description": "Tooltip text for the update information icon."
+  },
+  "search_prev_title": {
+    "message": "Previous",
+    "description": "Tooltip text for the seek backwards button."
+  },
+  "search_next_title": {
+    "message": "Next",
+    "description": "Tooltip text for the seek forwards button."
+  },
+  "toggle_options_pane_title": {
+    "message": "Toggle Options Pane",
+    "description": "Tooltip text for the toggle options pane button."
+  },
+  "toggle_history_button": {
+    "message": "Show History",
+    "description": "Tooltip text for the show history button."
+  },
+  "close_extension_title": {
+    "message": "Close find+",
+    "description": "Tooltip text for the close extension button."
+  },
+  "replace_field_title": {
+    "message": "Replace Field",
+    "description": "Tooltip text for the replace field."
+  },
+  "replace_button_title": {
+    "message": "Replace Next",
+    "description": "Tooltip text for the replace next button."
+  },
+  "replace_all_button_title": {
+    "message": "Replace All",
+    "description": "Tooltip text for the replace all button."
+  },
+  "search_option_find_by_regex_title": {
+    "message": "If enabled, text entered in the search field will be treated as a regular expression.\nIf disabled, the text is treated as string literal.",
+    "description": "Tooltip text for the find by regex option description icon."
+  },
+  "search_option_match_case_title": {
+    "message": "If enabled, the case of characters must match that of the query string.\nIf disabled, the case of characters in the query string are not considered.",
+    "description": "Tooltip text for the match case option description icon."
+  },
+  "search_option_persistent_highlights_title": {
+    "message": "If enabled, highlights in the web page will remain after the extension closes.\nRemove the highlights by reloading the page or reopening the extension.",
+    "description": "Tooltip text for the persistent highlights option description icon."
+  },
+  "extension_option_persistent_storage_incognito_title": {
+    "message": "If enabled, history and options will be persisted in regular and incognito sessions. If disabled, no session information will be saved while incognito.",
+    "description": "Tooltip text for the persistent storage incognito option description icon."
+  },
+  "history_entry_icon_title": {
+    "message": "Load this regex",
+    "description": "Tooltip text for a history entry icon."
+  },
+  "delete_history_entry_icon_title": {
+    "message": "Delete this regex",
+    "description": "Tooltip text for a delete history entry icon."
+  },
+  "clear_history_button_title": {
+    "message": "Clear All History Entries",
+    "description": "Tooltip text for the clear history button."
+  },
+  "save_history_button_title": {
+    "message": "Save Regex in Search Field",
+    "description": "Tooltip text for the save regex button."
+  },
+
+
+  "replace_field_placeholder": {
+    "message": "Replace with..",
+    "description": "Placeholder text for the replace field."
+  },
+
+
+  "replace_button_text": {
+    "message": "Replace",
+    "description": "Text displayed inside the replace button."
+  },
+  "replace_all_button_text": {
+    "message": "Replace All",
+    "description": "Text displayed inside the replace all button."
+  },
+  "extension_limitation_web_store_text": {
+    "message": "Oops! It appears you are trying to use the extension in the Chrome Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.",
+    "description": "Text displayed in the message pane when the extension is used in the Chrome Web Store."
+  },
+  "extension_limitation_chrome_namespace_text": {
+    "message": "Oops! It appears you are trying to use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.",
+    "description": "Text displayed in the message pane when the extension is used in the chrome:// namespace."
+  },
+  "extension_limitation_pdf_text": {
+    "message": "Oops! It appears you are trying to use the extension in a PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF. We recommend using the native tool instead.",
+    "description": "Text displayed in the message pane when the extension is used in a PDF."
+  },
+  "extension_limitation_offline_file_text": {
+    "message": "Something went wrong internally while trying to search this offline file. Luckily, we might know how to fix this. Navigate to 'chrome://extensions' and locate the checkbox 'Allow access to file URLs' under the {find+} extension.",
+    "description": "Text displayed in the message pane when the extension is used in an offline file without adequate permissions for parsing file contents."
+  },
+  "search_options_header_text": {
+    "message": "Regex Options",
+    "description": "Header text displayed in the options pane."
+  },
+  "history_body_header": {
+    "message": "History",
+    "description": "Header text displayed in the history pane."
+  },
+  "search_option_find_by_regex_text": {
+    "message": "Find by Regular Expression",
+    "description": "Text displayed beside the find by regex option."
+  },
+  "search_option_match_case_text": {
+    "message": "Match Case",
+    "description": "Text displayed beside the match case option."
+  },
+  "search_option_persistent_highlights_text": {
+    "message": "Persistent Highlights",
+    "description": "Text displayed beside the persistent highlights option."
+  },
+  "extension_option_persistent_storage_incognito_text": {
+    "message": "Persistent Storage (Incognito)",
+    "description": "Text displayed beside the persistent storage option."
+  },
+  "search_option_max_results_text": {
+    "message": "Max Highlighted Results",
+    "description": "Text displayed above the max highlighted results option."
+  },
+  "search_option_index_highlight_text": {
+    "message": "Selected Occurrence Highlight Color",
+    "description": "Text displayed above the index highlight color option."
+  },
+  "search_option_all_highlight_text": {
+    "message": "Highlight Color",
+    "description": "Text displayed above the all highlight color option."
+  },
+  "reset_options_button_text": {
+    "message": "Reset All Options",
+    "description": "Text displayed in the reset options button."
+  }
+}
