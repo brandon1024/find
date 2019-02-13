@@ -42,7 +42,7 @@ Several keyboard shortcuts exist directly in the extension for performing differ
 | Windows Shortcut                                   | macOS Shortcut                                     | Action                                                                 |
 | :------------------------------------------------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
 | <kbd>↵</kbd>                                       | <kbd>↵</kbd>                                       | Advance to the next occurrence of the regular expression in the page   |
-| <kbd>⇧</kbd>+<kbd>↵</kbd>                          | <kbd>SHIFT</kbd>+<kbd>↵</kbd>                      | Return to the previous occurrence of the regular expression in the page|
+| <kbd>⇧</kbd>+<kbd>↵</kbd>                          | <kbd>⇧</kbd>+<kbd>↵</kbd>                          | Return to the previous occurrence of the regular expression in the page|
 | <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>↵</kbd>          | <kbd>^</kbd>+<kbd>⇧</kbd>+<kbd>↵</kbd>             | Follow the first highlighted link in the current occurrence focus      |
 | <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>C</kbd>        | <kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>C</kbd>             | Copy to the clipboard the currently highlighted text on the page.      |
 | <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>A</kbd>        | <kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>A</kbd>             | Copy to the clipboard the all highlighted text on the page.            |
@@ -96,4 +96,7 @@ Example:
 |[<img src="https://avatars3.githubusercontent.com/u/22732449?v=3&s=460" width="128">](https://github.com/brandon1024)|[<img src="https://avatars2.githubusercontent.com/u/27076448?v=3&s=460" width="128">](https://github.com/MikeWalz11) | [<img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" width="128">](https://github.com/brandon1024/find)
 |:---:|:---:|:---:|
 |[Brandon Richardson](https://github.com/brandon1024)| [Michael Walz](https://github.com/MikeWalz11) |[Become a Contributor](CONTRIBUTING.md)
-|<sup>Co-Owner, Arch, Deployment</sup>|<sup>Co-Owner, UI, backend</sup>|<sup>Have a talent?</sup>
+
+## License
+This project is licensed under the [GPLv3 License](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
