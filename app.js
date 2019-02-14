@@ -18,7 +18,7 @@ const Find = (function () {
     })();
 
     self.browser = (() => {
-        return window.chrome || window.browser;
+        return typeof chrome === 'undefined' ? browser : chrome;
     })();
 
     self.incognito = (() => {
