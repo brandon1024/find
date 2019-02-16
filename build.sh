@@ -105,6 +105,7 @@ sed -i "s/\"version\": \"1\"/\"version\": \"$VERSION\"/" "$BUILD_DIR/moz/manifes
 # Package extension for chrome
 echo "$ME: Packaging extension for Chrome..."
 rm -f "$BUILD_DIR/chr/manifest_firefox.json"
+rm -f "$BUILD_DIR/chr/build.sh"
 cd "$BUILD_DIR/chr"
 zip -r "$BUILD_DIR/find-chrome.zip" .
 cd "$ROOT_DIR"
@@ -112,6 +113,7 @@ cd "$ROOT_DIR"
 # Package extension for firefox
 echo "$ME: Packaging extension for Firefox..."
 mv "$BUILD_DIR/moz/manifest_firefox.json" "$BUILD_DIR/moz/manifest.json"
+rm -f "$BUILD_DIR/moz/build.sh"
 cd "$BUILD_DIR/moz"
 zip -r "$BUILD_DIR/find-firefox.zip" .
 cd "$ROOT_DIR"
