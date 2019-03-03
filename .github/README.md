@@ -93,7 +93,7 @@ Example:
 ```
 
 ## Authors
-|[<img src="https://avatars3.githubusercontent.com/u/22732449?v=3&s=460" width="128">](https://github.com/brandon1024)|[<img src="https://avatars2.githubusercontent.com/u/27076448?v=3&s=460" width="128">](https://github.com/MikeWalz11) | [<img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" width="128">](https://github.com/brandon1024/find)
+|[<img src="https://avatars3.githubusercontent.com/u/22732449?v=3&s=460" width="128">](https://github.com/brandon1024)|[<img src="https://avatars2.githubusercontent.com/u/27076448?v=3&s=460" width="128">](https://github.com/MikeWalz11) | [<img src="github-mark.png" width="128">](https://github.com/brandon1024/find)
 |:---:|:---:|:---:|
 |[Brandon Richardson](https://github.com/brandon1024)| [Michael Walz](https://github.com/MikeWalz11) |[Become a Contributor](CONTRIBUTING.md)
 
