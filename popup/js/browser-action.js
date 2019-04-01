@@ -37,6 +37,8 @@ Find.register('Popup.BrowserAction', function (self) {
         document.getElementById('popup-body').addEventListener('click', () => {
             Find.Popup.SearchPane.focusSearchField();
         });
+
+        Find.Popup.SearchPane.focusSearchField();
     };
 
     /**
