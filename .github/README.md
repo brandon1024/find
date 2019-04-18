@@ -52,7 +52,7 @@ Several keyboard shortcuts exist directly in the extension for performing differ
 | <kbd>CTRL</kbd>+<kbd>↵</kbd> or <kbd>ESC</kbd>     | <kbd>^</kbd>+<kbd>↵</kbd> or <kbd>ESC</kbd>        | Close the extension popup                                              |
 
 ## Omnibox Support
-In version 1.4.0, we introduced omnibox support! This allows you to highlight text on a page without even opening the extension. To use this feature, type `find` in your browser's address bar, press `TAB`, and then enter a regular expression. Occurrences of the regular expression will become highlighted on the page as you type.
+In version 1.4.0, we introduced omnibox support! This allows you to highlight text on a page without even opening the extension. To use this feature, type `find` in your browser's address bar, press `space`, and then enter a regular expression. Occurrences of the regular expression will become highlighted on the page as you type.
 
 Pressing `ENTER` will leave the highlights in the page. To remove the highlights, simply refresh the page. If you don't want to leave the highlights in the page, just erase the text entered in the address bar.
 
