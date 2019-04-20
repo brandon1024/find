@@ -60,7 +60,7 @@ button.controls-button#search-toggle-options-button {
     background-size: 12px 12px;
 }
 
-button.controls-button#history-toggle-button {
+button.controls-button#search-history-toggle-button {
     background-image: url(/resources/bookmark.svg);
     background-size: 12px 12px;
 }
