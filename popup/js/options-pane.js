@@ -17,6 +17,8 @@ Find.register('Popup.OptionsPane', function (self) {
         match_case: true,
         persistent_highlights: false,
         persistent_storage_incognito: false,
+        hide_options_button: false,
+        hide_history_button: false,
         max_results: 0,
         index_highlight_color: Object.freeze({
             hue: 34,
@@ -70,6 +72,16 @@ Find.register('Popup.OptionsPane', function (self) {
             Find.Popup.Storage.lockStorage(false);
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.Storage.lockStorage(!options.persistent_storage_incognito);
+        });
+        document.getElementById('hide-option-pane-toggle-option-toggle').addEventListener('change', (e) => {
+            options.hide_options_button = e.target.checked;
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
+        });
+        document.getElementById('hide-history-pane-toggle-option-toggle').addEventListener('change', (e) => {
+            options.hide_history_button = e.target.checked;
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.SearchPane.hideHistoryPaneToggleButton(options.hide_history_button);
         });
 
         //Add max results slider event listeners
@@ -302,6 +314,14 @@ Find.register('Popup.OptionsPane', function (self) {
             newOptions.persistent_storage_incognito = defaultOptions.persistent_storage_incognito;
         }
 
+        if(newOptions.hide_options_button === undefined) {
+            newOptions.hide_options_button = defaultOptions.hide_options_button;
+        }
+
+        if(newOptions.hide_history_button === undefined) {
+            newOptions.hide_history_button = defaultOptions.hide_history_button;
+        }
+
         if(newOptions.max_results === undefined) {
             newOptions.max_results = defaultOptions.max_results;
         }
@@ -355,6 +375,11 @@ Find.register('Popup.OptionsPane', function (self) {
         document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
         document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
         document.getElementById('regex-option-persistent-storage-incognito-toggle').checked = options.persistent_storage_incognito;
+        document.getElementById('hide-option-pane-toggle-option-toggle').checked = options.hide_options_button;
+        document.getElementById('hide-history-pane-toggle-option-toggle').checked = options.hide_history_button;
+
+        Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
+        Find.Popup.SearchPane.hideHistoryPaneToggleButton(options.hide_history_button);
     }
 
     /**
