@@ -48,7 +48,7 @@ Find.register('Popup.SearchPane', function (self) {
         }, true);
 
 
-        document.getElementById('history-toggle-button').addEventListener('click', () => {
+        document.getElementById('search-history-toggle-button').addEventListener('click', () => {
             Find.Popup.HistoryPane.toggle();
             Find.Popup.ReplacePane.show(false);
             Find.Popup.OptionsPane.show(false);
@@ -180,6 +180,24 @@ Find.register('Popup.SearchPane', function (self) {
     self.flashUpdateInformationIcon = function() {
         let el = document.getElementById('update-information');
         flashElement(el);
+    };
+
+    /**
+     * Show or hide the button used to toggle the options pane.
+     *
+     * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
+     * */
+    self.hideOptionsPaneToggleButton = function(hide) {
+        document.getElementById('search-toggle-options-button').style.display = hide ? 'none' : 'initial';
+    };
+
+    /**
+     * Show or hide the button used to toggle the history pane.
+     *
+     * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
+     * */
+    self.hideHistoryPaneToggleButton = function(hide) {
+        document.getElementById('search-history-toggle-button').style.display = hide ? 'none' : 'initial';
     };
 
     /**

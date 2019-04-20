@@ -71,6 +71,7 @@ button.text-btn.warn {
 
 /* Controls Button */
 button.controls-button {
+    display: block;
     background: transparent no-repeat center;
     border-width: 0;
     border-radius: 2px;
