@@ -104,9 +104,9 @@ Find.register("Background.ContentProxy", function(self) {
     /**
      * Replace all occurrences of the regular expression with a given piece of text in the page.
      *
-     * @param {object} tab - The tab that will be updated
-     * @param {string} replaceWith - The text that will replace each occurrence of the regex
-     * @param {object} options - The search options
+     * @param {object} tab - The tab that will be updated.
+     * @param {string} replaceWith - The text that will replace each occurrence of the regex.
+     * @param {object} options - The search options.
      * @param {function} [callback] - Callback invoked when the occurrences are replaced.
      * */
     self.replaceAllOccurrences = function(tab, replaceWith, options, callback) {
@@ -120,7 +120,7 @@ Find.register("Background.ContentProxy", function(self) {
     /**
      * Follow the link in the page at the current index.
      *
-     * @param {object} tab - The tab with the search
+     * @param {object} tab - The tab that will receive the message.
      * @param {function} [callback] - Callback invoked once the operation is complete.
      * */
     self.followLinkUnderFocus = function(tab, callback) {
@@ -141,7 +141,7 @@ Find.register("Background.ContentProxy", function(self) {
     /**
      * Execute a given script in a specific tab.
      *
-     * @param {object} tab - The tab with the search.
+     * @param {object} tab - The tab that will execute the script.
      * @param {object} details - Details of the script to run. Either the code or the file property must be set, but
      * both may not be set at the same time.
      * @param {function} [callback] - Callback invoked once the operation is complete.
@@ -149,4 +149,14 @@ Find.register("Background.ContentProxy", function(self) {
     self.executeScript = function(tab, details, callback) {
         Find.browser.tabs.executeScript(tab.id, details, callback);
     };
+
+    /**
+     * Notify the content script that the user selected the input-replace tool from the context menu.
+     *
+     * @param {object} tab - The tab that will receive the message.
+     * @param {function} [callback] - Callback invoked once the operation is complete.
+     * */
+    self.showInputReplaceDialog = function(tab, callback) {
+        Find.browser.tabs.sendMessage(tab.id, {action: 'input_replace'}, callback);
+    }
 });

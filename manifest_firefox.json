@@ -11,6 +11,7 @@
     "activeTab",
     "storage",
     "clipboardWrite",
+    "contextMenus",
     "<all_urls>"
   ],
   "icons": {
@@ -28,7 +29,8 @@
       "/background/browser-action-proxy.js",
       "/background/content-proxy.js",
       "/background/background.js",
-      "/background/omni.js"
+      "/background/omni.js",
+      "/background/input-replace.js"
     ]
   },
   "content_scripts": [{
@@ -40,7 +42,8 @@
       "/lib/html-entity-handler/entityhandler.js",
       "/content/content.js",
       "/content/parser.js",
-      "/content/highlighter.js"
+      "/content/highlighter.js",
+      "/content/input-replace.js"
     ]
   }],
   "omnibox": {

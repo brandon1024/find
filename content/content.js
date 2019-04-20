@@ -66,6 +66,13 @@ Find.register('Content', function(self) {
                 break;
         }
 
+        //InputReplace Actions
+        switch(message.action) {
+            case 'input_replace':
+                Find.Content.InputReplace.showDialog();
+                break;
+        }
+
         return false;
     });
 });

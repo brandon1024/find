@@ -172,5 +172,10 @@
   "reset_options_button_text": {
     "message": "Reset All Options",
     "description": "Text displayed in the reset options button."
+  },
+
+  "input_replace_tool_context_menu_text": {
+    "message": "Find and replace in this field",
+    "description": "Text displayed in the context menu for the input-replace tool."
   }
 }
