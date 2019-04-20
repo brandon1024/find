@@ -85,6 +85,14 @@
     "message": "If enabled, history and options will be persisted in regular and incognito sessions. If disabled, no session information will be saved while incognito.",
     "description": "Tooltip text for the persistent storage incognito option description icon."
   },
+  "extension_option_hide_option_pane_toggle_button_title": {
+    "message": "If enabled, the button used to toggle the option pane will be hidden.\nThe keyboard shortcuts may still be used to display or hide the pane.",
+    "description": "Tooltip text for the hide option pane toggle button option description icon."
+  },
+  "extension_option_hide_history_pane_toggle_button_title": {
+    "message": "If enabled, the button used to toggle the history pane will be hidden.\nThe keyboard shortcuts may still be used to display or hide the pane.",
+    "description": "Tooltip text for the hide history pane toggle button option description icon."
+  },
   "history_entry_icon_title": {
     "message": "Load this regex",
     "description": "Tooltip text for a history entry icon."
@@ -156,6 +164,14 @@
   "extension_option_persistent_storage_incognito_text": {
     "message": "Persistent Storage (Incognito)",
     "description": "Text displayed beside the persistent storage option."
+  },
+  "extension_option_hide_option_pane_toggle_button_text": {
+    "message": "Hide Option Pane Toggle Button",
+    "description": "Text displayed beside the hide option pane toggle button option."
+  },
+  "extension_option_hide_history_pane_toggle_button_text": {
+    "message": "Hide History Pane Toggle Button",
+    "description": "Text displayed beside the hide history pane toggle button option."
   },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",
