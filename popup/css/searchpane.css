@@ -46,26 +46,26 @@ img.extension-error-icon {
 }
 
 button.controls-button#search-prev-button {
-    background-image: url(/resources/chevron-up.svg);
+    background-image: url(/popup/img/icon/chevron-up.svg);
     background-size: 12px 12px;
 }
 
 button.controls-button#search-next-button {
-    background-image: url(/resources/chevron-down.svg);
+    background-image: url(/popup/img/icon/chevron-down.svg);
     background-size: 12px 12px;
 }
 
 button.controls-button#search-toggle-options-button {
-    background-image: url(/resources/wrench.svg);
+    background-image: url(/popup/img/icon/wrench.svg);
     background-size: 12px 12px;
 }
 
 button.controls-button#search-history-toggle-button {
-    background-image: url(/resources/bookmark.svg);
+    background-image: url(/popup/img/icon/bookmark.svg);
     background-size: 12px 12px;
 }
 
 button.controls-button#close-button {
-    background-image: url(/resources/cross.svg);
+    background-image: url(/popup/img/icon/cross.svg);
     background-size: 10px 10px;
 }

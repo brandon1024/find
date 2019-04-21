@@ -39,6 +39,6 @@ div#history-body-controls {
 }
 
 button.controls-button.delete-history-entry-button {
-    background-image: url(/resources/cross.svg);
+    background-image: url(/popup/img/icon/cross.svg);
     background-size: 12px 12px;
 }

@@ -11,6 +11,7 @@
     "activeTab",
     "storage",
     "clipboardWrite",
+    "contextMenus",
     "<all_urls>"
   ],
   "icons": {
