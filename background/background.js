@@ -19,28 +19,44 @@ Find.register("Background", function(self) {
     let index = null;
 
     /**
-     * Inject content scripts into pages once installed (not performed automatically in Chrome)
+     * Inject content scripts into pages once installed (not performed automatically in Chrome).
+     *
+     * Also add a browser action context menu item for displaying the user guide.
      */
     Find.browser.runtime.onInstalled.addListener((installation) => {
-        self.installationDetails = installation.details;
+        self.installationDetails = installation;
 
-        if(Find.browserId === 'Firefox') {
-            return;
-        }
+        Find.browser.contextMenus.create({
+            title: "Show Help",
+            contexts: ["browser_action"],
+            id: 'show-help'
+        });
 
-        let scripts =  Find.browser.runtime.getManifest().content_scripts[0].js;
-        Find.browser.tabs.query({}, (tabs) => {
-            for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
-                let url = tabs[tabIndex].url;
-                if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
-                    continue;
-                }
-
-                for (let i = 0; i < scripts.length; i++) {
-                    Find.Background.ContentProxy.executeScript(tabs[tabIndex], {file: scripts[i]});
-                }
+        Find.browser.contextMenus.onClicked.addListener((info) => {
+            if(info.menuItemId === 'show-help') {
+                Find.browser.tabs.create({url: Find.browser.extension.getURL("popup/help.html")});
             }
         });
+
+        if(Find.browserId !== 'Firefox') {
+            let scripts =  Find.browser.runtime.getManifest().content_scripts[0].js;
+            Find.browser.tabs.query({}, (tabs) => {
+                for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+                    let url = tabs[tabIndex].url;
+                    if(url.match(/chrome:\/\/.*/) || url.match(/https:\/\/chrome.google.com\/webstore\/.*/)) {
+                        continue;
+                    }
+
+                    for (let i = 0; i < scripts.length; i++) {
+                        Find.Background.ContentProxy.executeScript(tabs[tabIndex], {file: scripts[i]});
+                    }
+                }
+            });
+        }
+
+        if(installation.reason === 'install') {
+            Find.browser.tabs.create({url: Find.browser.extension.getURL("popup/help.html")});
+        }
     });
 
     /**
