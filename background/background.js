@@ -18,14 +18,7 @@ Find.register("Background", function(self) {
     let regexOccurrenceMap = null;
     let index = null;
 
-    /**
-     * Inject content scripts into pages once installed (not performed automatically in Chrome).
-     *
-     * Also add a browser action context menu item for displaying the user guide.
-     */
-    Find.browser.runtime.onInstalled.addListener((installation) => {
-        self.installationDetails = installation;
-
+    Find.browser.contextMenus.removeAll(() => {
         Find.browser.contextMenus.create({
             title: "Show Help",
             contexts: ["browser_action"],
@@ -37,6 +30,13 @@ Find.register("Background", function(self) {
                 Find.browser.tabs.create({url: Find.browser.extension.getURL("popup/help.html")});
             }
         });
+    });
+
+    /**
+     * Inject content scripts into pages once installed (not performed automatically in Chrome).
+     */
+    Find.browser.runtime.onInstalled.addListener((installation) => {
+        self.installationDetails = installation;
 
         if(Find.browserId !== 'Firefox') {
             let scripts =  Find.browser.runtime.getManifest().content_scripts[0].js;
