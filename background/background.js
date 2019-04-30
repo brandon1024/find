@@ -104,22 +104,21 @@ Find.register("Background", function(self) {
      * Remove any highlights and markup from the active tab in the current window. Also resets
      * any state variables, such as the current index, document representation and occurrence map.
      *
+     * @param {object} tab - Information about the active tab in the current window.
      * @param {boolean} [restoreHighlights] - If undefined or true, remove highlights. If false,
      * highlights are not removed, and are persisted in the page.
      * */
-    self.restorePageState = function(restoreHighlights) {
-        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if(restoreHighlights === undefined || restoreHighlights) {
-                Find.Background.ContentProxy.clearPageHighlights(tabs[0]);
-            }
+    self.restorePageState = function(tab, restoreHighlights) {
+        if(restoreHighlights === undefined || restoreHighlights) {
+            Find.Background.ContentProxy.clearPageHighlights(tab);
+        }
 
-            let uuids = getUUIDsFromModelObject(documentRepresentation);
-            Find.Background.ContentProxy.restoreWebPage(tabs[0], uuids);
+        let uuids = getUUIDsFromModelObject(documentRepresentation);
+        Find.Background.ContentProxy.restoreWebPage(tab, uuids);
 
-            documentRepresentation = null;
-            regexOccurrenceMap = null;
-            index = null;
-        });
+        documentRepresentation = null;
+        regexOccurrenceMap = null;
+        index = null;
     };
 
     /**
@@ -159,7 +158,6 @@ Find.register("Background", function(self) {
             }
 
             //Build occurrence map, reposition index if necessary
-            console.log(index);
             regexOccurrenceMap = buildOccurrenceMap(documentRepresentation, regex, self.options);
             if(index > regexOccurrenceMap.length-1) {
                 if(regexOccurrenceMap.length !== 0) {
