@@ -4,7 +4,7 @@
  * Create the Background ContentProxy namespace. Serves as mediator between the background scripts
  * and the browser action popup.
  * */
-Find.register("Background.BrowserActionProxy", function(self) {
+Find.register("Background.BrowserActionProxy", function() {
 
     /**
      * Initialize the port connection with the browser action popup.
@@ -19,12 +19,13 @@ Find.register("Background.BrowserActionProxy", function(self) {
             Find.Background.installationDetails = null;
         }
 
+        let activeTab = null;
         Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            let tab = tabs[0];
+            activeTab = tabs[0];
 
             //Invoke action on message from popup script
             browserActionPort.onMessage.addListener((message) => {
-                actionDispatch(message, tab, (resp) => {
+                actionDispatch(message, activeTab, (resp) => {
                     browserActionPort.postMessage(resp);
                 });
             });
@@ -32,13 +33,15 @@ Find.register("Background.BrowserActionProxy", function(self) {
             //Handle extension close
             browserActionPort.onDisconnect.addListener(() => {
                 if(!Find.Background.options || !Find.Background.options.persistent_highlights) {
-                    Find.Background.restorePageState();
+                    Find.Background.restorePageState(activeTab);
                 } else {
-                    Find.Background.restorePageState(false);
+                    Find.Background.restorePageState(activeTab, false);
                 }
+
+                activeTab = null;
             });
 
-            Find.Background.initializePage(tab);
+            Find.Background.initializePage(activeTab);
         });
     });
 
