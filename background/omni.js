@@ -6,28 +6,31 @@
  * */
 Find.register("Background.Omni", function(self) {
 
+    let activeTab = null;
+
     Find.browser.omnibox.setDefaultSuggestion({description: 'Enter a regular expression'});
 
     Find.browser.omnibox.onInputStarted.addListener(() => {
         Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            Find.Background.initializePage(tabs[0]);
+            activeTab = tabs[0];
+            Find.Background.initializePage(activeTab);
         });
     });
 
     Find.browser.omnibox.onInputChanged.addListener((regex) => {
         retrieveOptions((options) => {
-            Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-                Find.Background.updateSearch({regex: regex, options: options}, tabs[0], () => {});
-            });
+            Find.Background.updateSearch({regex: regex, options: options}, activeTab, () => {});
         });
     });
 
     Find.browser.omnibox.onInputCancelled.addListener(() => {
-        Find.Background.restorePageState();
+        Find.Background.restorePageState(activeTab);
+        activeTab = null;
     });
 
     Find.browser.omnibox.onInputEntered.addListener(() => {
-        Find.Background.restorePageState(false);
+        Find.Background.restorePageState(activeTab, false);
+        activeTab = null;
     });
 
     /**
