@@ -251,7 +251,7 @@ Find.register('Content.Highlighter', function(self) {
             els[elsIndex].setAttribute("style", style);
         }
 
-        els[0].scrollIntoView(true);
+        els[0].scrollIntoView({block: 'center'});
 
         let docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
         let bottomScrollPos = window.pageYOffset + window.innerHeight;
