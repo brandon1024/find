@@ -53,6 +53,10 @@
     "message": "Show History",
     "description": "Tooltip text for the show history button."
   },
+  "copy_to_clipboard_button": {
+    "message": "Copy All Occurrences To Clipboard",
+    "description": "Tooltip text for the copy to clipboard button."
+  },
   "close_extension_title": {
     "message": "Close find+",
     "description": "Tooltip text for the close extension button."

@@ -47,7 +47,10 @@ Find.register('Popup.SearchPane', function (self) {
             Find.Popup.HistoryPane.show(false);
         }, true);
 
-
+        document.getElementById('copy-text-to-clipboard-button').addEventListener('click', () => {
+            Find.Popup.BrowserAction.getOccurrence({cardinality: 'all'});
+        }, true);
+        
         document.getElementById('search-history-toggle-button').addEventListener('click', () => {
             Find.Popup.HistoryPane.toggle();
             Find.Popup.ReplacePane.show(false);
