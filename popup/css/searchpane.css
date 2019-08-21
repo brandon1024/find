@@ -27,7 +27,7 @@ div#search-controls-container {
 }
 
 div#search-info {
-    min-width: 40px;
+    min-width: 60px;
     text-align: right;
     user-select: none;
     cursor: default;
@@ -62,6 +62,11 @@ button.controls-button#search-toggle-options-button {
 
 button.controls-button#search-history-toggle-button {
     background-image: url(/popup/img/icon/bookmark.svg);
+    background-size: 12px 12px;
+}
+
+button.controls-button#copy-text-to-clipboard-button {
+    background-image: url(/popup/img/icon/clipboard.svg);
     background-size: 12px 12px;
 }
 
