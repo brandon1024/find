@@ -19,6 +19,7 @@ Find.register('Popup.OptionsPane', function (self) {
         persistent_storage_incognito: false,
         hide_options_button: false,
         hide_history_button: false,
+        hide_clipboard_button: true,
         max_results: 0,
         index_highlight_color: Object.freeze({
             hue: 34,
@@ -82,6 +83,11 @@ Find.register('Popup.OptionsPane', function (self) {
             options.hide_history_button = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.SearchPane.hideHistoryPaneToggleButton(options.hide_history_button);
+        });
+        document.getElementById('hide-copy-to-clipboard-toggle-option-toggle').addEventListener('change', (e) => {
+            options.hide_clipboard_button = e.target.checked;
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.SearchPane.hideCopyOccurrencesToClipboard(options.hide_clipboard_button);
         });
 
         //Add max results slider event listeners
@@ -377,9 +383,11 @@ Find.register('Popup.OptionsPane', function (self) {
         document.getElementById('regex-option-persistent-storage-incognito-toggle').checked = options.persistent_storage_incognito;
         document.getElementById('hide-option-pane-toggle-option-toggle').checked = options.hide_options_button;
         document.getElementById('hide-history-pane-toggle-option-toggle').checked = options.hide_history_button;
+        document.getElementById('hide-copy-to-clipboard-toggle-option-toggle').checked = options.hide_clipboard_button;
 
         Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
         Find.Popup.SearchPane.hideHistoryPaneToggleButton(options.hide_history_button);
+        Find.Popup.SearchPane.hideCopyOccurrencesToClipboard(options.hide_clipboard_button);
     }
 
     /**
