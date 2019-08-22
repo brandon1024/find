@@ -97,6 +97,10 @@
     "message": "If enabled, the button used to toggle the history pane will be hidden.\nThe keyboard shortcuts may still be used to display or hide the pane.",
     "description": "Tooltip text for the hide history pane toggle button option description icon."
   },
+  "extension_option_hide_copy_to_clipboard_toggle_button_title": {
+    "message": "If enabled, the button used to toggle the copy all occurrences to clipboard will be hidden.\nThe keyboard shortcuts may still be used to copy all occurrences to clipboard.",
+    "description": "Tooltip text for the copy all occurrences to clipboard toggle button option description icon."
+  },
   "history_entry_icon_title": {
     "message": "Load this regex",
     "description": "Tooltip text for a history entry icon."
@@ -176,6 +180,10 @@
   "extension_option_hide_history_pane_toggle_button_text": {
     "message": "Hide History Pane Toggle Button",
     "description": "Text displayed beside the hide history pane toggle button option."
+  },
+  "extension_option_hide_copy_to_clipboard_toggle_button_text": {
+    "message": "Hide Copy To Clipboard Toggle Button",
+    "description": "Text displayed beside the hide copy to clipboard toggle button option."
   },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",
