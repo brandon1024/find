@@ -50,7 +50,7 @@ Find.register('Popup.SearchPane', function (self) {
         document.getElementById('copy-text-to-clipboard-button').addEventListener('click', () => {
             Find.Popup.BrowserAction.getOccurrence({cardinality: 'all'});
         }, true);
-        
+
         document.getElementById('search-history-toggle-button').addEventListener('click', () => {
             Find.Popup.HistoryPane.toggle();
             Find.Popup.ReplacePane.show(false);
@@ -201,6 +201,15 @@ Find.register('Popup.SearchPane', function (self) {
      * */
     self.hideHistoryPaneToggleButton = function(hide) {
         document.getElementById('search-history-toggle-button').style.display = hide ? 'none' : 'initial';
+    };
+
+    /**
+     * Show or hide the button used to toggle the copy occurrences to clipboard button.
+     *
+     * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
+     * */
+    self.hideCopyOccurrencesToClipboard = function(hide) {
+        document.getElementById('copy-text-to-clipboard-button').style.display = hide ? 'none' : 'initial';
     };
 
     /**
