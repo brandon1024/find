@@ -13,17 +13,15 @@ div#popup-body-container {
 div#search-field-container,
 div#search-controls-container {
     display: inline-flex;
-    align-items: center;
 }
 
 div#search-field-container {
     width: 100%;
-    padding-right: 5px;
 }
 
 div#search-controls-container {
     border-left: 1px solid #e0e0e0;
-    padding-left: 5px;
+    margin-left: 5px;
 }
 
 div#search-info {
