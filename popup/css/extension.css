@@ -2,7 +2,7 @@
 
 body {
     margin: 3px;
-    width: 400px;
+    width: 410px;
 }
 
 div.pane {
@@ -15,16 +15,14 @@ div.pane {
 }
 
 /* Fonts */
-.def-font {
+.def-font, .pane-header {
     font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: smaller;
+    font-size: small;
     color: black;
 }
 
 .pane-header {
     vertical-align: middle;
-    font-family: "Arial", Arial, sans-serif;
-    font-size: 12px;
     display: block;
 }
 
