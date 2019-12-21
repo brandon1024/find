@@ -84,7 +84,7 @@ button#options-icon {
     vertical-align: middle;
 }
 
-button#history-icon {
+button#saved-expressions-icon {
     background: url(/popup/img/icon/bookmark.svg) #eaeaea no-repeat center;
     background-size: 12px 12px;
     border-width: 0;

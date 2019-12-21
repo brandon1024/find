@@ -49,9 +49,9 @@
     "message": "Toggle Options Pane",
     "description": "Tooltip text for the toggle options pane button."
   },
-  "toggle_history_button": {
-    "message": "Show History",
-    "description": "Tooltip text for the show history button."
+  "toggle_saved_expressions_button": {
+    "message": "Show Saved Expressions",
+    "description": "Tooltip text for the show saved expressions button."
   },
   "copy_to_clipboard_button": {
     "message": "Copy All Occurrences To Clipboard",
@@ -86,36 +86,36 @@
     "description": "Tooltip text for the persistent highlights option description icon."
   },
   "extension_option_persistent_storage_incognito_title": {
-    "message": "If enabled, history and options will be persisted in regular and incognito sessions. If disabled, no session information will be saved while incognito.",
+    "message": "If enabled, searches and options will be persisted in regular and incognito sessions. If disabled, no session information will be saved while incognito.",
     "description": "Tooltip text for the persistent storage incognito option description icon."
   },
   "extension_option_hide_option_pane_toggle_button_title": {
     "message": "If enabled, the button used to toggle the option pane will be hidden.\nThe keyboard shortcuts may still be used to display or hide the pane.",
     "description": "Tooltip text for the hide option pane toggle button option description icon."
   },
-  "extension_option_hide_history_pane_toggle_button_title": {
-    "message": "If enabled, the button used to toggle the history pane will be hidden.\nThe keyboard shortcuts may still be used to display or hide the pane.",
-    "description": "Tooltip text for the hide history pane toggle button option description icon."
+  "extension_option_hide_saved_expressions_pane_toggle_button_title": {
+    "message": "If enabled, the button used to toggle the saved expressions pane will be hidden.\nThe keyboard shortcuts may still be used to display or hide the pane.",
+    "description": "Tooltip text for the hide saved expressions pane toggle button option description icon."
   },
   "extension_option_hide_copy_to_clipboard_toggle_button_title": {
     "message": "If enabled, the button used to toggle the copy all occurrences to clipboard will be hidden.\nThe keyboard shortcuts may still be used to copy all occurrences to clipboard.",
     "description": "Tooltip text for the copy all occurrences to clipboard toggle button option description icon."
   },
-  "history_entry_icon_title": {
-    "message": "Load this regex",
-    "description": "Tooltip text for a history entry icon."
+  "saved_expression_icon_title": {
+    "message": "Load this expression",
+    "description": "Tooltip text for a saved expression entry icon."
   },
-  "delete_history_entry_icon_title": {
-    "message": "Delete this regex",
-    "description": "Tooltip text for a delete history entry icon."
+  "delete_saved_expression_icon_title": {
+    "message": "Delete this expression",
+    "description": "Tooltip text for a delete saved expression entry icon."
   },
-  "clear_history_button_title": {
-    "message": "Clear All History Entries",
-    "description": "Tooltip text for the clear history button."
+  "clear_expressions_button_title": {
+    "message": "Clear All Saved Expressions",
+    "description": "Tooltip text for the clear saved expressions button."
   },
-  "save_history_button_title": {
-    "message": "Save Regex in Search Field",
-    "description": "Tooltip text for the save regex button."
+  "save_expression_button_title": {
+    "message": "Save Expression in Search Field",
+    "description": "Tooltip text for the save expression button."
   },
 
 
@@ -153,9 +153,9 @@
     "message": "Regex Options",
     "description": "Header text displayed in the options pane."
   },
-  "history_body_header": {
-    "message": "History",
-    "description": "Header text displayed in the history pane."
+  "saved_expressions_body_header": {
+    "message": "Saved Expressions",
+    "description": "Header text displayed in the saved expressions pane."
   },
   "search_option_find_by_regex_text": {
     "message": "Find by Regular Expression",
@@ -177,9 +177,9 @@
     "message": "Hide Option Pane Toggle Button",
     "description": "Text displayed beside the hide option pane toggle button option."
   },
-  "extension_option_hide_history_pane_toggle_button_text": {
-    "message": "Hide History Pane Toggle Button",
-    "description": "Text displayed beside the hide history pane toggle button option."
+  "extension_option_hide_saved_expressions_pane_toggle_button_text": {
+    "message": "Hide Saved Expressions Pane Toggle Button",
+    "description": "Text displayed beside the hide saved expressions pane toggle button option."
   },
   "extension_option_hide_copy_to_clipboard_toggle_button_text": {
     "message": "Hide Copy To Clipboard Toggle Button",
@@ -200,5 +200,10 @@
   "reset_options_button_text": {
     "message": "Reset All Options",
     "description": "Text displayed in the reset options button."
+  },
+
+  "no_expressions_found_text": {
+    "message": "No saved expressions found.",
+    "description": "Text displayed in the saved expressions pane when no expressions exist."
   }
 }

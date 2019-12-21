@@ -1,18 +1,18 @@
 /* extension message style */
-div#history-body {
+div#saved-expressions-body {
     overflow: hidden;
 }
 
-div#history-body-header-container {
+div#saved-expressions-body-header-container {
     margin-bottom: 5px;
 }
 
-div#history-entry-list {
+div#saved-expressions-entry-list {
     max-height: 300px;
     overflow: auto;
 }
 
-div.history-entry {
+div.saved-expression-entry {
     margin: 3px 3px 5px 3px;
     box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);
     border-radius: 3px;
@@ -20,7 +20,7 @@ div.history-entry {
     display: flex;
 }
 
-button.history-entry-button {
+button.saved-expression-entry-button {
     width: 100%;
     text-align: left;
     padding-left: 8px;
@@ -29,16 +29,16 @@ button.history-entry-button {
     text-overflow: ellipsis;
 }
 
-span.history-entry-regex-text {
+span.saved-expression-entry-text {
     margin-left: 5px;
 }
 
-div#history-body-controls {
+div#saved-expressions-body-controls {
     float: right;
     margin-top: 5px;
 }
 
-button.controls-button.delete-history-entry-button {
+button.controls-button.delete-saved-expression-entry-button {
     background-image: url(/popup/img/icon/cross.svg);
     background-size: 12px 12px;
 }

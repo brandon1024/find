@@ -1,43 +1,43 @@
 'use strict';
 
 /**
- * Create the Popup HistoryPane namespace.
+ * Create the Popup SavedExpressionsPane namespace.
  * */
-Find.register('Popup.HistoryPane', function (self) {
+Find.register('Popup.SavedExpressionsPane', function (self) {
 
 	/**
-	 * Initialize the history pane. Registers button event handlers, and loads
-	 * the search history from local storage and builds history entry elements.
+	 * Initialize the saved expressions pane. Registers button event handlers, and loads
+	 * the saved expressions from local storage and builds expression entry elements.
 	 * */
 	self.init = function() {
-		document.getElementById('clear-history-button').addEventListener('click', () => {
-			self.clearHistory();
+		document.getElementById('clear-saved-expressions-button').addEventListener('click', () => {
+			self.clearSavedExpressions();
 		});
 
-		document.getElementById('save-history-entry-button').addEventListener('click', () => {
+		document.getElementById('save-expression-entry-button').addEventListener('click', () => {
 			self.saveEntry();
 		});
 
-		let parentEl = document.getElementById('history-entry-list');
-		Find.Popup.Storage.retrieveHistory((data) => {
+		let parentEl = document.getElementById('saved-expressions-entry-list');
+		Find.Popup.Storage.retrieveSavedExpressions((data) => {
 			if(data && data.length) {
 				for(let index = 0; index < data.length; index++) {
-					let entryEl = buildHistoryEntryElement(data[index]);
+					let entryEl = buildExpressionEntryElement(data[index]);
 					parentEl.appendChild(entryEl);
 				}
 			} else {
-				parentEl.appendChild(buildNullHistoryEntryElement());
+				parentEl.appendChild(buildNullExpressionEntryElement());
 			}
 		});
 	};
 
 	/**
-	 * Display or hide the history pane.
+	 * Display or hide the saved expressions pane.
 	 *
-	 * @param {boolean} value - True to display the history pane, false to hide.
+	 * @param {boolean} value - True to display the pane, false to hide.
 	 * */
 	self.show = function(value) {
-		let el = document.getElementById('history-body');
+		let el = document.getElementById('saved-expressions-body');
 		if(value === undefined || value) {
 			el.style.display = 'inherit';
 		} else {
@@ -46,11 +46,11 @@ Find.register('Popup.HistoryPane', function (self) {
 	};
 
 	/**
-	 * Toggle the history pane. If the history pane is hidden, it will be shown.
+	 * Toggle the saved expressions pane. If the pane is hidden, it will be shown.
 	 * Otherwise it will be hidden.
 	 * */
 	self.toggle = function() {
-		let el = document.getElementById('history-body');
+		let el = document.getElementById('saved-expressions-body');
 		if(el.style.display === 'none' || el.style.display === '') {
 			self.show(true);
 		} else {
@@ -60,10 +60,10 @@ Find.register('Popup.HistoryPane', function (self) {
 
 	/**
 	 * Save the regex from the search field into the local storage, and create
-	 * a history entry in the history pane.
+	 * an expression entry in the saved expressions pane.
 	 *
-	 * If the regex already exists in the history, the entry is moved to the
-	 * front of the history array, and the entry in the history pane is placed
+	 * If the regex already exists in the saved expressions, the entry is moved to the
+	 * front of the expressions array, and the entry in the saved expressions pane is placed
 	 * at the top.
 	 * */
 	self.saveEntry = function() {
@@ -72,7 +72,7 @@ Find.register('Popup.HistoryPane', function (self) {
 			return;
 		}
 
-		Find.Popup.Storage.retrieveHistory((data) => {
+		Find.Popup.Storage.retrieveSavedExpressions((data) => {
 			if(data) {
 				//Remove existing entry, if it exists
 				for(let index = 0; index < data.length; index++) {
@@ -86,7 +86,7 @@ Find.register('Popup.HistoryPane', function (self) {
 			}
 
 			//Add new entry as first child
-			let parentEl = document.getElementById('history-entry-list');
+			let parentEl = document.getElementById('saved-expressions-entry-list');
 			for (let index = 0; index < parentEl.children.length; index++) {
 				if(parentEl.children[index].dataset.regex === regex) {
 					parentEl.removeChild(parentEl.children[index]);
@@ -94,7 +94,7 @@ Find.register('Popup.HistoryPane', function (self) {
 				}
 			}
 
-			let entryEl = buildHistoryEntryElement(regex);
+			let entryEl = buildExpressionEntryElement(regex);
 			parentEl.insertBefore(entryEl, parentEl.firstChild);
 
 			//Remove null entry, if it exists
@@ -103,36 +103,36 @@ Find.register('Popup.HistoryPane', function (self) {
 				nullEntry.parentNode.removeChild(nullEntry);
 			}
 
-			Find.Popup.Storage.saveHistory(data);
+			Find.Popup.Storage.saveExpressions(data);
 		});
 	};
 
 	/**
-	 * Remove all history entries from the history pane and local storage.
-	 * Inserts a null entry to describe to the user that no history entries
+	 * Remove all saved expression entries from the pane and local storage.
+	 * Inserts a null entry to describe to the user that no expression entries
 	 * exist.
 	 * */
-	self.clearHistory = function() {
-		let parentEl = document.getElementById('history-entry-list');
+	self.clearSavedExpressions = function() {
+		let parentEl = document.getElementById('saved-expressions-entry-list');
 		while (parentEl.firstChild) {
 			parentEl.removeChild(parentEl.firstChild);
 		}
 
-		parentEl.appendChild(buildNullHistoryEntryElement());
+		parentEl.appendChild(buildNullExpressionEntryElement());
 
-		Find.Popup.Storage.saveHistory([]);
+		Find.Popup.Storage.saveExpressions([]);
 	};
 
 	/**
-	 * Construct a history entry element, along with it's event handlers
+	 * Construct an expression entry element, along with it's event handlers
 	 * and reference information.
 	 *
 	 * @private
 	 * @param {string} regex - The regular expression to display in the entry body.
 	 * */
-	function buildHistoryEntryElement(regex) {
+	function buildExpressionEntryElement(regex) {
 		// Set search field with regex and update search. Also invoke saveEntry(), which
-		// will place regex at top of history and update local storage.
+		// will place regex at top of saved expression entries and update local storage.
 		let useEntryHandler = (e) => {
 			Find.Popup.SearchPane.setSearchFieldText(e.currentTarget.parentElement.dataset.regex);
 			self.saveEntry();
@@ -148,7 +148,7 @@ Find.register('Popup.HistoryPane', function (self) {
 
 			entry.parentNode.removeChild(entry);
 
-			Find.Popup.Storage.retrieveHistory((data) => {
+			Find.Popup.Storage.retrieveSavedExpressions((data) => {
 				if(data) {
 					//Remove existing entry, if it exists
 					for(let index = 0; index < data.length; index++) {
@@ -159,32 +159,32 @@ Find.register('Popup.HistoryPane', function (self) {
 					}
 				}
 
-				let parentEl = document.getElementById('history-entry-list');
+				let parentEl = document.getElementById('saved-expressions-entry-list');
 				if(!parentEl.children.length) {
-					parentEl.appendChild(buildNullHistoryEntryElement());
+					parentEl.appendChild(buildNullExpressionEntryElement());
 				}
 
-				Find.Popup.Storage.saveHistory(data);
+				Find.Popup.Storage.saveExpressions(data);
 			});
 		};
 
 		return ElementBuilder.create(document)
 			.createElement('div')
-			.addClass('history-entry')
+			.addClass('saved-expression-entry')
 			.setAttribute('data-regex', regex)
 			.appendChild(ElementBuilder.create(document)
 				.createElement('button')
-				.addClass('history-entry-button', 'controls-button')
+				.addClass('saved-expression-entry-button', 'controls-button')
 				.addEventListener('click', useEntryHandler)
 				.appendChild(ElementBuilder.create(document)
 					.createElement('img')
 					.addClass('information-hover-icon')
 					.setAttribute('src', '/resources/bookmark.svg')
-					.setAttribute('data-locale-title', 'history_entry_icon_title')
+					.setAttribute('data-locale-title', 'saved_expression_icon_title')
 					.build())
 				.appendChild(ElementBuilder.create(document)
 					.createElement('span')
-					.addClass('history-entry-regex-text', 'def-font')
+					.addClass('saved-expression-entry-text', 'def-font')
 					.setInnerText(regex)
 					.build())
 				.build())
@@ -193,9 +193,9 @@ Find.register('Popup.HistoryPane', function (self) {
 				.addClass('controls-button-cell')
 				.appendChild(ElementBuilder.create(document)
 					.createElement('button')
-					.addClass('controls-button', 'delete-history-entry-button')
+					.addClass('controls-button', 'delete-saved-expression-entry-button')
 					.setAttribute('type', 'button')
-					.setAttribute('data-locale-title', 'delete_history_entry_icon_title')
+					.setAttribute('data-locale-title', 'delete_saved_expression_icon_title')
 					.addEventListener('click', deleteEntryHandler)
 					.build())
 				.build())
@@ -206,28 +206,28 @@ Find.register('Popup.HistoryPane', function (self) {
 	 * Create a null entry with the given text as the body.
 	 *
 	 * @private
-	 * @param {string} text - Custom text to display in the null entry body. If undefined, null,
-	 * or empty, displays 'No history entries found.'.
 	 * */
-	function buildNullHistoryEntryElement(text) {
+	function buildNullExpressionEntryElement() {
+		let text = Find.Popup.i18n.getLocalizedString("no_expressions_found_text");
+
 		return ElementBuilder.create(document)
 			.createElement('div')
-			.addClass('history-entry')
+			.addClass('saved-expression-entry')
 			.setAttribute('id', 'null-entry')
 			.appendChild(ElementBuilder.create(document)
 				.createElement('button')
-				.addClass('history-entry-button', 'controls-button')
+				.addClass('saved-expression-entry-button', 'controls-button')
 				.appendChild(ElementBuilder.create(document)
 					.createElement('img')
 					.addClass('information-hover-icon')
 					.setAttribute('src', '/resources/bookmark.svg')
-					.setAttribute('data-locale-title', 'history_entry_icon_title')
+					.setAttribute('data-locale-title', 'saved_expression_icon_title')
 					.build())
 				.appendChild(ElementBuilder.create(document)
 					.createElement('span')
-					.addClass('history-entry-regex-text', 'def-font')
+					.addClass('saved-expression-entry-text', 'def-font')
 					.setAttribute('id', 'null-entry-text')
-					.setInnerText(text ? text : 'No history entries found.')
+					.setInnerText(text)
 					.build())
 				.build())
 			.build();

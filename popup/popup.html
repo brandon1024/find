@@ -11,14 +11,14 @@
         <script type="text/javascript" src="js/options-pane.js"></script>
         <script type="text/javascript" src="js/replace-pane.js"></script>
         <script type="text/javascript" src="js/message-pane.js"></script>
-        <script type="text/javascript" src="js/history-pane.js"></script>
+        <script type="text/javascript" src="js/saved-expressions-pane.js"></script>
         <script type="text/javascript" src="js/browser-action.js"></script>
         <link rel="stylesheet" href="css/extension.css"/>
         <link rel="stylesheet" href="css/searchpane.css"/>
         <link rel="stylesheet" href="css/replacepane.css"/>
         <link rel="stylesheet" href="css/messagepane.css"/>
         <link rel="stylesheet" href="css/optionspane.css"/>
-        <link rel="stylesheet" href="css/historypane.css"/>
+        <link rel="stylesheet" href="css/savedexpressionspane.css"/>
     </head>
     <body>
         <div id="popup-body">
@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                <!--  Area for search controls, such as seek, toggle options or history, and close extension -->
+                <!--  Area for search controls, such as seek, toggle options or saved expressions, and close extension -->
                 <div id="search-controls-container">
                     <button class="controls-button" id="search-prev-button" type="button" disabled
                             data-locale-title="search_prev_title"/>
@@ -53,8 +53,8 @@
                             data-locale-title="search_next_title"/>
                     <button class="controls-button" id="search-toggle-options-button" type="button"
                             data-locale-title="toggle_options_pane_title"/>
-                    <button class="controls-button" id="search-history-toggle-button" type="button"
-                            data-locale-title="toggle_history_button"/>
+                    <button class="controls-button" id="saved-expressions-toggle-button" type="button"
+                            data-locale-title="toggle_saved_expressions_button"/>
                     <button class="controls-button" id="copy-text-to-clipboard-button" type="button"
                             data-locale-title="copy_to_clipboard_button"/>
                     <button class="controls-button" id="close-button" type="button"
@@ -184,18 +184,18 @@
                         </td>
                     </tr>
 
-                    <!-- Hide History Pane Toggle Button -->
+                    <!-- Hide Saved Expressions Pane Toggle Button -->
                     <tr>
                         <td class="options-table-toggle-cell">
                             <label class="switch">
-                                <input id="hide-history-pane-toggle-option-toggle" type="checkbox"/>
+                                <input id="hide-saved-expressions-pane-toggle-option-toggle" type="checkbox"/>
                                 <div class="toggle-slider"/>
                             </label>
                         </td>
                         <td>
-                            <span class="def-font" data-locale-text="extension_option_hide_history_pane_toggle_button_text"></span>
+                            <span class="def-font" data-locale-text="extension_option_hide_saved_expressions_pane_toggle_button_text"></span>
                             <img class="information-hover-icon" src="img/icon/question-circle.svg"
-                                 data-locale-title="extension_option_hide_history_pane_toggle_button_title"/>
+                                 data-locale-title="extension_option_hide_saved_expressions_pane_toggle_button_title"/>
                         </td>
                     </tr>
 
@@ -275,18 +275,18 @@
             </div>
         </div>
 
-        <div class="pane" id="history-body">
-            <div id="history-body-header-container">
-                <span class="pane-header" id="history-body-header" data-locale-text="history_body_header"></span>
+        <div class="pane" id="saved-expressions-body">
+            <div id="saved-expressions-body-header-container">
+                <span class="pane-header" id="saved-expressions-body-header" data-locale-text="saved_expressions_body_header"></span>
             </div>
-            <div id="history-entry-list">
-                <!-- History Entry List -->
+            <div id="saved-expressions-entry-list">
+                <!-- Saved Expressions Entry List -->
             </div>
-            <div id="history-body-controls">
-                <button class="text-btn warn def-font" id="clear-history-button" type="button"
-                        data-locale-title="clear_history_button_title">Clear History</button>
-                <button class="text-btn def-font" id="save-history-entry-button" type="button"
-                        data-locale-title="save_history_button_title">Save Regex</button>
+            <div id="saved-expressions-body-controls">
+                <button class="text-btn warn def-font" id="clear-saved-expressions-button" type="button"
+                        data-locale-title="clear_expressions_button_title">Clear Saved Expressions</button>
+                <button class="text-btn def-font" id="save-expression-entry-button" type="button"
+                        data-locale-title="save_expression_button_title">Save Expression</button>
             </div>
         </div>
     </body>

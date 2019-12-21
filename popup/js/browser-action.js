@@ -20,15 +20,15 @@ Find.register('Popup.BrowserAction', function (self) {
                 //CTRL+ALT+O => Toggle Options Pane
                 Find.Popup.OptionsPane.toggle();
                 Find.Popup.ReplacePane.show(false);
-                Find.Popup.HistoryPane.show(false);
+                Find.Popup.SavedExpressionsPane.show(false);
             } else if(e.code === 'KeyR' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+R => Toggle Replace Pane
                 Find.Popup.ReplacePane.toggle();
                 Find.Popup.OptionsPane.show(false);
-                Find.Popup.HistoryPane.show(false);
+                Find.Popup.SavedExpressionsPane.show(false);
             } else if(e.code === 'KeyH' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+R => Toggle Replace Pane
-                Find.Popup.HistoryPane.toggle();
+                Find.Popup.SavedExpressionsPane.toggle();
                 Find.Popup.OptionsPane.show(false);
                 Find.Popup.ReplacePane.show(false);
             }
@@ -79,7 +79,7 @@ Find.register('Popup.BrowserAction', function (self) {
                 Find.Popup.SearchPane.selectSearchField();
                 self.updateSearch();
             } else {
-                Find.Popup.Storage.retrieveHistory((data) => {
+                Find.Popup.Storage.retrieveSavedExpressions((data) => {
                     if(data && data.length) {
                         Find.Popup.SearchPane.setSearchFieldText(data[0]);
                     }
