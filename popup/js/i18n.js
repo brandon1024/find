@@ -37,7 +37,7 @@ Find.register('Popup.i18n', function (self) {
      * @param {string} messageKey - The key for the message.
      * @return {string} The localized string.
      * */
-    self.getLocalizedString = function(messageKey){
+    self.getLocalizedString = function(messageKey) {
         return Find.browser.i18n.getMessage(messageKey);
     };
 });
