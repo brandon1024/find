@@ -18,7 +18,7 @@ Find.register('Popup.OptionsPane', function (self) {
         persistent_highlights: false,
         persistent_storage_incognito: false,
         hide_options_button: false,
-        hide_history_button: false,
+        hide_saved_expressions_button: false,
         hide_clipboard_button: true,
         max_results: 0,
         index_highlight_color: Object.freeze({
@@ -79,10 +79,10 @@ Find.register('Popup.OptionsPane', function (self) {
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
         });
-        document.getElementById('hide-history-pane-toggle-option-toggle').addEventListener('change', (e) => {
-            options.hide_history_button = e.target.checked;
+        document.getElementById('hide-saved-expressions-pane-toggle-option-toggle').addEventListener('change', (e) => {
+            options.hide_saved_expressions_button = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
-            Find.Popup.SearchPane.hideHistoryPaneToggleButton(options.hide_history_button);
+            Find.Popup.SearchPane.hideSavedExpressionsPaneToggleButton(options.hide_saved_expressions_button);
         });
         document.getElementById('hide-copy-to-clipboard-toggle-option-toggle').addEventListener('change', (e) => {
             options.hide_clipboard_button = e.target.checked;
@@ -324,8 +324,8 @@ Find.register('Popup.OptionsPane', function (self) {
             newOptions.hide_options_button = defaultOptions.hide_options_button;
         }
 
-        if(newOptions.hide_history_button === undefined) {
-            newOptions.hide_history_button = defaultOptions.hide_history_button;
+        if(newOptions.hide_saved_expressions_button === undefined) {
+            newOptions.hide_saved_expressions_button = defaultOptions.hide_saved_expressions_button;
         }
 
         if(newOptions.max_results === undefined) {
@@ -382,11 +382,11 @@ Find.register('Popup.OptionsPane', function (self) {
         document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
         document.getElementById('regex-option-persistent-storage-incognito-toggle').checked = options.persistent_storage_incognito;
         document.getElementById('hide-option-pane-toggle-option-toggle').checked = options.hide_options_button;
-        document.getElementById('hide-history-pane-toggle-option-toggle').checked = options.hide_history_button;
+        document.getElementById('hide-saved-expressions-pane-toggle-option-toggle').checked = options.hide_saved_expressions_button;
         document.getElementById('hide-copy-to-clipboard-toggle-option-toggle').checked = options.hide_clipboard_button;
 
         Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
-        Find.Popup.SearchPane.hideHistoryPaneToggleButton(options.hide_history_button);
+        Find.Popup.SearchPane.hideSavedExpressionsPaneToggleButton(options.hide_saved_expressions_button);
         Find.Popup.SearchPane.hideCopyOccurrencesToClipboard(options.hide_clipboard_button);
     }
 

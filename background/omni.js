@@ -46,7 +46,7 @@ Find.register("Background.Omni", function(self) {
         persistent_highlights: false,
         persistent_storage_incognito: false,
         hide_options_button: false,
-        hide_history_button: false,
+        hide_saved_expressions_button: false,
         max_results: 0,
         index_highlight_color: Object.freeze({
             hue: 34,
@@ -68,7 +68,7 @@ Find.register("Background.Omni", function(self) {
      * argument to the callback function.
      *
      * @param {function} callback - The callback function to handle the data.
-     * @return {object} The search history, or null if it does not exist or cannot be retrieved.
+     * @return {object} The search options, or null if it does not exist or cannot be retrieved.
      * */
     function retrieveOptions(callback) {
         Find.browser.storage.local.get('options', (data) => {

@@ -65,7 +65,7 @@
                             <tr>
                                 <td><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>H</kbd></td>
                                 <td><kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>H</kbd></td>
-                                <td>Expand or Collapse History Pane.</td>
+                                <td>Expand or Collapse Saved Expressions Pane.</td>
                             </tr>
                             <tr>
                                 <td><kbd>CTRL</kbd>+<kbd>↵</kbd> or <kbd>ESC</kbd></td>
@@ -100,13 +100,13 @@
                         <p class="indent">This option can be used to keep the highlights in the page, even after the extension popup closes. If enabled, highlighted occurrences of your search query will remain in the page even if the extension closes.</p>
 
                         <h3>Persistent Storage (Incognito)</h3>
-                        <p class="indent">When incognito, you may still wish that your history and options are persisted. By default, this feature is disabled for security purposes. When enabled, your history and settings will be persisted and shared between incognito and non-incognito sessions.</p>
+                        <p class="indent">When incognito, you may still wish that your saved expressions and options are persisted. By default, this feature is disabled for security purposes. When enabled, your saved expressions and settings will be persisted and shared between incognito and non-incognito sessions.</p>
 
                         <h3>Hide Option Pane Toggle Button</h3>
                         <p class="indent">This option can be used to hide the button used to toggle the options pane. If enabled, you will need to use the shortcut to toggle the pane.</p>
 
-                        <h3>Hide History Pane Toggle Button</h3>
-                        <p class="indent">This option can be used to hide the button used to toggle the history pane. If enabled, you will need to use the shortcut to toggle the pane.</p>
+                        <h3>Hide Saved Expressions Pane Toggle Button</h3>
+                        <p class="indent">This option can be used to hide the button used to toggle the saved expressions pane. If enabled, you will need to use the shortcut to toggle the pane.</p>
 
                         <h3>Max Highlighted Results</h3>
                         <p class="indent">Limit the number of occurrences in the page. When set, only the first few results will be highlighted.</p>
@@ -121,12 +121,12 @@
             </div>
 
             <div class="collapsible-section">
-                <input id="history-collapsible" class="toggle" type="checkbox">
-                <label for="history-collapsible" class="lbl-toggle">History</label>
+                <input id="saved-expressions-collapsible" class="toggle" type="checkbox">
+                <label for="saved-expressions-collapsible" class="lbl-toggle">Saved Expressions</label>
                 <div class="collapsible-content">
                     <div class="content-inner">
-                        <p>You can save frequently used regular expressions using the History pane, which can be accessed by pressing the bookmark icon <button id="history-icon"></button>.</p>
-                        <p>Enter a regular expression in the search field and press 'Save Regex' to save the query to local storage. You can reuse a query by clicking on the history entry in the history pane.</p>
+                        <p>You can save frequently used regular expressions using the Saved Expressions pane, which can be accessed by pressing the bookmark icon <button id="saved-expressions-icon"></button>.</p>
+                        <p>Enter a regular expression in the search field and press 'Save Regex' to save the query to local storage. You can reuse a query by clicking on the expression entry in the saved expressions pane.</p>
                     </div>
                 </div>
             </div>

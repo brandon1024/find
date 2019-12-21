@@ -7,7 +7,8 @@
  * writes will have no effect. By default, the storage is unlocked.
  * */
 Find.register('Popup.Storage', function (self) {
-    const HISTORY_KEY = 'history';
+
+    const SAVED_EXPESSIONS_KEY = 'expressions';
     const OPTIONS_KEY = 'options';
 
     /**
@@ -18,22 +19,22 @@ Find.register('Popup.Storage', function (self) {
     let locked = false;
 
     /**
-     * Retrieve the search history from the browser local storage, and pass
+     * Retrieve the saved expressions from the browser local storage, and pass
      * to the callback function. The data from the storage is passed as a single
      * argument to the callback function.
      *
      * @param {function} callback - The callback function to handle the data.
-     * @return {object} The search history, or null if it cannot be retrieved.
+     * @return {object} The saved expressions, or null if it cannot be retrieved.
      * */
-    self.retrieveHistory = function(callback) {
+    self.retrieveSavedExpressions = function(callback) {
         if(locked) {
             return callback(null);
         }
 
-        Find.browser.storage.local.get(HISTORY_KEY, (data) => {
+        Find.browser.storage.local.get(SAVED_EXPESSIONS_KEY, (data) => {
             //Ensure backwards compatibility
-            if(Array.isArray(data[HISTORY_KEY])) {
-                callback(data[HISTORY_KEY]);
+            if(Array.isArray(data[SAVED_EXPESSIONS_KEY])) {
+                callback(data[SAVED_EXPESSIONS_KEY]);
             } else {
                 callback([]);
             }
@@ -46,7 +47,7 @@ Find.register('Popup.Storage', function (self) {
      * argument to the callback function.
      *
      * @param {function} callback - The callback function to handle the data.
-     * @return {object} The search history, or null if it does not exist or cannot be retrieved.
+     * @return {object} The saved expressions, or null if it does not exist or cannot be retrieved.
      * */
     self.retrieveOptions = function(callback) {
         if(locked) {
@@ -59,17 +60,17 @@ Find.register('Popup.Storage', function (self) {
     };
 
     /**
-     * Save the search history in the browser local storage, and optionally invoke
+     * Save the expressions in the browser local storage, and optionally invoke
      * a callback function once the operation is complete.
      *
      * @param {object} data - The data to store in local storage
      * @param {function} [callback] - The callback function to execute once the
      * save operation is complete.
      * */
-    self.saveHistory = function(data, callback) {
+    self.saveExpressions = function(data, callback) {
         if(!locked) {
             let payload = {};
-            payload[HISTORY_KEY] = data;
+            payload[SAVED_EXPESSIONS_KEY] = data;
 
             Find.browser.storage.local.set(payload, callback);
         } else if(callback) {

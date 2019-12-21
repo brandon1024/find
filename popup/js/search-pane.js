@@ -44,15 +44,15 @@ Find.register('Popup.SearchPane', function (self) {
         document.getElementById('search-toggle-options-button').addEventListener('click', () => {
             Find.Popup.OptionsPane.toggle();
             Find.Popup.ReplacePane.show(false);
-            Find.Popup.HistoryPane.show(false);
+            Find.Popup.SavedExpressionsPane.show(false);
         }, true);
 
         document.getElementById('copy-text-to-clipboard-button').addEventListener('click', () => {
             Find.Popup.BrowserAction.getOccurrence({cardinality: 'all'});
         }, true);
 
-        document.getElementById('search-history-toggle-button').addEventListener('click', () => {
-            Find.Popup.HistoryPane.toggle();
+        document.getElementById('saved-expressions-toggle-button').addEventListener('click', () => {
+            Find.Popup.SavedExpressionsPane.toggle();
             Find.Popup.ReplacePane.show(false);
             Find.Popup.OptionsPane.show(false);
         }, true);
@@ -195,12 +195,12 @@ Find.register('Popup.SearchPane', function (self) {
     };
 
     /**
-     * Show or hide the button used to toggle the history pane.
+     * Show or hide the button used to toggle the saved expressions pane.
      *
      * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
      * */
-    self.hideHistoryPaneToggleButton = function(hide) {
-        document.getElementById('search-history-toggle-button').style.display = hide ? 'none' : 'initial';
+    self.hideSavedExpressionsPaneToggleButton = function(hide) {
+        document.getElementById('saved-expressions-toggle-button').style.display = hide ? 'none' : 'initial';
     };
 
     /**
