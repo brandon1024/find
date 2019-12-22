@@ -251,12 +251,15 @@ Find.register('Content.Highlighter', function(self) {
             els[elsIndex].setAttribute("style", style);
         }
 
-        els[0].scrollIntoView(true);
+        // only scroll if the element is not in the current viewport
+        if (!isElementInViewport(els[0])) {
+            els[0].scrollIntoView(true);
 
-        let docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
-        let bottomScrollPos = window.pageYOffset + window.innerHeight;
-        if (bottomScrollPos + 100 < docHeight) {
-            window.scrollBy(0, -100);
+            let docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
+            let bottomScrollPos = window.pageYOffset + window.innerHeight;
+            if (bottomScrollPos + 100 < docHeight) {
+                window.scrollBy(0, -100);
+            }
         }
     };
 
@@ -345,4 +348,21 @@ Find.register('Content.Highlighter', function(self) {
             }
         }
     };
+
+    function isElementInViewport(element) {
+        let elementBoundingRect = element.getBoundingClientRect();
+        if (elementBoundingRect.top < 0 || elementBoundingRect.left < 0) {
+            return false;
+        }
+
+        if (elementBoundingRect.bottom > (window.innerHeight || document.documentElement.clientHeight)) {
+            return false;
+        }
+
+        if (elementBoundingRect.right > (window.innerWidth || document.documentElement.clientWidth)) {
+            return false;
+        }
+
+        return true;
+    }
 });
