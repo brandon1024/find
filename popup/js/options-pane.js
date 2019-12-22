@@ -43,7 +43,7 @@ Find.register('Popup.OptionsPane', function (self) {
     self.init = function() {
         Find.Popup.Storage.retrieveOptions((data) => {
             options = adaptOptions(data);
-            applyOptions(options);
+            applyOptions();
 
             Find.Popup.Storage.saveOptions(options);
             if(Find.incognito) {
@@ -234,7 +234,7 @@ Find.register('Popup.OptionsPane', function (self) {
         let resetAllOptionsButton = document.getElementById('reset-options-button');
         resetAllOptionsButton.addEventListener('click', () => {
             options = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
-            applyOptions(options);
+            applyOptions();
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
@@ -280,9 +280,8 @@ Find.register('Popup.OptionsPane', function (self) {
      * Apply an object representing a set of options to the options pane.
      *
      * @private
-     * @param {object} newOptions - The options to apply to the options pane.
      * */
-    function applyOptions(newOptions) {
+    function applyOptions() {
         applyToggleOptions();
         applyMaxResultsSliderOptions();
         applyIndexHighlightColorSliderOptions();
@@ -304,43 +303,7 @@ Find.register('Popup.OptionsPane', function (self) {
         const defaultOptions = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
         newOptions = newOptions || {};
 
-        if(newOptions.find_by_regex === undefined) {
-            newOptions.find_by_regex = defaultOptions.find_by_regex;
-        }
-
-        if(newOptions.match_case === undefined) {
-            newOptions.match_case = defaultOptions.match_case;
-        }
-
-        if(newOptions.persistent_highlights === undefined) {
-            newOptions.persistent_highlights = defaultOptions.persistent_highlights;
-        }
-
-        if(newOptions.persistent_storage_incognito === undefined) {
-            newOptions.persistent_storage_incognito = defaultOptions.persistent_storage_incognito;
-        }
-
-        if(newOptions.hide_options_button === undefined) {
-            newOptions.hide_options_button = defaultOptions.hide_options_button;
-        }
-
-        if(newOptions.hide_saved_expressions_button === undefined) {
-            newOptions.hide_saved_expressions_button = defaultOptions.hide_saved_expressions_button;
-        }
-
-        if(newOptions.max_results === undefined) {
-            newOptions.max_results = defaultOptions.max_results;
-        }
-
-        if(newOptions.index_highlight_color === undefined) {
-            newOptions.index_highlight_color = defaultOptions.index_highlight_color;
-        }
-
-        if(newOptions.all_highlight_color === undefined) {
-            newOptions.all_highlight_color = defaultOptions.all_highlight_color;
-        }
-
-        return newOptions;
+        return Object.assign({}, defaultOptions, newOptions);
     }
 
     /**
