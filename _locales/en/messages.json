@@ -182,8 +182,8 @@
     "description": "Text displayed beside the hide saved expressions pane toggle button option."
   },
   "extension_option_hide_copy_to_clipboard_toggle_button_text": {
-    "message": "Hide Copy To Clipboard Toggle Button",
-    "description": "Text displayed beside the hide copy to clipboard toggle button option."
+    "message": "Hide Copy To Clipboard Button",
+    "description": "Text displayed beside the hide copy to clipboard button option."
   },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",
