@@ -220,7 +220,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 				.appendChild(ElementBuilder.create(document)
 					.createElement('img')
 					.addClass('information-hover-icon')
-					.setAttribute('src', '/resources/bookmark.svg')
+					.setAttribute('src', 'img/icon/bookmark.svg')
 					.setAttribute('data-locale-title', 'saved_expression_icon_title')
 					.build())
 				.appendChild(ElementBuilder.create(document)
