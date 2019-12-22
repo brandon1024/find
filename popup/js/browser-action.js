@@ -53,6 +53,10 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     self.startExtension = function(initInformation) {
         let url = initInformation.activeTab.url;
+
+        // this is the only time we have the active window hostname
+        Find.Popup.History.setHostname(new URL(url).hostname);
+
         if(isWithinChromeNamespace(url)) {
             Find.Popup.MessagePane.showChromeNamespaceErrorMessage();
             self.error('forbidden_url');
@@ -79,9 +83,9 @@ Find.register('Popup.BrowserAction', function (self) {
                 Find.Popup.SearchPane.selectSearchField();
                 self.updateSearch();
             } else {
-                Find.Popup.Storage.retrieveSavedExpressions((data) => {
-                    if(data && data.length) {
-                        Find.Popup.SearchPane.setSearchFieldText(data[0]);
+                Find.Popup.History.retrieveForHost((expression) => {
+                    if (expression) {
+                        Find.Popup.SearchPane.setSearchFieldText(expression);
                     }
 
                     Find.Popup.SearchPane.selectSearchField();
@@ -107,6 +111,7 @@ Find.register('Popup.BrowserAction', function (self) {
         let regex = Find.Popup.SearchPane.getSearchFieldText();
         let options = Find.Popup.OptionsPane.getOptions();
         Find.Popup.BackgroundProxy.postMessage({action: 'update', regex: regex, options: options});
+        Find.Popup.History.saveForHost(regex);
     };
 
     /**
