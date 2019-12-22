@@ -8,8 +8,9 @@
  * */
 Find.register('Popup.Storage', function (self) {
 
-    const SAVED_EXPESSIONS_KEY = 'expressions';
+    const SAVED_EXPRESSIONS_KEY = 'expressions';
     const OPTIONS_KEY = 'options';
+    const HISTORY_KEY = 'history';
 
     /**
      * Controls whether or not data can be read from or written to local storage.
@@ -27,18 +28,7 @@ Find.register('Popup.Storage', function (self) {
      * @return {object} The saved expressions, or null if it cannot be retrieved.
      * */
     self.retrieveSavedExpressions = function(callback) {
-        if(locked) {
-            return callback(null);
-        }
-
-        Find.browser.storage.local.get(SAVED_EXPESSIONS_KEY, (data) => {
-            //Ensure backwards compatibility
-            if(Array.isArray(data[SAVED_EXPESSIONS_KEY])) {
-                callback(data[SAVED_EXPESSIONS_KEY]);
-            } else {
-                callback([]);
-            }
-        });
+        retrieve(SAVED_EXPRESSIONS_KEY, callback);
     };
 
     /**
@@ -50,13 +40,19 @@ Find.register('Popup.Storage', function (self) {
      * @return {object} The saved expressions, or null if it does not exist or cannot be retrieved.
      * */
     self.retrieveOptions = function(callback) {
-        if(locked) {
-            return callback(null);
-        }
+        retrieve(OPTIONS_KEY, callback);
+    };
 
-        Find.browser.storage.local.get(OPTIONS_KEY, (data) => {
-            callback(data[OPTIONS_KEY]);
-        });
+    /**
+     * Retrieve from browser local storage the search history for various hosts
+     * and pass to callback function. The data from storage is passed as a single
+     * argument to the callback function.
+     *
+     * @param {function} callback - The callback function to handle the data.
+     * @return {object} The history, or null if it does not exist or cannot be retrieved.
+     * */
+    self.retrieveHistory = function(callback) {
+        retrieve(HISTORY_KEY, callback);
     };
 
     /**
@@ -68,14 +64,7 @@ Find.register('Popup.Storage', function (self) {
      * save operation is complete.
      * */
     self.saveExpressions = function(data, callback) {
-        if(!locked) {
-            let payload = {};
-            payload[SAVED_EXPESSIONS_KEY] = data;
-
-            Find.browser.storage.local.set(payload, callback);
-        } else if(callback) {
-            callback();
-        }
+        save(SAVED_EXPRESSIONS_KEY, data, callback);
     };
 
     /**
@@ -87,14 +76,19 @@ Find.register('Popup.Storage', function (self) {
      * save operation is complete.
      * */
     self.saveOptions = function(data, callback) {
-        if(!locked) {
-            let payload = {};
-            payload[OPTIONS_KEY] = data;
+        save(OPTIONS_KEY, data, callback);
+    };
 
-            Find.browser.storage.local.set(payload, callback);
-        } else if(callback) {
-            callback();
-        }
+    /**
+     * Save the search history in the browser local storage, and optionally invoke
+     * a callback function once the operation is complete.
+     *
+     * @param {object} data - The data to store in local storage.
+     * @param {function} [callback] - The callback function to execute once the
+     * save operation is complete.
+     * */
+    self.saveHistory = function(data, callback) {
+        save(HISTORY_KEY, data, callback);
     };
 
     /**
@@ -126,4 +120,43 @@ Find.register('Popup.Storage', function (self) {
     self.isStorageLocked = function() {
         return locked;
     };
+
+    /**
+     * Retrieve from browser local storage, passing the data to the given
+     * callback function.
+     *
+     * @private
+     * @param {string} key - The key associated with the data being retrieved.
+     * @param {function} callback - The callback function that will accept the data.
+     * */
+    function retrieve(key, callback) {
+        if (locked) {
+            return callback(null);
+        }
+
+        Find.browser.storage.local.get(key, (data) => {
+            callback(data[key]);
+        });
+    }
+
+    /**
+     * Save to the browser local storage, and optionally invoke
+     * a callback function once the operation is complete.
+     *
+     * @private
+     * @param {string} key - The key associated with the data being persisted.
+     * @param {object} data - The data to store in local storage.
+     * @param {function} [callback] - The callback function to execute once the
+     * save operation is complete.
+     * */
+    function save(key, data, callback) {
+        if(!locked) {
+            let payload = {};
+            payload[key] = data;
+
+            Find.browser.storage.local.set(payload, callback);
+        } else if(callback) {
+            callback();
+        }
+    }
 });
