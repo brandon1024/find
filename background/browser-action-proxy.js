@@ -27,6 +27,11 @@ Find.register("Background.BrowserActionProxy", function() {
             browserActionPort.onMessage.addListener((message) => {
                 actionDispatch(message, activeTab, (resp) => {
                     browserActionPort.postMessage(resp);
+
+                    // only build the DOM representation object after the browser action is initialized
+                    if (message.action === 'browser_action_init') {
+                        Find.Background.initializePage(activeTab);
+                    }
                 });
             });
 
@@ -40,8 +45,6 @@ Find.register("Background.BrowserActionProxy", function() {
 
                 activeTab = null;
             });
-
-            Find.Background.initializePage(activeTab);
         });
     });
 

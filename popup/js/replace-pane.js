@@ -72,7 +72,7 @@ Find.register('Popup.ReplacePane', function (self) {
     /**
      * Select all the text in the replace field.
      * */
-    self.selectSearchField = function() {
+    self.selectReplaceField = function() {
         document.getElementById('replace-field').select();
     };
 
