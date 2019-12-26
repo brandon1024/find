@@ -81,9 +81,11 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 						break;
 					}
 				}
-
-				data.unshift(regex);
+			} else {
+				data = [];
 			}
+
+			data.unshift(regex);
 
 			//Add new entry as first child
 			let parentEl = document.getElementById('saved-expressions-entry-list');
@@ -102,6 +104,8 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 			if(nullEntry) {
 				nullEntry.parentNode.removeChild(nullEntry);
 			}
+
+			console.log(data);
 
 			Find.Popup.Storage.saveExpressions(data);
 		});
