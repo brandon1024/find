@@ -63,7 +63,7 @@ Find.register('Popup.History', function (self) {
 	 * operation is complete.
 	 * */
 	self.saveForHost = function(expression, callback) {
-		if (callback) {
+		if (!callback) {
 			callback = () => {};
 		}
 
