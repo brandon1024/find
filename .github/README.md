@@ -58,9 +58,6 @@ Pressing `ENTER` will leave the highlights in the page. To remove the highlights
 
 <img src="omni.png"/>
 
-## Wiki
-We are continuously updating [our wiki](https://github.com/brandon1024/find/wiki) to provide help for new users and developers. Having an issue using the extension? Check out our [Frequently Asked Questions](https://github.com/brandon1024/find/wiki/FAQ-:-General) wiki!
-
 ## Contributing
 Interested in contributing to **{find+}**? See [CONTRIBUTING](CONTRIBUTING.md).
 
