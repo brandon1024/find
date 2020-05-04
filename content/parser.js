@@ -149,6 +149,10 @@ Find.register('Content.Parser', function(self) {
 	self.restoreWebPage = function(uuids) {
 		for (let index = 0; index < uuids.length; index++) {
 			let el = document.getElementById(uuids[index]);
+			if (!el) {
+				throw new Find.Content.DynamicPageDetectedError(`unable to remove markup from page; offender uuid: ${uuids[index]}`);
+			}
+
 			let parent = el.parentElement;
 
 			while (el.firstChild) {

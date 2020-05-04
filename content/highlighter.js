@@ -66,8 +66,11 @@ Find.register('Content.Highlighter', function(self) {
             let count = 0;
             for (let uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
                 let el = document.getElementById(uuids[uuidIndex]);
-                let text = el.childNodes[0].nodeValue;
+                if (!el) {
+                    throw new Find.Content.DynamicPageDetectedError(`unable to fetch occurrence markup from page for highlighting; offender uuid: ${uuids[index]}`);
+                }
 
+                let text = el.childNodes[0].nodeValue;
                 if (!text) {
                     continue;
                 }
@@ -170,7 +173,12 @@ Find.register('Content.Highlighter', function(self) {
                         matchGroup.text += tags.closingMarkup;
                     }
 
-                    document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+                    let groupElement = document.getElementById(matchGroup.groupUUID);
+                    if (!groupElement) {
+                        throw new Find.Content.DynamicPageDetectedError(`unable to fetch occurrence group markup from page for highlighting; offender uuid: ${matchGroup.groupUUID}`);
+                    }
+
+                    groupElement.innerHTML = matchGroup.text;
                     matchGroup.text = '';
                     matchGroup.groupUUID = charMap[key].nodeUUID;
 
@@ -213,7 +221,11 @@ Find.register('Content.Highlighter', function(self) {
                         occIndex++;
                     }
 
-                    document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
+                    let groupElement = document.getElementById(matchGroup.groupUUID);
+                    if (!groupElement) {
+                        throw new Find.Content.DynamicPageDetectedError(`unable to fetch occurrence group markup from page for highlighting; offender uuid: ${matchGroup.groupUUID}`);
+                    }
+                    groupElement.innerHTML = matchGroup.text;
                 }
             }
         }

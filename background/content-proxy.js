@@ -11,14 +11,15 @@ Find.register("Background.ContentProxy", function(self) {
      *
      * @param {object} tab - The tab to which the request will be made.
      * @param {function} callback - The callback function that will utilize the document object model.
-     * @param {function} [error] - Callback function for handing an error.
      * */
-    self.buildDocumentRepresentation = function(tab, callback, error) {
+    self.buildDocumentRepresentation = function(tab, callback) {
         Find.browser.tabs.sendMessage(tab.id, {action: 'init'}, (response) => {
-            if(response && response.model) {
+            if (response.error) {
+                handleError(response.error);
+            }
+
+            else if(response && response.model) {
                 callback(response.model);
-            } else if(error) {
-                error();
             }
         });
     };
