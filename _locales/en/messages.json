@@ -150,7 +150,11 @@
     "description": "Text displayed in the message pane when the extension is used in an offline file without adequate permissions for parsing file contents."
   },
   "search_options_header_text": {
-    "message": "Regex Options",
+    "message": "Expression Options",
+    "description": "Header text displayed in the options pane."
+  },
+  "extension_options_header_text": {
+    "message": "Extension Options",
     "description": "Header text displayed in the options pane."
   },
   "saved_expressions_body_header": {
