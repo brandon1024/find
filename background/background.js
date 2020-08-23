@@ -27,7 +27,7 @@ Find.register("Background", function(self) {
 
         Find.browser.contextMenus.onClicked.addListener((info) => {
             if(info.menuItemId === 'show-help') {
-                Find.browser.tabs.create({url: Find.browser.extension.getURL("popup/help.html")});
+                Find.browser.tabs.create({url: Find.browser.extension.getURL("docs/index.html")});
             }
         });
     });
@@ -55,7 +55,7 @@ Find.register("Background", function(self) {
         }
 
         if(installation.reason === 'install') {
-            Find.browser.tabs.create({url: Find.browser.extension.getURL("popup/help.html")});
+            Find.browser.tabs.create({url: Find.browser.extension.getURL("docs/index.html")});
         }
     });
 
