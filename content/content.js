@@ -18,7 +18,6 @@ Find.register('Content', function(self) {
      * Register a message listener to the extension background script.
      * */
     Find.browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        //Parser Actions
         switch (message.action) {
             case 'init':
                 selected = window.getSelection().toString();

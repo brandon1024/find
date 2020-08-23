@@ -89,6 +89,7 @@ Find.register('Popup.BrowserAction', function (self) {
                     }
 
                     Find.Popup.SearchPane.selectSearchField();
+                    self.updateSearch();
                 });
             }
         }

@@ -92,11 +92,15 @@ Find.register("Background", function(self) {
      * Initialize the extension by constructing the page document representation.
      *
      * @param {object} tab - Information about the active tab in the current window.
+     * @param {function} callback - Optional callback .
      * */
-    self.initializePage = function(tab) {
+    self.initializePage = function(tab, callback) {
         Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
             documentRepresentation = model;
-            index = 0;
+
+            if (callback) {
+                callback();
+            }
         });
     };
 
@@ -139,6 +143,10 @@ Find.register("Background", function(self) {
     self.updateSearch = function(message, tab, sendResponse) {
         try {
             if(!documentRepresentation) {
+                self.initializePage(tab, () => {
+                    self.updateSearch(message, tab, sendResponse);
+                });
+
                 return;
             }
 
