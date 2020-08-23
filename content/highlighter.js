@@ -29,7 +29,7 @@ Find.register('Content.Highlighter', function(self) {
 
                     //If reached max number of occurrences to show, don't highlight text
                     if (this.maxIndex == null || this.occIndex <= this.maxIndex) {
-                        let style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + ';';
+                        let style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + '; color: black;';
                         let classList = 'find-ext-occr' + index + ' ' + allHighlight;
                         this.openingMarkup = '<span style="' + style + '" class="' + classList + '">';
                         this.closingMarkup = '</span>';
@@ -234,7 +234,7 @@ Find.register('Content.Highlighter', function(self) {
         let previousIndex = Array.from(document.querySelectorAll('.' + indexHighlight));
         if (previousIndex && previousIndex.length) {
             for (let elsIndex = 0; elsIndex < previousIndex.length; elsIndex++) {
-                let style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + ';';
+                let style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + '; color: black;';
                 previousIndex[elsIndex].classList.remove(indexHighlight);
                 previousIndex[elsIndex].setAttribute("style", style);
             }
@@ -246,7 +246,7 @@ Find.register('Content.Highlighter', function(self) {
         }
 
         for (let elsIndex = 0; elsIndex < els.length; elsIndex++) {
-            let style = 'all: unset; background-color: ' + options.index_highlight_color.hexColor + ';';
+            let style = 'all: unset; background-color: ' + options.index_highlight_color.hexColor + '; color: black;';
             els[elsIndex].classList.add(indexHighlight);
             els[elsIndex].setAttribute("style", style);
         }
