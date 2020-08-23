@@ -23,19 +23,14 @@ Find.register("Background.BrowserActionProxy", function() {
         Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
             activeTab = tabs[0];
 
-            //Invoke action on message from popup script
+            // invoke action on message from popup script
             browserActionPort.onMessage.addListener((message) => {
                 actionDispatch(message, activeTab, (resp) => {
                     browserActionPort.postMessage(resp);
-
-                    // only build the DOM representation object after the browser action is initialized
-                    if (message.action === 'browser_action_init') {
-                        Find.Background.initializePage(activeTab);
-                    }
                 });
             });
 
-            //Handle extension close
+            // handle extension close
             browserActionPort.onDisconnect.addListener(() => {
                 if(!Find.Background.options || !Find.Background.options.persistent_highlights) {
                     Find.Background.restorePageState(activeTab);
