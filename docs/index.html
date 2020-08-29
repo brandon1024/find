@@ -144,9 +144,16 @@ wrapperElement.setAttribute('id', identifierUUID);
 		<label for="keyboard-shortcuts-collapsible" class="lbl-toggle">Keyboard Shortcuts</label>
 		<div class="collapsible-content">
 			<div class="content-inner">
-				<p>Several keyboard shortcuts exist directly in the extension for performing different actions. These
-					shortcuts are built directly into the extension and are not managed through Chrome. As a result,
-					these settings cannot be remapped. Below is a list of the current keyboard shortcuts.</p>
+				<p>In Firefox, you can use <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd> to open the extension popup.</p>
+				<p>To open the extension popup in Chrome using a keyboard shortcut, you must first assign a keyboard shortcut to the extension through the Chrome settings. You can do this by following these steps:</p>
+				<ol>
+					<li>Navigate to the `Extensions` settings page in Chrome, or type `chrome://extensions/` into the navigation bar.</li>
+					<li>In the top left click on the ☰ menu icon, then click `Keyboard shortcuts`.</li>
+					<li>Locate the shortcut settings for find+. Click the input field located to the right of the label `Activate the extension`.</li>
+					<li>Press the combination of keys you would like to use, and once complete press `OK`. We recommend using <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd>, since it shouldn't conflict with any other browser keyboard shortcut mappings.</li>
+				</ol>
+
+				<p>When the extension popup is open, there are a number of keyboard shortcuts you can use. These settings cannot be remapped.</p>
 				<table>
 					<tr>
 						<th>Windows Shortcut</th>
@@ -199,22 +206,6 @@ wrapperElement.setAttribute('id', identifierUUID);
 						<td>Close the extension popup.</td>
 					</tr>
 				</table>
-				<p>To open the extension popup using a keyboard shortcut, you must first assign a keyboard shortcut to
-					the extension through the Chrome settings. You can do this by following these steps:</p>
-				<ol>
-					<li>Navigate to the `Extensions` settings page in Chrome. Do this easily by typing
-						`chrome://extensions/` in the URL navigation bar.
-					</li>
-					<li>In the top left click on the ☰ menu icon, then click `Keyboard shortcuts`. This will make appear
-						a dialog where you can modify the shortcuts for your installed extensions.
-					</li>
-					<li>Locate the shortcut settings for find+. Click the input field located to the right of the label
-						`Activate the extension`.
-					</li>
-					<li>Press the combination of keys you would like to use to open the extension. Once complete, press
-						`OK`.
-					</li>
-				</ol>
 			</div>
 		</div>
 	</div>
@@ -225,9 +216,8 @@ wrapperElement.setAttribute('id', identifierUUID);
 		<div class="collapsible-content">
 			<div class="content-inner">
 				<p>Find+ can be configured through the options pane, which can be accessed by clicking the wrench icon
-					<button id="options-icon"></button>
-					.
-				</p>
+					<button id="options-icon"></button>.</p>
+
 				<h3>Find by Regular Expression</h3>
 				<p class="indent">Enabling this option will interpret your search query as a regular expression. If
 					disabled, your search query will be interpreted as a string rather than a regular expression.</p>
