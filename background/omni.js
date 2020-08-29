@@ -6,31 +6,41 @@
  * */
 Find.register("Background.Omni", function(self) {
 
-    let activeTab = null;
-
-    Find.browser.omnibox.setDefaultSuggestion({description: 'Enter a regular expression'});
-
     Find.browser.omnibox.onInputStarted.addListener(() => {
         Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            activeTab = tabs[0];
-            Find.Background.initializePage(activeTab);
+            Find.Background.initializePage(tabs[0]);
         });
     });
 
-    Find.browser.omnibox.onInputChanged.addListener((regex) => {
-        retrieveOptions((options) => {
-            Find.Background.updateSearch({regex: regex, options: options}, activeTab, () => {});
+    retrieveOptions((options) => {
+        Find.browser.omnibox.onInputChanged.addListener((regex) => {
+            Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                Find.Background.updateSearch({regex: regex, options: options}, tabs[0], (result) => {
+                    let description;
+                    if (!regex) {
+                        description = 'Enter a regular expression';
+                    } else if (result.action === 'index_update') {
+                        description = `${result.total} matches found`;
+                    } else if (result.action === 'invalid_regex') {
+                        description = result.error;
+                    }
+
+                    Find.browser.omnibox.setDefaultSuggestion({description: description});
+                });
+            });
         });
     });
 
     Find.browser.omnibox.onInputCancelled.addListener(() => {
-        Find.Background.restorePageState(activeTab);
-        activeTab = null;
+        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            Find.Background.restorePageState(tabs[0]);
+        });
     });
 
     Find.browser.omnibox.onInputEntered.addListener(() => {
-        Find.Background.restorePageState(activeTab, false);
-        activeTab = null;
+        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            Find.Background.restorePageState(tabs[0], false);
+        });
     });
 
     /**
