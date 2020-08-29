@@ -42,9 +42,9 @@ Find.register('Popup.SearchPane', function (self) {
         });
 
         document.getElementById('search-toggle-options-button').addEventListener('click', () => {
-            Find.Popup.OptionsPane.toggle();
             Find.Popup.ReplacePane.show(false);
             Find.Popup.SavedExpressionsPane.show(false);
+            Find.Popup.OptionsPane.toggle();
         }, true);
 
         document.getElementById('copy-text-to-clipboard-button').addEventListener('click', () => {
@@ -52,9 +52,15 @@ Find.register('Popup.SearchPane', function (self) {
         }, true);
 
         document.getElementById('saved-expressions-toggle-button').addEventListener('click', () => {
-            Find.Popup.SavedExpressionsPane.toggle();
             Find.Popup.ReplacePane.show(false);
             Find.Popup.OptionsPane.show(false);
+            Find.Popup.SavedExpressionsPane.toggle();
+        }, true);
+
+        document.getElementById('find-replace-button').addEventListener('click', () => {
+            Find.Popup.SavedExpressionsPane.show(false);
+            Find.Popup.OptionsPane.show(false);
+            Find.Popup.ReplacePane.toggle();
         }, true);
 
         document.getElementById('close-button').addEventListener('click', () => {
@@ -204,12 +210,21 @@ Find.register('Popup.SearchPane', function (self) {
     };
 
     /**
-     * Show or hide the button used to toggle the copy occurrences to clipboard button.
+     * Show or hide the button used to copy occurrences to clipboard.
      *
      * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
      * */
-    self.hideCopyOccurrencesToClipboard = function(hide) {
+    self.hideCopyOccurrencesToClipboardButton = function(hide) {
         document.getElementById('copy-text-to-clipboard-button').style.display = hide ? 'none' : 'initial';
+    };
+
+    /**
+     * Show or hide the button used to toggle the find and replace button.
+     *
+     * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
+     * */
+    self.hideFindReplacePaneToggleButton = function(hide) {
+        document.getElementById('find-replace-button').style.display = hide ? 'none' : 'initial';
     };
 
     /**

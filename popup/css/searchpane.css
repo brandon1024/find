@@ -72,3 +72,8 @@ button.controls-button#close-button {
     background-image: url(/popup/img/icon/cross.svg);
     background-size: 10px 10px;
 }
+
+button.controls-button#find-replace-button {
+    background-image: url(/popup/img/icon/document-remove.svg);
+    background-size: 12px 12px;
+}
