@@ -47,6 +47,8 @@ Find.register("Background.Omni", function(self) {
         persistent_storage_incognito: false,
         hide_options_button: false,
         hide_saved_expressions_button: false,
+        hide_clipboard_button: true,
+        hide_find_replace_button: true,
         max_results: 0,
         index_highlight_color: Object.freeze({
             hue: 34,
