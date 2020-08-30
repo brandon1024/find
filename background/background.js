@@ -155,7 +155,7 @@ Find.register("Background", function(self) {
 
             //If searching by string, escape all regex metacharacters
             if(!self.options.find_by_regex) {
-                regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+                regex = regex.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
             }
 
             //Ensure non-empty search

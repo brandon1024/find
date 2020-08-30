@@ -269,7 +269,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * */
     function isWithinWebStoreNamespace(url) {
         return url.match(/https:\/\/chrome\.google\.com\/webstore\/.*/)
-            || url.match(/https:\/\/google\.[^\/]*\/_\/chrome\/newtab.*/);
+            || url.match(/https:\/\/google\.[^/]*\/_\/chrome\/newtab.*/);
     }
 
     /**

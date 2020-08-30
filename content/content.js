@@ -4,7 +4,7 @@
  * Create the Content namespace. This component is injected into the
  * page and delegates messages to the parser or highlighter.
  * */
-Find.register('Content', function(self) {
+Find.register('Content', function() {
 
     /**
      * State variables, used to recover the extension state if the extension

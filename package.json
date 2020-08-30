@@ -1,0 +1,32 @@
+{
+  "name": "find",
+  "version": "2.1.1",
+  "description": "A find-in-page extension for Chrome and Firefox that supports regular expressions.",
+  "scripts": {
+    "lint": "eslint --ext .js .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandon1024/find.git"
+  },
+  "keywords": [
+    "chrome",
+    "firefox",
+    "browser",
+    "extension",
+    "developer",
+    "regex",
+    "regular",
+    "expression"
+  ],
+  "author": "Brandon Richardson <brandon1024.br@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/brandon1024/find/issues"
+  },
+  "homepage": "https://github.com/brandon1024/find",
+  "devDependencies": {
+    "eslint": "^7.7.0"
+  }
+}

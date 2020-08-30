@@ -4,7 +4,7 @@
  * Create the Background Omni namespace. Registers various event listeners which invoke
  * the appropriate background functions.
  * */
-Find.register("Background.Omni", function(self) {
+Find.register("Background.Omni", function() {
 
     let activeTab = null;
 

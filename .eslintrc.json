@@ -1,0 +1,19 @@
+{
+    "env": {
+        "browser": true,
+        "es2020": true,
+        "webextensions": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "rules": {
+        "no-unused-vars": ["error", { "varsIgnorePattern": "(Find)|(encode)|(decode)" }]
+    },
+    "globals": {
+        "Find": "writable",
+        "encode": "writable",
+        "decode": "writable"
+    }
+}

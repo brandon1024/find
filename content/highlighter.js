@@ -94,13 +94,13 @@ Find.register('Content.Highlighter', function(self) {
                 let info;
 
                 //Replace all whitespace characters (\t \n\r) with the space character
-                while (info = /[\t\n\r]/.exec(groupText)) {
+                while ((info = /[\t\n\r]/.exec(groupText))) {
                     charMap[charIndexMap[info.index]].ignorable = true;
                     groupText = groupText.replace(/[\t\n\r]/, ' ');
                 }
 
                 //Truncate consecutive whitespaces
-                while (info = / {2,}/.exec(groupText)) {
+                while ((info = / {2,}/.exec(groupText))) {
                     let len = info[0].length;
                     let offset = info.index;
 
@@ -116,7 +116,7 @@ Find.register('Content.Highlighter', function(self) {
                 }
 
                 //Collapse leading or trailing whitespaces
-                while (info = /^ | $/.exec(groupText)) {
+                while ((info = /^ | $/.exec(groupText))) {
                     let len = info[0].length;
                     let offset = info.index;
 
@@ -134,7 +134,7 @@ Find.register('Content.Highlighter', function(self) {
 
             //Perform complex regex search, updating charMap matched characters
             let info;
-            while (info = regex.exec(groupText)) {
+            while ((info = regex.exec(groupText))) {
                 let len = info[0].length;
                 let offset = info.index;
 
