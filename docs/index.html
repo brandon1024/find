@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Find+ User Guide</title>
+	<link rel="stylesheet" href="help.css"/>
+</head>
+<body>
+<a id="fork-badge" href="https://github.com/brandon1024/find"><img width="149" height="149"
+																   src="https://github.blog/wp-content/uploads/2008/12/forkme_right_orange_ff7600.png?resize=149%2C149"
+																   class="attachment-full size-full"
+																   alt="Fork me on GitHub" data-recalc-dims="1"></a>
+
+<div id="body-container">
+	<div class="section">
+		<h1>Find+ User Guide</h1>
+		<p>Hi there! Thanks for installing Find+. This is the user guide for the extension, where you will find all the
+			information you need to start using the extension.</p>
+		<p>If you are having trouble and can't find a solution here, <a href="https://github.com/brandon1024/find">check
+			our GitHub page</a>. There are plenty of additional resources there.</p>
+	</div>
+
+	<div class="collapsible-section">
+		<input id="regex-collapsible" class="toggle" type="checkbox">
+		<label for="regex-collapsible" class="lbl-toggle">Supported Expressions</label>
+		<div class="collapsible-content">
+			<div class="content-inner">
+				Find+ supports any regular expression supported by JavaScript. If you aren't familiar with JavaScript
+				regular expressions, <a
+					href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet">this
+				guide</a> is a good starting point.
+
+				<div>
+					<input id="example1-collapsible" class="toggle example" type="checkbox" checked>
+					<label for="example1-collapsible" class="lbl-toggle example">Example</label>
+					<div class="collapsible-content">
+						<div class="content-inner">
+							The following expression matches any text preceded by a colon ':', following by either
+							"Put", "Get" or "Delete", followed by the word "Object".
+
+							<pre>:((Put)|(Get)|(Delete))Object</pre>
+							<pre>
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Effect": "Allow",
+        "Action": [
+            "s3:ListBucket"
+        ],
+        "Resource": [
+            "arn:aws:s3:::dev.s3.ktb.ca"
+        ]
+    },{
+        "Effect": "Allow",
+        "Action": [
+            "s3<span style="background-color: #ff9813">:PutObject</span>",
+            "s3<span style="background-color: #fff000">:GetObject</span>",
+            "s3<span style="background-color: #fff000">:DeleteObject</span>"
+        ],
+        "Resource": [
+            "arn:aws:s3:::dev.s3.ktb.ca/*"
+        ]
+    }]
+}
+                            </pre>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<input id="example2-collapsible" class="toggle example" type="checkbox" checked>
+					<label for="example2-collapsible" class="lbl-toggle example">Example</label>
+					<div class="collapsible-content">
+						<div class="content-inner">
+							The following example matches any quoted date with the format "####-##-##".
+
+							<pre>"\d{4}-\d{2}-\d{d}"</pre>
+							<pre>
+{
+    "Version": <span style="background-color: #ff9813">"2012-10-17"</span>,
+    "Statement": [{
+        "Effect": "Allow",
+        "Action": [
+            "s3:ListBucket"
+        ],
+        "Resource": [
+            "arn:aws:s3:::dev.s3.ktb.ca"
+        ]
+    },{
+        "Effect": "Allow",
+        "Action": [
+            "s3:PutObject",
+            "s3GetObject",
+            "s3:DeleteObject"
+        ],
+        "Resource": [
+            "arn:aws:s3:::dev.s3.ktb.ca/*"
+        ]
+    }]
+}
+                        </pre>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<input id="example3-collapsible" class="toggle example" type="checkbox" checked>
+					<label for="example3-collapsible" class="lbl-toggle example">Example</label>
+					<div class="collapsible-content">
+						<div class="content-inner">
+							This example matches any JavaScript variable declaration.
+
+							<pre>((var)|(let)).*?=.*?;</pre>
+							<pre>
+if (!preformatted.flag && isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length !== 1) {
+    node = DOMTreeWalker.nextNode();
+    continue;
+} else if (node.nodeValue.length === 1 && node.nodeValue.charCodeAt(0) === 10) {
+    node = DOMTreeWalker.nextNode();
+    continue;
+}
+
+<span style="background-color: #ff9813">let identifierUUID = generateElementUUID();</span>
+<span style="background-color: #ff9813">let nodeText = formatTextNodeValue(node, preformatted.flag, elementBoundary);</span>
+
+if (nodeText.length === 0) {
+    node = DOMTreeWalker.nextNode();
+    continue;
+}
+
+<span style="background-color: #ff9813">let wrapperElement = document.createElement('span');</span>
+wrapperElement.style.cssText = 'all: unset;';
+wrapperElement.setAttribute('id', identifierUUID);
+                        </pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapsible-section">
+		<input id="keyboard-shortcuts-collapsible" class="toggle" type="checkbox">
+		<label for="keyboard-shortcuts-collapsible" class="lbl-toggle">Keyboard Shortcuts</label>
+		<div class="collapsible-content">
+			<div class="content-inner">
+				<p>In Firefox, you can use <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd> to open the extension popup.</p>
+				<p>To open the extension popup in Chrome using a keyboard shortcut, you must first assign a keyboard shortcut to the extension through the Chrome settings. You can do this by following these steps:</p>
+				<ol>
+					<li>Navigate to the `Extensions` settings page in Chrome, or type `chrome://extensions/` into the navigation bar.</li>
+					<li>In the top left click on the ☰ menu icon, then click `Keyboard shortcuts`.</li>
+					<li>Locate the shortcut settings for find+. Click the input field located to the right of the label `Activate the extension`.</li>
+					<li>Press the combination of keys you would like to use, and once complete press `OK`. We recommend using <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd>, since it shouldn't conflict with any other browser keyboard shortcut mappings.</li>
+				</ol>
+
+				<p>When the extension popup is open, there are a number of keyboard shortcuts you can use. These settings cannot be remapped.</p>
+				<table>
+					<tr>
+						<th>Windows Shortcut</th>
+						<th>macOS Shortcut</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td><kbd>↵</kbd></td>
+						<td><kbd>↵</kbd></td>
+						<td>Advance to the next occurrence of the regular expression in the page.</td>
+					</tr>
+					<tr>
+						<td><kbd>⇧</kbd>+<kbd>↵</kbd></td>
+						<td><kbd>⇧</kbd>+<kbd>↵</kbd></td>
+						<td>Return to the previous occurrence of the regular expression in the page.</td>
+					</tr>
+					<tr>
+						<td><kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>↵</kbd></td>
+						<td><kbd>^</kbd>+<kbd>⇧</kbd>+<kbd>↵</kbd></td>
+						<td>Follow the first highlighted link in the current occurrence focus.</td>
+					</tr>
+					<tr>
+						<td><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>C</kbd></td>
+						<td><kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>C</kbd></td>
+						<td>Copy to the clipboard the currently highlighted text on the page.</td>
+					</tr>
+					<tr>
+						<td><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>A</kbd></td>
+						<td><kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>A</kbd></td>
+						<td>Copy to the clipboard the all highlighted text on the page.</td>
+					</tr>
+					<tr>
+						<td><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>O</kbd></td>
+						<td><kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>O</kbd></td>
+						<td>Expand or Collapse Options Pane.</td>
+					</tr>
+					<tr>
+						<td><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>R</kbd></td>
+						<td><kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>R</kbd></td>
+						<td>Expand or Collapse Replace Text Pane.</td>
+					</tr>
+					<tr>
+						<td><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>H</kbd></td>
+						<td><kbd>^</kbd>+<kbd>⌥</kbd>+<kbd>H</kbd></td>
+						<td>Expand or Collapse Saved Expressions Pane.</td>
+					</tr>
+					<tr>
+						<td><kbd>CTRL</kbd>+<kbd>↵</kbd> or <kbd>ESC</kbd></td>
+						<td><kbd>^</kbd>+<kbd>↵</kbd> or <kbd>ESC</kbd></td>
+						<td>Close the extension popup.</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapsible-section">
+		<input id="options-collapsible" class="toggle" type="checkbox">
+		<label for="options-collapsible" class="lbl-toggle">Options</label>
+		<div class="collapsible-content">
+			<div class="content-inner">
+				<p>Find+ can be configured through the options pane, which can be accessed by clicking the wrench icon
+					<button id="options-icon"></button>.</p>
+
+				<h3>Find by Regular Expression</h3>
+				<p class="indent">Enabling this option will interpret your search query as a regular expression. If
+					disabled, your search query will be interpreted as a string rather than a regular expression.</p>
+
+				<h3>Match Case</h3>
+				<p class="indent">This option is used to toggle case sensitivity. Enabling this option will make the
+					search case sensitive.</p>
+
+				<h3>Persistent Highlights</h3>
+				<p class="indent">This option can be used to keep the highlights in the page, even after the extension
+					popup closes. If enabled, highlighted occurrences of your search query will remain in the page even
+					if the extension closes.</p>
+
+				<h3>Persistent Storage (Incognito)</h3>
+				<p class="indent">When incognito, you may still wish that your saved expressions and options are
+					persisted. By default, this feature is disabled for security purposes. When enabled, your saved
+					expressions and settings will be persisted and shared between incognito and non-incognito
+					sessions.</p>
+
+				<h3>Hide Option Pane Toggle Button</h3>
+				<p class="indent">This option can be used to hide the button used to toggle the options pane. If
+					enabled, you will need to use the shortcut to toggle the pane.</p>
+
+				<h3>Hide Saved Expressions Pane Toggle Button</h3>
+				<p class="indent">This option can be used to hide the button used to toggle the saved expressions pane.
+					If enabled, you will need to use the shortcut to toggle the pane.</p>
+
+				<h3>Hide Copy To Clipboard Button</h3>
+				<p class="indent">This option can be used to hide the button used to copy occurrences to the clipboard.
+					If enabled, you will need to use the keyboard shortcut to copy occurrences.</p>
+
+				<h3>Max Highlighted Results</h3>
+				<p class="indent">Limit the number of occurrences in the page. When set, only the first few results will
+					be highlighted.</p>
+
+				<h3>Selected Occurrence Highlight Color</h3>
+				<p class="indent">This option is used to configure the color of the selected occurrence highlight; that
+					is, the color of the highlight on the occurrence of the search query you are currently viewing.</p>
+
+				<h3>Highlight Color</h3>
+				<p class="indent">This option is used to configure the color of all other occurrences (all occurrences
+					except the selected occurrence).</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapsible-section">
+		<input id="saved-expressions-collapsible" class="toggle" type="checkbox">
+		<label for="saved-expressions-collapsible" class="lbl-toggle">Saved Expressions</label>
+		<div class="collapsible-content">
+			<div class="content-inner">
+				<p>You can save frequently used regular expressions using the Saved Expressions pane, which can be
+					accessed by pressing the bookmark icon
+					<button id="saved-expressions-icon"></button>
+					.
+				</p>
+				<p>Enter a regular expression in the search field and press 'Save Regex' to save the query to local
+					storage. You can reuse a query by clicking on the expression entry in the saved expressions
+					pane.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapsible-section">
+		<input id="find-replace-collapsible" class="toggle" type="checkbox">
+		<label for="find-replace-collapsible" class="lbl-toggle">Find-and-Replace</label>
+		<div class="collapsible-content">
+			<div class="content-inner">
+				<p>The find-and-replace pane is only accessible though the keyboard shortcut found in the Keyboard
+					Shortcuts section of this guide.</p>
+				<p>The find-and-replace feature is used to replace text within a page. To replace text in a page, open
+					the find-and-replace pane and enter a query in the search field, and enter the text you wish to
+					replace occurrences of that query with in the replace pane field. Pressing 'Replace' will replace
+					the current occurrence, while 'Replace All' will replace all occurrences.</p>
+				<p>Note that replacing text will modify the text in the page, and will require a refresh of the page to
+					undo.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapsible-section">
+		<input id="copy-collapsible" class="toggle" type="checkbox">
+		<label for="copy-collapsible" class="lbl-toggle">Copying Occurrences of Regex</label>
+		<div class="collapsible-content">
+			<div class="content-inner">
+				<p>Find+ supports copying the current, or all, occurrences of your query to your clipboard. You will
+					then be able to paste the occurrences to a text editor for use.</p>
+				<p>To use this feature, simply perform a search and use one of the keyboard shortcuts for copying
+					occurrences. The exact shortcuts to use are outlined in the 'Keyboard Shortcuts' section.</p>
+
+				<h3>Example</h3>
+				<pre>
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Effect": "Allow",
+        "Action": [
+            "s3:ListBucket"
+        ],
+        "Resource": [
+            "arn:aws:s3:::dev.s3.ktb.ca"
+        ]
+    },{
+        "Effect": "Allow",
+        "Action": [
+            "s3<span style="background-color: #ff9813">:PutObject</span>",
+            "s3<span style="background-color: #fff000">:GetObject</span>",
+            "s3<span style="background-color: #fff000">:DeleteObject</span>"
+        ],
+        "Resource": [
+            "arn:aws:s3:::dev.s3.ktb.ca/*"
+        ]
+    }]
+}
+                        </pre>
+
+				<h3>Result in Clipboard</h3>
+				<pre>
+:PutObject
+:GetObject
+:DeleteObject
+                        </pre>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapsible-section">
+		<input id="omnibox-collapsible" class="toggle" type="checkbox">
+		<label for="omnibox-collapsible" class="lbl-toggle">Using the Omnibox</label>
+		<div class="collapsible-content">
+			<div class="content-inner">
+				<p>You can also use the omnibox to highlight occurrences of a query in the page, rather than opening the
+					browser extension popup.</p>
+				<p>To use this feature, type "find" in your browser's address bar, press space, and then enter a regular
+					expression. Occurrences of the regular expression will become highlighted on the page as you
+					type.</p>
+				<p>Pressing <kbd>ENTER</kbd> will leave the highlights in the page. To remove the highlights, simply
+					refresh the page. If you don't want to leave the highlights in the page, just erase the query
+					entered in the address bar.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Reporting Bugs & Contributing</h2>
+		<p>Found a bug? Have a feature request? You can <a href="https://github.com/brandon1024/find/issues">log an
+			issue</a> in our GitHub page, and we will look into it right away.</p>
+		<p>If you are interested in trying to tackle an issue by yourself, have a read through <a
+				href="https://github.com/brandon1024/find#contributing">our README</a>.</p>
+		<img src="https://img.shields.io/github/issues/brandon1024/find.svg?color=%23&label=Github%20Issues"/>
+		<img src="https://img.shields.io/github/issues-pr/brandon1024/find.svg?color=%23&label=Github%20Pull%20Requests"/>
+	</div>
+</div>
+</body>
+</html>

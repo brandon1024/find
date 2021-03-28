@@ -53,9 +53,13 @@
     "message": "Show Saved Expressions",
     "description": "Tooltip text for the show saved expressions button."
   },
-  "copy_to_clipboard_button": {
+  "copy_to_clipboard_button_title": {
     "message": "Copy All Occurrences To Clipboard",
     "description": "Tooltip text for the copy to clipboard button."
+  },
+  "toggle_find_replace_button_title": {
+    "message": "Find and Replace",
+    "description": "Tooltip text for the find and replace toggle button."
   },
   "close_extension_title": {
     "message": "Close find+",
@@ -98,8 +102,12 @@
     "description": "Tooltip text for the hide saved expressions pane toggle button option description icon."
   },
   "extension_option_hide_copy_to_clipboard_toggle_button_title": {
-    "message": "If enabled, the button used to toggle the copy all occurrences to clipboard will be hidden.\nThe keyboard shortcuts may still be used to copy all occurrences to clipboard.",
-    "description": "Tooltip text for the copy all occurrences to clipboard toggle button option description icon."
+    "message": "If enabled, the button used to copy all occurrences to clipboard will be hidden.\nThe keyboard shortcuts may still be used to copy all occurrences to clipboard.",
+    "description": "Tooltip text for the copy all occurrences to clipboard button option description icon."
+  },
+  "extension_option_hide_find_replace_toggle_button_title": {
+    "message": "If enabled, the button used to toggle the Find and Replace pane will be hidden.\nThe keyboard shortcuts may still be used to display or hide the pane.",
+    "description": "Tooltip text for the hide find and replace pane toggle button option description icon."
   },
   "saved_expression_icon_title": {
     "message": "Load this expression",
@@ -150,7 +158,11 @@
     "description": "Text displayed in the message pane when the extension is used in an offline file without adequate permissions for parsing file contents."
   },
   "search_options_header_text": {
-    "message": "Regex Options",
+    "message": "Expression Options",
+    "description": "Header text displayed in the options pane."
+  },
+  "extension_options_header_text": {
+    "message": "Extension Options",
     "description": "Header text displayed in the options pane."
   },
   "saved_expressions_body_header": {
@@ -183,7 +195,11 @@
   },
   "extension_option_hide_copy_to_clipboard_toggle_button_text": {
     "message": "Hide Copy To Clipboard Button",
-    "description": "Text displayed beside the hide copy to clipboard button option."
+    "description": "Text displayed beside the hide copy to clipboard toggle button option."
+  },
+  "extension_option_hide_find_replace_toggle_button_text": {
+    "message": "Hide Find and Replace Pane Toggle Button",
+    "description": "Text displayed beside the hide find and replace toggle button option."
   },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",
