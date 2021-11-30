@@ -18,15 +18,15 @@
     "description": "Tooltip text for the invalid regex icon."
   },
   "clipboard_copy_error_title": {
-    "message": "未能复制到剪贴板，由于未知错误。",
+    "message": "未能复制到剪贴板，由于一些未知错误。",
     "description": "Tooltip text for the clipboard copy error icon."
   },
   "iframes_found_warning_title": {
-    "message": "该页有一个或多个框架，会导致你的搜索不被高亮显示",
+    "message": "该页有一个或多个框架，可能会导致搜索结果不被高亮显示",
     "description": "Tooltip text for the iframes encountered warning icon."
   },
   "clipboard_copy_title": {
-    "message": "正则已复制到剪贴板。Regex occurrence copied to clipboard.",
+    "message": "正则已复制到剪贴板。",
     "description": "Tooltip text for the clipboard copy successful icon."
   },
   "installation_information_title": {
@@ -66,7 +66,7 @@
     "description": "Tooltip text for the close extension button."
   },
   "replace_field_title": {
-    "message": "替换失败了",
+    "message": "替换字段",
     "description": "Tooltip text for the replace field."
   },
   "replace_button_title": {
@@ -90,7 +90,7 @@
     "description": "Tooltip text for the persistent highlights option description icon."
   },
   "extension_option_persistent_storage_incognito_title": {
-    "message": "如果启用，搜索和选项将保留在常规和隐身会话中。如果禁用，则在隐身时不会保存任何会话信息。",
+    "message": "如果启用，搜索和选项将保留在常规和隐身窗口中。如果禁用，则在使用隐身窗口时不会保存任何会话信息。",
     "description": "Tooltip text for the persistent storage incognito option description icon."
   },
   "extension_option_hide_option_pane_toggle_button_title": {
@@ -158,11 +158,11 @@
     "description": "Text displayed in the message pane when the extension is used in an offline file without adequate permissions for parsing file contents."
   },
   "search_options_header_text": {
-    "message": "设置",
+    "message": "正则设置",
     "description": "Header text displayed in the options pane."
   },
   "extension_options_header_text": {
-    "message": "插件选项",
+    "message": "插件设置",
     "description": "Header text displayed in the options pane."
   },
   "saved_expressions_body_header": {
@@ -198,7 +198,7 @@
     "description": "Text displayed beside the hide copy to clipboard toggle button option."
   },
   "extension_option_hide_find_replace_toggle_button_text": {
-    "message": "隐藏'复制和替换'按钮",
+    "message": "隐藏'查找和替换'按钮",
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
   "search_option_max_results_text": {
