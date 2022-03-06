@@ -1,11 +1,11 @@
 <img src="../resources/icon.png" align="right" width="128" />
 
 # **{find+}**
-![Chrome Users](https://img.shields.io/chrome-web-store/users/fddffkdncgkkdjobemgbpojjeffmmofb.svg?style=flat&label=chrome%20users)
-![Firefox Users](https://img.shields.io/amo/users/brandon1024-find.svg?label=firefox%20users&style=flat)
-![Last Commit on GitHub](https://img.shields.io/github/last-commit/brandon1024/find.svg?style=flat)
+[![Chrome Users](https://img.shields.io/chrome-web-store/users/fddffkdncgkkdjobemgbpojjeffmmofb.svg?style=flat&label=chrome%20users)](https://chrome.google.com/webstore/detail/find%2B/fddffkdncgkkdjobemgbpojjeffmmofb)
+[![Firefox Users](https://img.shields.io/amo/users/brandon1024-find.svg?label=firefox%20users&style=flat)](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/)
+[![Last Commit on GitHub](https://img.shields.io/github/last-commit/brandon1024/find.svg?style=flat)](https://github.com/brandon1024/find/commits/develop)
 
-**{find+}** is a powerful _find-in-page_ extension for Chrome and Firefox that allows you to search for content in a web page or document by regular expression. It is a feature-rich alternative to the native _find-in-page_ tool built into your browser. 
+**{find+}** is a powerful _find-in-page_ extension for Chrome and Firefox that allows you to search for content in a web page or document by regular expression. It is a feature-rich alternative to the native _find-in-page_ tool built into your browser.
 
 Some notable features:
 - match a regular expression against text in a web page
@@ -25,7 +25,7 @@ The **{find+}** extension is available through the Chrome Web Store and through 
 <img src="firefox-icon.png" width="16"/> Download the extension here: [{find+} – Get this Extension for 🦊 Firefox](https://addons.mozilla.org/en-US/firefox/addon/brandon1024-find/).
 
 ## Keyboard Shortcuts
-In Firefox, you can use <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd> to open the extension popup. 
+In Firefox, you can use <kbd>CTRL</kbd>+<kbd>⇧</kbd>+<kbd>F</kbd> to open the extension popup.
 
 To open the extension popup in Chrome using a keyboard shortcut, you must first assign a keyboard shortcut to the extension through the Chrome settings. You can do this by following these steps:
 1. Navigate to the `Extensions` settings page in Chrome, or type `chrome://extensions/` into the navigation bar.
