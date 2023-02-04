@@ -149,11 +149,11 @@ input[type='checkbox'] {
     border-left: 4px solid currentColor;
     vertical-align: middle;
     margin-right: .7rem;
-    transform: translateY(-2px);
+    transform: rotate(90deg) translateX(-3px);
 }
 
 .toggle:checked + .lbl-toggle::before {
-    transform: rotate(90deg) translateX(-3px);
+    transform: rotate(0deg) translateY(-3px);
 }
 
 .toggle:checked + .lbl-toggle + .collapsible-content {
