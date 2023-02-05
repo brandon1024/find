@@ -3,6 +3,7 @@
 body {
     margin: 3px;
     width: 410px;
+    background-color: white;
 }
 
 div.pane {
