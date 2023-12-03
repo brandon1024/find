@@ -1,55 +1,60 @@
 {
+  "manifest_version": 3,
   "name": "__MSG_extension_name__",
   "short_name": "find+",
   "version": "1",
   "author": ["Michael Walz", "Brandon Richardson"],
-  "manifest_version": 2,
   "description": "__MSG_extension_description__",
   "default_locale": "en",
-  "permissions": [
-    "tabs",
-    "activeTab",
-    "background",
-    "storage",
-    "contextMenus",
-    "<all_urls>"
-  ],
+
   "icons": {
     "128": "resources/icon.png",
     "16": "resources/icon.png",
     "48": "resources/icon.png"
   },
-  "browser_action": {
+
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "background",
+    "storage",
+    "contextMenus"
+  ],
+
+  "action": {
     "default_icon": "resources/icon.png",
     "default_popup": "popup/popup.html"
   },
-  "background": {
-    "scripts": [
-      "app.js",
-      "/background/browser-action-proxy.js",
-      "/background/content-proxy.js",
-      "/background/background.js",
-      "/background/omni.js"
-    ],
-    "persistent": false
-  },
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "all_frames": false,
-    "run_at": "document_end",
-    "js": [
-      "app.js",
-      "/lib/html-entity-handler/entityhandler.js",
-      "/content/content.js",
-      "/content/parser.js",
-      "/content/highlighter.js"
-    ]
-  }],
+  "background.service_worker": [
+    "app.js",
+    "/background/browser-action-proxy.js",
+    "/background/content-proxy.js",
+    "/background/background.js",
+    "/background/omni.js"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "all_frames": false,
+      "run_at": "document_end",
+      "js": [
+        "app.js",
+        "/lib/html-entity-handler/entityhandler.js",
+        "/content/content.js",
+        "/content/parser.js",
+        "/content/highlighter.js"
+      ]
+    }
+  ],
   "omnibox": {
     "keyword" : "find"
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+F",
         "mac": "MacCtrl+Shift+F"
