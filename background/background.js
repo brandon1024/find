@@ -43,7 +43,8 @@ Find.register("Background", function(self) {
             Find.browser.tabs.query({}, (tabs) => {
                 for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
                     let url = tabs[tabIndex].url;
-                    if(url.match(/chrome:\/\/.*/)
+                    // Without the "tabs" permission, browser's internal webpage (e.g., "chrome://" or "chrome-extension://") has no "url"
+                    if(!url
                         || url.match(/https:\/\/chrome\.google\.com\/webstore\/.*/)
                         || url.match(/https:\/\/chromewebstore\.google\.com\/.*/)) {
                         continue;

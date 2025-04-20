@@ -7,7 +7,6 @@
   "description": "__MSG_extension_description__",
   "default_locale": "en",
   "permissions": [
-    "tabs",
     "activeTab",
     "storage",
     "contextMenus",
