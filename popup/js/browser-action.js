@@ -57,11 +57,8 @@ Find.register('Popup.BrowserAction', function (self) {
         // this is the only time we have the active window hostname
         Find.Popup.History.setHostname(new URL(url).hostname);
 
-        if(isWithinChromeNamespace(url)) {
-            Find.Popup.MessagePane.showChromeNamespaceErrorMessage();
-            self.error('forbidden_url');
-        } else if(isWithinWebStoreNamespace(url)) {
-            Find.Popup.MessagePane.showChromeWebStoreErrorMessage();
+        if(isWithinBrowserNamespace(url) || isWithinBrowserWebsiteNamespace(url)) {
+            Find.Popup.MessagePane.showInternalRestrictedBrowserPageErrorMessage();
             self.error('forbidden_url');
         } else if(isPDF(url)) {
             Find.Popup.MessagePane.showPDFSearchErrorMessage();
@@ -252,25 +249,39 @@ Find.register('Popup.BrowserAction', function (self) {
     };
 
     /**
-     * Return whether or not the given url is within the chrome:// namespace.
+     * Return whether or not the given url is within the browser internal namespace.
      *
      * @private
-     * @return {boolean} True if URL is within the chrome:// namespace, false otherwise.
+     * @return {boolean} True if URL is within the browser internal namespace, false otherwise.
      * */
-    function isWithinChromeNamespace(url) {
-        return url.match(/chrome:\/\/.*/);
+    function isWithinBrowserNamespace(url) {
+        if(url.match(/^(about|view-source):.*/)) {
+            return true;
+        }
+
+        if(Find.browserId !== 'Firefox') {
+            return url.match(/^(chrome(-extension)?|edge):\/\/.*/);
+        } else {
+            return url.match(/^moz-extension:\/\/.*/);
+        }
     }
 
     /**
-     * Return whether or not the given url is within the Chrome Web Store or newtab namespace.
+     * Return whether or not the given url is within the browser official website or newtab namespace.
      *
      * @private
-     * @return {boolean} True if URL is within the Chrome Web Store or newtab namespace, false otherwise.
+     * @return {boolean} True if URL is within the browser official website or newtab namespace, false otherwise.
      * */
-    function isWithinWebStoreNamespace(url) {
-        return url.match(/https:\/\/chrome\.google\.com\/webstore\/.*/)
-            || url.match(/https:\/\/chromewebstore\.google\.com\/.*/)
-            || url.match(/https:\/\/google\.[^\/]*\/_\/chrome\/newtab.*/);
+    function isWithinBrowserWebsiteNamespace(url) {
+        if(Find.browserId !== 'Firefox') {
+            return url.match(/^https:\/\/chrome\.google\.com\/webstore\/.*/)
+                || url.match(/^https:\/\/chromewebstore\.google\.com\/.*/)
+                || url.match(/^https:\/\/microsoftedge\.microsoft\.com\/.*/)
+                || url.match(/^https:\/\/google\.[^\/]*\/_\/chrome\/newtab.*/);
+        } else {
+            return url.match(/^https:\/\/addons\.mozilla\.org\/.*/)
+                || url.match(/^https:\/\/support\.mozilla\.org\/.*/);
+        }
     }
 
     /**

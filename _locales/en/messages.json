@@ -141,13 +141,9 @@
     "message": "Replace All",
     "description": "Text displayed inside the replace all button."
   },
-  "extension_limitation_web_store_text": {
-    "message": "Oops! It appears you are trying to use the extension in the Chrome Web Store. Developers at Google have blocked extensions from executing here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.",
-    "description": "Text displayed in the message pane when the extension is used in the Chrome Web Store."
-  },
-  "extension_limitation_chrome_namespace_text": {
-    "message": "Oops! It appears you are trying to use the extension in the 'chrome://' namespace. Developers at Google have blocked extensions from executing here to prevent the malicious injection of code. This is a security limitation across all Chrome extensions.",
-    "description": "Text displayed in the message pane when the extension is used in the chrome:// namespace."
+  "extension_limitation_internal_restricted_browser_page_text": {
+    "message": "Oops! It appears you are trying to use the extension in a restricted internal browser page. Browser developers have blocked extensions from executing here to prevent the malicious injection of code. This is a security limitation across all browser extensions.",
+    "description": "Text displayed in the message pane when the extension is used in an internal restrcited browser page."
   },
   "extension_limitation_pdf_text": {
     "message": "Oops! It appears you are trying to use the extension in a PDF document. Unfortunately, due to the complexity of the PDF viewer our extension is not able to handle searching through a PDF. We recommend using the native tool instead.",

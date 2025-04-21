@@ -141,13 +141,9 @@
     "message": "全部替换",
     "description": "Text displayed inside the replace all button."
   },
-  "extension_limitation_web_store_text": {
-    "message": "哎呀！您似乎正在 Chrome 应用商店中使用本扩展程序。Google 的开发者设置了安全限制，屏蔽了所有的 Chrome 扩展程序以避免恶意代码注入。",
-    "description": "Text displayed in the message pane when the extension is used in the Chrome Web Store."
-  },
-  "extension_limitation_chrome_namespace_text": {
-    "message": "哎呀！您似乎正在“chrome://”命名空间中使用本扩展程序。Google 的开发者设置了安全限制，屏蔽了所有的 Chrome 扩展程序以避免恶意代码注入。",
-    "description": "Text displayed in the message pane when the extension is used in the chrome:// namespace."
+  "extension_limitation_internal_restricted_browser_page_text": {
+    "message": "哎呀！您似乎正在浏览器内部页面或某些受限制的页面中使用本扩展程序。为避免遭受恶意代码的攻击，浏览器开发者对所有的扩展程序都施加了安全限制，因此本扩展程序无法在该页面运行。",
+    "description": "Text displayed in the message pane when the extension is used in an internal restrcited browser page."
   },
   "extension_limitation_pdf_text": {
     "message": "哎呀！您似乎正在 PDF 文档中使用本扩展程序。由于浏览器的内置阅读器比较复杂，很遗憾，我们无法进行查找，建议改用专门的 PDF 阅读器",

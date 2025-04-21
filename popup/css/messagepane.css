@@ -9,8 +9,7 @@ table#message-table {
     padding: 3px;
 }
 
-span#extension-limitation-web-store-text,
-span#extension-limitation-chrome-settings-text,
+span#extension-limitation-internal-restricted-browser-page-text,
 span#extension-limitation-pdf-fileview-text,
 span#extension-limitation-offline-file-search-text {
     color: #FF0000;

@@ -8,18 +8,10 @@ Find.register('Popup.MessagePane', function (self) {
     /**
      * Display an error message that indicates that the current URL is forbidden.
      * */
-    self.showChromeNamespaceErrorMessage = function() {
+    self.showInternalRestrictedBrowserPageErrorMessage = function() {
         document.getElementById('extension-message-body').style.display = 'initial';
-        document.getElementById('extension-limitation-chrome-settings-text').style.display = 'initial';
-    };
-
-    /**
-     * Display an error message that indicates that the current URL is forbidden.
-     * */
-    self.showChromeWebStoreErrorMessage = function() {
-        document.getElementById('extension-message-body').style.display = 'initial';
-        document.getElementById('extension-limitation-web-store-text').style.display = 'initial';
-    };
+        document.getElementById('extension-limitation-internal-restricted-browser-page-text').style.display = 'initial';
+    }
 
     /**
      * Display an error message that indicates that the current page cannot be parsed.

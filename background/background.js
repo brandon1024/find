@@ -45,8 +45,9 @@ Find.register("Background", function(self) {
                     let url = tabs[tabIndex].url;
                     // Without the "tabs" permission, browser's internal webpage (e.g., "chrome://" or "chrome-extension://") has no "url"
                     if(!url
-                        || url.match(/https:\/\/chrome\.google\.com\/webstore\/.*/)
-                        || url.match(/https:\/\/chromewebstore\.google\.com\/.*/)) {
+                        || url.match(/^https:\/\/chrome\.google\.com\/webstore\/.*/)
+                        || url.match(/^https:\/\/chromewebstore\.google\.com\/.*/)
+                        || url.match(/^https:\/\/microsoftedge\.microsoft\.com\/.*/)) {
                         continue;
                     }
 
