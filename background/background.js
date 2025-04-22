@@ -20,7 +20,7 @@ Find.register("Background", function(self) {
 
     Find.browser.contextMenus.removeAll(() => {
         Find.browser.contextMenus.create({
-            title: "Show Help",
+            title: Find.browser.i18n.getMessage("contextmenu_show_help_title"),
             contexts: ["action"],
             id: 'show-help'
         });

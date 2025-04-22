@@ -4,37 +4,37 @@
     "description": "The extension name in the manifest file."
   },
   "extension_description": {
-    "message": "一个支持正则表达式的网页搜索插件",
+    "message": "一个支持正则表达式查找的扩展程序",
     "description": "Short description of the extension in the manifest file."
   },
 
 
   "search_field_title": {
-    "message": "搜索字段",
+    "message": "表达式",
     "description": "Tooltip text for the search field."
   },
   "malformed_regex_error_title": {
-    "message": "错误的表达式:\n输入的表达式不被接受，因为不是有效的正则表达式或者不匹配Javascript正则规范。",
+    "message": "表达式错误：\n可能输入了不符合 JavaScript 规范的正则表达式。",
     "description": "Tooltip text for the invalid regex icon."
   },
   "clipboard_copy_error_title": {
-    "message": "未能复制到剪贴板，由于一些未知错误。",
+    "message": "未知错误，无法复制到剪贴板。",
     "description": "Tooltip text for the clipboard copy error icon."
   },
   "iframes_found_warning_title": {
-    "message": "该页有一个或多个框架，可能会导致搜索结果不被高亮显示",
+    "message": "由于该页面包含 iframe，页面上的某些内容将被忽略从而没有高亮。",
     "description": "Tooltip text for the iframes encountered warning icon."
   },
   "clipboard_copy_title": {
-    "message": "正则已复制到剪贴板。",
+    "message": "匹配项已复制到剪贴板。",
     "description": "Tooltip text for the clipboard copy successful icon."
   },
   "installation_information_title": {
-    "message": "欢迎并感谢安装我们的插件！这里有一些提示帮助你开始使用：\n\tENTER：查找下一个结果\n\tSHIFT-ENTER：返回上一个结果\n\tCTRL-ALT-0：展开或折叠可选面板\n\tCTRL-ALT-R：展开或折叠替代文本面板\n\tCTRL-ENTER 或 ESC：关闭插件弹窗",
+    "message": "欢迎！感谢您安装我们的扩展程序。这里是一些提示：\n\tENTER：查看页面中的下一个匹配项\n\tSHIFT-ENTER：查看页面中的上一个匹配项\n\tCTRL-ALT-O：显示或隐藏“设置”面板\n\tCTRL-ALT-R：显示或隐藏“查找并替换”面板\n\tCTRL-ENTER 或 ESC：关闭本窗口",
     "description": "Tooltip text for the install information icon."
   },
   "update_information_title": {
-    "message": "我们更新了插件！现在它会工作的更好:)\n在我们的GitHub页查看这次的更新信息！",
+    "message": "我们刚刚更新了这个扩展程序！现在它更好用了 :)\n请访问我们的 GitHub 页面了解本次更新的详细信息！",
     "description": "Tooltip text for the update information icon."
   },
   "search_prev_title": {
@@ -46,7 +46,7 @@
     "description": "Tooltip text for the seek forwards button."
   },
   "toggle_options_pane_title": {
-    "message": "设置窗口",
+    "message": "设置",
     "description": "Tooltip text for the toggle options pane button."
   },
   "toggle_saved_expressions_button": {
@@ -54,7 +54,7 @@
     "description": "Tooltip text for the show saved expressions button."
   },
   "copy_to_clipboard_button_title": {
-    "message": "复制所有结果到剪贴板",
+    "message": "复制到剪贴板",
     "description": "Tooltip text for the copy to clipboard button."
   },
   "toggle_find_replace_button_title": {
@@ -62,73 +62,73 @@
     "description": "Tooltip text for the find and replace toggle button."
   },
   "close_extension_title": {
-    "message": "关闭find+",
+    "message": "关闭 find+",
     "description": "Tooltip text for the close extension button."
   },
   "replace_field_title": {
-    "message": "替换字段",
+    "message": "替换文本",
     "description": "Tooltip text for the replace field."
   },
   "replace_button_title": {
-    "message": "替换下一个",
+    "message": "替换下一个匹配项",
     "description": "Tooltip text for the replace next button."
   },
   "replace_all_button_title": {
-    "message": "替换所有",
+    "message": "替换所有匹配项",
     "description": "Tooltip text for the replace all button."
   },
   "search_option_find_by_regex_title": {
-    "message": "如果启用，搜索框的输入文本将作为正则表达式。\n如果禁用，文本将会作为普通字符。",
+    "message": "若启用，将“表达式”视为正则表达式；\n若禁用，则视为普通文本。",
     "description": "Tooltip text for the find by regex option description icon."
   },
   "search_option_match_case_title": {
-    "message": "如果启用，大小写字母必须匹配表达式。\n如果禁用，大小写字母不影响匹配。",
+    "message": "若启用，“表达式”大小写敏感；\n若禁用，则忽略大小写。",
     "description": "Tooltip text for the match case option description icon."
   },
   "search_option_persistent_highlights_title": {
-    "message": "如果启用，关闭插件后依然显示高亮。\n通过刷新或者重新打开网页取消高亮",
+    "message": "若启用，关闭本窗口后仍然显示高亮。\n要移除高亮，刷新页面或重新打开本扩展程序",
     "description": "Tooltip text for the persistent highlights option description icon."
   },
   "extension_option_persistent_storage_incognito_title": {
-    "message": "如果启用，搜索和选项将保留在常规和隐身窗口中。如果禁用，则在使用隐身窗口时不会保存任何会话信息。",
+    "message": "若启用，本扩展程序的设置和已保存的表达式将由常规浏览和无痕浏览共享；\n若禁用，在无痕浏览时所作的任何修改均不会保留",
     "description": "Tooltip text for the persistent storage incognito option description icon."
   },
   "extension_option_hide_option_pane_toggle_button_title": {
-    "message": "如果启用，隐藏'设置窗口'的按钮。\n键盘快捷键仍可用于显示或隐藏该窗格。",
+    "message": "若启用，将隐藏顶部的“设置”面板切换按钮。\n仍可使用快捷键显示或隐藏该面板。",
     "description": "Tooltip text for the hide option pane toggle button option description icon."
   },
   "extension_option_hide_saved_expressions_pane_toggle_button_title": {
-    "message": "如果启用，隐藏'保存的表达式'的按钮。\n键盘快捷键仍可用于显示或隐藏窗格。",
+    "message": "若启用，将隐藏顶部的“保存的表达式”面板切换按钮。\n仍可使用快捷键显示或隐藏该面板。",
     "description": "Tooltip text for the hide saved expressions pane toggle button option description icon."
   },
   "extension_option_hide_copy_to_clipboard_toggle_button_title": {
-    "message": "如果启用，隐藏'复制到剪贴板'的按钮。\n键盘快捷方式仍可用于将所有匹配项复制到剪贴板。",
+    "message": "若启用，将隐藏顶部的“复制到剪贴板”按钮。\n仍可使用快捷键复制所有匹配项到剪贴板。",
     "description": "Tooltip text for the copy all occurrences to clipboard button option description icon."
   },
   "extension_option_hide_find_replace_toggle_button_title": {
-    "message": "如果启用，隐藏'查找和替换'窗格的按钮。\n键盘快捷键仍可用于显示或隐藏窗格。",
+    "message": "若启用，将隐藏顶部的“查找并替换”面板切换按钮。\n仍可使用快捷键显示或隐藏该面板。",
     "description": "Tooltip text for the hide find and replace pane toggle button option description icon."
   },
   "saved_expression_icon_title": {
-    "message": "加载这个表达式",
+    "message": "使用该表达式",
     "description": "Tooltip text for a saved expression entry icon."
   },
   "delete_saved_expression_icon_title": {
-    "message": "删除这个表达式",
+    "message": "删除该表达式",
     "description": "Tooltip text for a delete saved expression entry icon."
   },
   "clear_expressions_button_title": {
-    "message": "清除所有保存的表达式",
+    "message": "清空已保存的表达式",
     "description": "Tooltip text for the clear saved expressions button."
   },
   "save_expression_button_title": {
-    "message": "保存搜索字段的表达式",
+    "message": "保存当前表达式",
     "description": "Tooltip text for the save expression button."
   },
 
 
   "replace_field_placeholder": {
-    "message": "替换为..",
+    "message": "替换为…",
     "description": "Placeholder text for the replace field."
   },
 
@@ -138,39 +138,39 @@
     "description": "Text displayed inside the replace button."
   },
   "replace_all_button_text": {
-    "message": "替换所有",
+    "message": "全部替换",
     "description": "Text displayed inside the replace all button."
   },
   "extension_limitation_web_store_text": {
-    "message": "哎呀！您似乎正在尝试在Chrome网上应用店中使用该插件。Google的开发人员已阻止插件在此处执行，以防止恶意注入代码。这是所有Chrome插件的安全限制。",
+    "message": "哎呀！您似乎正在 Chrome 应用商店中使用本扩展程序。Google 的开发者设置了安全限制，屏蔽了所有的 Chrome 扩展程序以避免恶意代码注入。",
     "description": "Text displayed in the message pane when the extension is used in the Chrome Web Store."
   },
   "extension_limitation_chrome_namespace_text": {
-    "message": "哎呀！您似乎正在尝试在'chrome://'命名空间中使用插件。Google的开发人员已阻止插件在此处执行，以防止恶意注入代码。这是所有 Chrome 插件的安全限制。",
+    "message": "哎呀！您似乎正在“chrome://”命名空间中使用本扩展程序。Google 的开发者设置了安全限制，屏蔽了所有的 Chrome 扩展程序以避免恶意代码注入。",
     "description": "Text displayed in the message pane when the extension is used in the chrome:// namespace."
   },
   "extension_limitation_pdf_text": {
-    "message": "哎呀！您似乎正在尝试在 PDF 文档中使用插件名。不幸的是，由于PDF查看器的复杂性，我们的插件无法处理PDF搜索。我们建议改用本机工具。",
+    "message": "哎呀！您似乎正在 PDF 文档中使用本扩展程序。由于浏览器的内置阅读器比较复杂，很遗憾，我们无法进行查找，建议改用专门的 PDF 阅读器",
     "description": "Text displayed in the message pane when the extension is used in a PDF."
   },
   "extension_limitation_offline_file_text": {
-    "message": "尝试搜索此脱机文件时内部出现问题。幸运的是，我们可能知道如何解决这个问题。导航到'chrome://extensions'，然后在插件名{find+}下找到'允许访问文件URL'复选框。",
+    "message": "在离线文件中查找时出现错误，请按下列步骤操作：访问“chrome://extensions”，进入 find+ 扩展程序的详情页，勾选“允许访问文件网址”复选框。",
     "description": "Text displayed in the message pane when the extension is used in an offline file without adequate permissions for parsing file contents."
   },
   "search_options_header_text": {
-    "message": "正则设置",
+    "message": "表达式设置",
     "description": "Header text displayed in the options pane."
   },
   "extension_options_header_text": {
-    "message": "插件设置",
+    "message": "扩展程序设置",
     "description": "Header text displayed in the options pane."
   },
   "saved_expressions_body_header": {
-    "message": "保存表达式",
+    "message": "保存的表达式",
     "description": "Header text displayed in the saved expressions pane."
   },
   "search_option_find_by_regex_text": {
-    "message": "通过正则表达式查找",
+    "message": "正则表达式",
     "description": "Text displayed beside the find by regex option."
   },
   "search_option_match_case_text": {
@@ -178,27 +178,27 @@
     "description": "Text displayed beside the match case option."
   },
   "search_option_persistent_highlights_text": {
-    "message": "持续高亮",
+    "message": "保持高亮",
     "description": "Text displayed beside the persistent highlights option."
   },
   "extension_option_persistent_storage_incognito_text": {
-    "message": "持续存储",
+    "message": "存储持久化（无痕浏览）",
     "description": "Text displayed beside the persistent storage option."
   },
   "extension_option_hide_option_pane_toggle_button_text": {
-    "message": "隐藏'设置窗口'按钮",
+    "message": "隐藏“设置”按钮",
     "description": "Text displayed beside the hide option pane toggle button option."
   },
   "extension_option_hide_saved_expressions_pane_toggle_button_text": {
-    "message": "隐藏'保存的表达式'按钮",
+    "message": "隐藏“保存的表达式”按钮",
     "description": "Text displayed beside the hide saved expressions pane toggle button option."
   },
   "extension_option_hide_copy_to_clipboard_toggle_button_text": {
-    "message": "隐藏'复制到剪贴板'按钮",
+    "message": "隐藏“复制到剪贴板”按钮",
     "description": "Text displayed beside the hide copy to clipboard toggle button option."
   },
   "extension_option_hide_find_replace_toggle_button_text": {
-    "message": "隐藏'查找和替换'按钮",
+    "message": "隐藏“查找并替换”按钮",
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
   "search_option_max_results_text": {
@@ -206,7 +206,7 @@
     "description": "Text displayed above the max highlighted results option."
   },
   "search_option_index_highlight_text": {
-    "message": "选中的高亮颜色",
+    "message": "选中项的高亮颜色",
     "description": "Text displayed above the index highlight color option."
   },
   "search_option_all_highlight_text": {
@@ -214,20 +214,26 @@
     "description": "Text displayed above the all highlight color option."
   },
   "reset_options_button_text": {
-    "message": "重置所有选项",
+    "message": "重置所有设置",
     "description": "Text displayed in the reset options button."
   },
 
   "no_expressions_found_text": {
-    "message": "没有找到保存的表达式",
+    "message": "表达式为空",
     "description": "Text displayed in the saved expressions pane when no expressions exist."
   },
   "clear_expressions_button_text":{
-    "message": "清除保存的表达式",
+    "message": "清空表达式",
     "description": "Text displayed in the saved expressions pane."
   },
   "save_expression_button_text":{
     "message": "保存表达式",
     "description": "Text displayed in the saved expressions pane."
+  },
+
+
+  "contextmenu_show_help_title": {
+    "message": "显示帮助（英语）",
+    "description": "Text displayed inside the show-help button in the context menu."
   }
 }

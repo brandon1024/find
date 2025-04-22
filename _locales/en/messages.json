@@ -4,7 +4,7 @@
     "description": "The extension name in the manifest file."
   },
   "extension_description": {
-    "message": "A find-in-page extension for Google Chrome with support for regular expressions.",
+    "message": "A find-in-page extension with support for regular expressions.",
     "description": "Short description of the extension in the manifest file."
   },
 
@@ -90,7 +90,7 @@
     "description": "Tooltip text for the persistent highlights option description icon."
   },
   "extension_option_persistent_storage_incognito_title": {
-    "message": "If enabled, searches and options will be persisted in regular and incognito sessions. If disabled, no session information will be saved while incognito.",
+    "message": "If enabled, searches and options will be persisted in regular and incognito sessions.\nIf disabled, no session information will be saved while incognito.",
     "description": "Tooltip text for the persistent storage incognito option description icon."
   },
   "extension_option_hide_option_pane_toggle_button_title": {
@@ -154,7 +154,7 @@
     "description": "Text displayed in the message pane when the extension is used in a PDF."
   },
   "extension_limitation_offline_file_text": {
-    "message": "Something went wrong internally while trying to search this offline file. Luckily, we might know how to fix this. Navigate to 'chrome://extensions' and locate the checkbox 'Allow access to file URLs' under the {find+} extension.",
+    "message": "Something went wrong internally while trying to search this offline file. Luckily, we might know how to fix this. Navigate to 'chrome://extensions' and locate the checkbox 'Allow access to file URLs' in the 'Details' page of the {find+} extension.",
     "description": "Text displayed in the message pane when the extension is used in an offline file without adequate permissions for parsing file contents."
   },
   "search_options_header_text": {
@@ -229,5 +229,11 @@
   "save_expression_button_text":{
     "message": "Save Expression",
     "description": "Text displayed in the saved expressions pane."
+  },
+
+
+  "contextmenu_show_help_title": {
+    "message": "Show Help",
+    "description": "Text displayed inside the show-help button in the context menu."
   }
 }
