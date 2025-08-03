@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Create the Background namespace. The background coordinates activities between the browser
@@ -21,13 +21,13 @@ Find.register("Background", function(self) {
     Find.browser.contextMenus.removeAll(() => {
         Find.browser.contextMenus.create({
             title: "Show Help",
-            contexts: ["browser_action"],
+            contexts: ["action"],
             id: 'show-help'
         });
 
         Find.browser.contextMenus.onClicked.addListener((info) => {
             if(info.menuItemId === 'show-help') {
-                Find.browser.tabs.create({url: Find.browser.extension.getURL("docs/index.html")});
+                Find.browser.tabs.create({url: Find.browser.runtime.getURL("docs/index.html")});
             }
         });
     });
@@ -49,15 +49,13 @@ Find.register("Background", function(self) {
                         continue;
                     }
 
-                    for (let i = 0; i < scripts.length; i++) {
-                        Find.Background.ContentProxy.executeScript(tabs[tabIndex], {file: scripts[i]});
-                    }
+                    Find.Background.ContentProxy.executeScript(tabs[tabIndex], {files: scripts});
                 }
             });
         }
 
         if(installation.reason === 'install') {
-            Find.browser.tabs.create({url: Find.browser.extension.getURL("docs/index.html")});
+            Find.browser.tabs.create({url: Find.browser.runtime.getURL("docs/index.html")});
         }
     });
 

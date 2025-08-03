@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Create the Background Omni namespace. Registers various event listeners which invoke

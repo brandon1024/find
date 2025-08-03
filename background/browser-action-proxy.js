@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Create the Background ContentProxy namespace. Serves as mediator between the background scripts

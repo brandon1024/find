@@ -10,11 +10,7 @@ const Find = (function () {
     const self = {};
 
     self.browserId = (() => {
-        if(typeof window.browser !== 'undefined') {
-            return 'Firefox';
-        } else {
-            return 'Chrome';
-        }
+        return typeof browser !== 'undefined' ? 'Firefox' : 'Chrome';
     })();
 
     self.browser = (() => {
@@ -24,12 +20,6 @@ const Find = (function () {
     self.incognito = (() => {
         return self.browser.extension.inIncognitoContext;
     })();
-
-    /**
-     * This callback function is used to initialize the namespace.
-     * @callback registerCallback
-     * @param {object} self - Object used to create public functions and variables.
-     * */
 
     /**
      * Register a new namespace, and initialize it using a callback function.

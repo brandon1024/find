@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Create the Background ContentProxy namespace. Serves as mediator between the content
@@ -142,11 +142,11 @@ Find.register("Background.ContentProxy", function(self) {
      * Execute a given script in a specific tab.
      *
      * @param {object} tab - The tab with the search.
-     * @param {object} details - Details of the script to run. Either the code or the file property must be set, but
+     * @param {object} details - Details of the script to run. Either the func or the files property must be set, but
      * both may not be set at the same time.
      * @param {function} [callback] - Callback invoked once the operation is complete.
      * */
     self.executeScript = function(tab, details, callback) {
-        Find.browser.tabs.executeScript(tab.id, details, callback);
+        Find.browser.scripting.executeScript({target: {tabId: tab.id}, ...details}, callback);
     };
 });
