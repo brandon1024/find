@@ -3,13 +3,15 @@
   "short_name": "find+",
   "version": "1",
   "author": "Brandon Richardson, Michael Walz",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "description": "__MSG_extension_description__",
   "default_locale": "en",
   "permissions": [
     "activeTab",
     "storage",
-    "contextMenus",
+    "contextMenus"
+  ],
+  "host_permissions": [
     "<all_urls>"
   ],
   "icons": {
@@ -17,8 +19,12 @@
     "16": "resources/icon.png",
     "48": "resources/icon.png"
   },
-  "browser_action": {
-    "default_icon": "resources/icon.png",
+  "action": {
+    "default_icon": {
+      "128": "resources/icon.png",
+      "16": "resources/icon.png",
+      "48": "resources/icon.png"
+    },
     "default_popup": "popup/popup.html"
   },
   "background": {
@@ -46,7 +52,7 @@
     "keyword" : "findplus"
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+F",
         "mac": "MacCtrl+Shift+F"
