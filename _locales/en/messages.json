@@ -14,7 +14,7 @@
     "description": "Tooltip text for the search field."
   },
   "malformed_regex_error_title": {
-    "message": "Malformed Regex:\nThe regular expression entered is not acceptable, as it is either an invalid regular expression, or not supported according to the Javascript RegExp specification",
+    "message": "Malformed Regex:\nThe regular expression entered is not acceptable, as it is either an invalid regular expression, or not supported according to the JavaScript RegExp specification",
     "description": "Tooltip text for the invalid regex icon."
   },
   "clipboard_copy_error_title": {
