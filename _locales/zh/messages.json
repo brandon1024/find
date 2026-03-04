@@ -10,7 +10,7 @@
 
 
   "search_field_title": {
-    "message": "表达式",
+    "message": "查找栏",
     "description": "Tooltip text for the search field."
   },
   "malformed_regex_error_title": {
@@ -18,7 +18,7 @@
     "description": "Tooltip text for the invalid regex icon."
   },
   "clipboard_copy_error_title": {
-    "message": "未知错误，无法复制到剪贴板。",
+    "message": "意外错误，无法复制到剪贴板。",
     "description": "Tooltip text for the clipboard copy error icon."
   },
   "iframes_found_warning_title": {
@@ -54,7 +54,7 @@
     "description": "Tooltip text for the show saved expressions button."
   },
   "copy_to_clipboard_button_title": {
-    "message": "复制到剪贴板",
+    "message": "复制所有匹配项到剪贴板",
     "description": "Tooltip text for the copy to clipboard button."
   },
   "toggle_find_replace_button_title": {
@@ -90,7 +90,7 @@
     "description": "Tooltip text for the persistent highlights option description icon."
   },
   "extension_option_persistent_storage_incognito_title": {
-    "message": "若启用，本扩展程序的设置和已保存的表达式将由常规浏览和无痕浏览共享；\n若禁用，在无痕浏览时所作的任何修改均不会保留",
+    "message": "若启用，查找记录和设置将在常规浏览和无痕浏览中保留；\n若禁用，无痕浏览时所做的修改将不会被保留",
     "description": "Tooltip text for the persistent storage incognito option description icon."
   },
   "extension_option_hide_option_pane_toggle_button_title": {
@@ -142,11 +142,11 @@
     "description": "Text displayed inside the replace all button."
   },
   "extension_limitation_internal_restricted_browser_page_text": {
-    "message": "哎呀！您似乎正在浏览器内部页面或某些受限制的页面中使用本扩展程序。为避免遭受恶意代码的攻击，浏览器开发者对所有的扩展程序都施加了安全限制，因此本扩展程序无法在该页面运行。",
+    "message": "为避免恶意代码注入内部页面或某些受限制的页面，浏览器开发者对所有扩展程序施加了安全限制，本扩展程序无法在当前页面中使用。",
     "description": "Text displayed in the message pane when the extension is used in an internal restrcited browser page."
   },
   "extension_limitation_pdf_text": {
-    "message": "哎呀！您似乎正在 PDF 文档中使用本扩展程序。由于浏览器的内置阅读器比较复杂，很遗憾，我们无法进行查找，建议改用专门的 PDF 阅读器",
+    "message": "由于 PDF 阅读器的复杂性，本扩展程序无法在当前页面中使用，建议改用浏览器的内置查找工具",
     "description": "Text displayed in the message pane when the extension is used in a PDF."
   },
   "extension_limitation_offline_file_text": {
