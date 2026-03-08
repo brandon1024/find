@@ -38,7 +38,7 @@
 							The following expression matches any text preceded by a colon ':', following by either
 							"Put", "Get" or "Delete", followed by the word "Object".
 
-							<pre>:((Put)|(Get)|(Delete))Object</pre>
+							<pre>:(Put|Get|Delete)Object"</pre>
 							<pre>
 {
     "Version": "2012-10-17",
@@ -110,7 +110,7 @@
 						<div class="content-inner">
 							This example matches any JavaScript variable declaration.
 
-							<pre>((var)|(let)).*?=.*?;</pre>
+							<pre>\b(var|let)\s+\w*?\s*=.+?;</pre>
 							<pre>
 if (!preformatted.flag && isNodeTextValueWhitespaceOnly(node) && node.nodeValue.length !== 1) {
     node = DOMTreeWalker.nextNode();
@@ -131,6 +131,8 @@ if (nodeText.length === 0) {
 <span style="background-color: #ff9813">let wrapperElement = document.createElement('span');</span>
 wrapperElement.style.cssText = 'all: unset;';
 wrapperElement.setAttribute('id', identifierUUID);
+
+// invalid statement: xvar=;
                         </pre>
 						</div>
 					</div>
