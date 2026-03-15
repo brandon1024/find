@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 ME=$0
-ROOT_DIR=$PWD
-BUILD_DIR="$ROOT_DIR/.build"
-MANIFEST="$ROOT_DIR/manifest.json"
+PROJECT_SRC_DIR=$(cd $(dirname "$ME") && pwd)
+BUILD_DIR="$PWD/.build"
 VERSION=
 
 # Display Usage
@@ -13,10 +12,9 @@ usage: ${ME} [options]
 Build and package the find+ extension.
 
 example:
-    ${ME} -m find/manifest.json -v 1.4.4 -o find/buildpath
+    ${ME} -v 1.4.4 -o find/buildpath
 
 options:
-    -m, --manifest  Alternate path of the manifest file 'manifest.json'.
     -v, --version   New extension version number
     -o, --output    Alternate build directory. Default '.build' in the current working directory
     -h, --help      Show help and exit
@@ -29,14 +27,6 @@ function parseargs() {
         key="$1"
 
         case $key in
-            -m|--manifest)
-                case $2 in
-                    /*) MANIFEST="$2" ;;
-                    *) MANIFEST="$ROOT_DIR/$2" ;;
-                esac
-                shift
-                shift
-                ;;
             -v|--version)
                 VERSION=$2
                 shift
@@ -45,7 +35,7 @@ function parseargs() {
             -o|--output)
                 case $2 in
                     /*) BUILD_DIR="$2" ;;
-                    *) BUILD_DIR="$ROOT_DIR/$2" ;;
+                    *) BUILD_DIR="$PWD/$2" ;;
                 esac
                 shift
                 shift
@@ -62,18 +52,6 @@ function parseargs() {
 }
 
 parseargs "$@"
-
-# Check if manifest filename matches expected filename
-if [[ ${MANIFEST} =~ "*/manifest.json" ]]; then
-    echo "Error: file '$MANIFEST' must have the filename 'manifest.json'"
-    exit 2
-fi
-
-# Check if manifest file exists
-if [ ! -f ${MANIFEST} ]; then
-    echo "Error: manifest file '$MANIFEST' not found."
-    exit 2
-fi
 
 # Check if version number is set
 if [ -z "$VERSION" ]; then
@@ -95,7 +73,6 @@ mkdir --parents --verbose "$BUILD_DIR/moz"
 
 # Copy project src to build directory
 echo "$ME: Copying project source files to build directory..."
-PROJECT_SRC_DIR=$(dirname "${MANIFEST}")
 for file in "$PROJECT_SRC_DIR/"*
 do
     [[ $file = $BUILD_DIR ]] && continue
@@ -110,14 +87,16 @@ sed -i "s/\"version\": \"1\"/\"version\": \"$VERSION\"/" "$BUILD_DIR/moz/manifes
 
 # Package extension for chrome
 echo "$ME: Packaging extension for Chrome..."
-rm -f "$BUILD_DIR/chr/manifest_firefox.json"
-cd "$BUILD_DIR/chr"
-zip -r "$BUILD_DIR/find-chrome.zip" .
-cd "$ROOT_DIR"
+(
+    cd "$BUILD_DIR/chr" &&
+    rm -f "manifest_firefox.json" &&
+    zip -r "$BUILD_DIR/find-chrome.zip" . ;
+)
 
 # Package extension for firefox
 echo "$ME: Packaging extension for Firefox..."
-mv "$BUILD_DIR/moz/manifest_firefox.json" "$BUILD_DIR/moz/manifest.json"
-cd "$BUILD_DIR/moz"
-zip -r "$BUILD_DIR/find-firefox.zip" .
-cd "$ROOT_DIR"
+(
+    cd "$BUILD_DIR/moz" &&
+    mv "manifest_firefox.json" "manifest.json" &&
+    zip -r "$BUILD_DIR/find-firefox.zip" . ;
+)
