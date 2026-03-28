@@ -7,8 +7,6 @@
     "message": "一个支持正则表达式查找的扩展程序",
     "description": "Short description of the extension in the manifest file."
   },
-
-
   "search_field_title": {
     "message": "查找栏",
     "description": "Tooltip text for the search field."
@@ -125,14 +123,10 @@
     "message": "保存当前表达式",
     "description": "Tooltip text for the save expression button."
   },
-
-
   "replace_field_placeholder": {
     "message": "替换为…",
     "description": "Placeholder text for the replace field."
   },
-
-
   "replace_button_text": {
     "message": "替换",
     "description": "Text displayed inside the replace button."
@@ -197,6 +191,14 @@
     "message": "隐藏“查找并替换”按钮",
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
+  "extension_option_scroll_markers_text": {
+    "message": "启用滚动标记",
+    "description": "Text displayed beside the scroll markers toggle option."
+  },
+  "extension_option_scroll_markers_title": {
+    "message": "如果启用，滚动标记将出现在页面的右边缘，指示文档中所有匹配项的位置。",
+    "description": "Tooltip text for the scroll markers option description icon."
+  },
   "search_option_max_results_text": {
     "message": "最大高亮数量",
     "description": "Text displayed above the max highlighted results option."
@@ -213,21 +215,18 @@
     "message": "重置所有设置",
     "description": "Text displayed in the reset options button."
   },
-
   "no_expressions_found_text": {
     "message": "表达式为空",
     "description": "Text displayed in the saved expressions pane when no expressions exist."
   },
-  "clear_expressions_button_text":{
+  "clear_expressions_button_text": {
     "message": "清空表达式",
     "description": "Text displayed in the saved expressions pane."
   },
-  "save_expression_button_text":{
+  "save_expression_button_text": {
     "message": "保存表达式",
     "description": "Text displayed in the saved expressions pane."
   },
-
-
   "contextmenu_show_help_title": {
     "message": "显示帮助（英语）",
     "description": "Text displayed inside the show-help button in the context menu."

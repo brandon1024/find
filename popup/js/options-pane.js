@@ -21,6 +21,7 @@ Find.register('Popup.OptionsPane', function (self) {
         hide_saved_expressions_button: false,
         hide_clipboard_button: true,
         hide_find_replace_button: true,
+        scroll_markers_enabled: false,
         max_results: 0,
         index_highlight_color: Object.freeze({
             hue: 34,
@@ -94,6 +95,11 @@ Find.register('Popup.OptionsPane', function (self) {
             options.hide_find_replace_button = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.SearchPane.hideFindReplacePaneToggleButton(options.hide_find_replace_button);
+        });
+        document.getElementById('scroll-markers-enable-toggle').addEventListener('change', (e) => {
+            options.scroll_markers_enabled = e.target.checked;
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
 
         //Add max results slider event listeners
@@ -354,6 +360,7 @@ Find.register('Popup.OptionsPane', function (self) {
         document.getElementById('hide-saved-expressions-pane-toggle-option-toggle').checked = options.hide_saved_expressions_button;
         document.getElementById('hide-copy-to-clipboard-option-toggle').checked = options.hide_clipboard_button;
         document.getElementById('find-replace-toggle-option-toggle').checked = options.hide_find_replace_button;
+        document.getElementById('scroll-markers-enable-toggle').checked = options.scroll_markers_enabled;
 
         Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
         Find.Popup.SearchPane.hideSavedExpressionsPaneToggleButton(options.hide_saved_expressions_button);

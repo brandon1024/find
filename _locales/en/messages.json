@@ -7,8 +7,6 @@
     "message": "A find-in-page extension with support for regular expressions.",
     "description": "Short description of the extension in the manifest file."
   },
-
-
   "search_field_title": {
     "message": "Search Field",
     "description": "Tooltip text for the search field."
@@ -125,14 +123,10 @@
     "message": "Save Expression in Search Field",
     "description": "Tooltip text for the save expression button."
   },
-
-
   "replace_field_placeholder": {
     "message": "Replace with..",
     "description": "Placeholder text for the replace field."
   },
-
-
   "replace_button_text": {
     "message": "Replace",
     "description": "Text displayed inside the replace button."
@@ -197,6 +191,14 @@
     "message": "Hide Find and Replace Pane Toggle Button",
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
+  "extension_option_scroll_markers_text": {
+    "message": "Enable Scroll Markers",
+    "description": "Text displayed beside the scroll markers toggle option."
+  },
+  "extension_option_scroll_markers_title": {
+    "message": "If enabled, scroll markers will appear on the right edge of the page indicating the position of all matches in the document.",
+    "description": "Tooltip text for the scroll markers option description icon."
+  },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",
     "description": "Text displayed above the max highlighted results option."
@@ -213,21 +215,18 @@
     "message": "Reset All Options",
     "description": "Text displayed in the reset options button."
   },
-
   "no_expressions_found_text": {
     "message": "No saved expressions found.",
     "description": "Text displayed in the saved expressions pane when no expressions exist."
   },
-  "clear_expressions_button_text":{
+  "clear_expressions_button_text": {
     "message": "Clear Saved Expressions",
     "description": "Text displayed in the saved expressions pane."
   },
-  "save_expression_button_text":{
+  "save_expression_button_text": {
     "message": "Save Expression",
     "description": "Text displayed in the saved expressions pane."
   },
-
-
   "contextmenu_show_help_title": {
     "message": "Show Help",
     "description": "Text displayed inside the show-help button in the context menu."
