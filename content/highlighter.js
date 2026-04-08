@@ -218,7 +218,7 @@ Find.register('Content.Highlighter', function(self) {
             }
         }
 
-        if (options && options.scroll_markers_enabled) {
+        if (options && options.scroll_markers) {
             try {
                 createScrollMarkers(occurrenceMap, options);
             } catch (e) {
@@ -270,7 +270,7 @@ Find.register('Content.Highlighter', function(self) {
             }
         }
         try {
-            if (options && options.scroll_markers_enabled) { updateScrollMarkerActive(index, options); }
+            if (options && options.scroll_markers) { updateScrollMarkerActive(index, options); }
         } catch (e) {
             console.error('Error updating scroll marker:', e);
         }
@@ -604,7 +604,7 @@ Find.register('Content.Highlighter', function(self) {
 
     function createScrollMarkers(occurrenceMap, options) {
         try {
-            if (!options || !options.scroll_markers_enabled) return;
+            if (!options || !options.scroll_markers) return;
             if (!document.body || !document.documentElement) return;
 
             // Build fake scrollbar track (also clears previous)

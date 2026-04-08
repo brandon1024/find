@@ -198,7 +198,7 @@
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
   "extension_option_scroll_markers_text": {
-    "message": "スクロールマーカーを有効にする",
+    "message": "スクロールマーカーを表示",
     "description": "Text displayed beside the scroll markers toggle option."
   },
   "extension_option_scroll_markers_title": {
