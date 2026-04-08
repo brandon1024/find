@@ -219,11 +219,7 @@ Find.register('Content.Highlighter', function(self) {
         }
 
         if (options && options.scroll_markers) {
-            try {
-                createScrollMarkers(occurrenceMap, options);
-            } catch (e) {
-                console.error('Error creating scroll markers:', e);
-            }
+            createScrollMarkers(occurrenceMap, options);
         }
     };
 
@@ -269,11 +265,8 @@ Find.register('Content.Highlighter', function(self) {
                 window.scrollBy(0, -100);
             }
         }
-        try {
-            if (options && options.scroll_markers) { updateScrollMarkerActive(index, options); }
-        } catch (e) {
-            console.error('Error updating scroll marker:', e);
-        }
+
+        if (options.scroll_markers) { updateScrollMarkerActive(index, options); }
     };
 
     /**
@@ -360,11 +353,8 @@ Find.register('Content.Highlighter', function(self) {
                 parent.normalize();
             }
         }
-        try {
-            removeAllScrollMarkers();
-        } catch (e) {
-            console.error('Error removing scroll markers:', e);
-        }
+
+        removeAllScrollMarkers();
     };
 
     // ── Scroll Marker / Fake Scrollbar Helpers ─────────────────────────────────────
