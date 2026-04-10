@@ -4,7 +4,7 @@
  * Create the Content Highlighter namespace. This component is injected into
  * the page and is used to highlight occurrences of a regex in the page.
  * */
-Find.register('Content.Highlighter', function (self) {
+Find.register('Content.Highlighter', function(self) {
 
     const indexHighlight = 'find-ext-index-highlight';
     const allHighlight = 'find-ext-all-highlight';
@@ -17,7 +17,7 @@ Find.register('Content.Highlighter', function (self) {
      * @param {string} regex - The regular expression
      * @param {object} options - The search and highlight options
      * */
-    self.highlightAll = function (occurrenceMap, regex, options) {
+    self.highlightAll = function(occurrenceMap, regex, options) {
         const tags = {
             occIndex: null,
             maxIndex: null,
@@ -159,7 +159,7 @@ Find.register('Content.Highlighter', function (self) {
             }
 
             //Wrap matched characters in an element with class indexHighlight and occurrenceIdentifier
-            let matchGroup = { text: '', groupUUID: charMap[0].nodeUUID };
+            let matchGroup = {text: '', groupUUID: charMap[0].nodeUUID};
             let inMatch = false;
             for (let key = 0; key < charMap.length; key++) {
                 tags.update(occIndex);
@@ -218,12 +218,8 @@ Find.register('Content.Highlighter', function (self) {
             }
         }
 
-        if (options && options.scroll_markers_enabled) {
-            try {
-                createScrollMarkers(occurrenceMap, options);
-            } catch (e) {
-                console.error('Error creating scroll markers:', e);
-            }
+        if (options && options.scroll_markers) {
+            createScrollMarkers(occurrenceMap, options);
         }
     };
 
@@ -234,7 +230,7 @@ Find.register('Content.Highlighter', function (self) {
      * @param {number} index - The index to seek to
      * @param {object} options - The search options
      * */
-    self.seekHighlight = function (index, options) {
+    self.seekHighlight = function(index, options) {
         if (index === null || options == null) {
             return;
         }
@@ -269,11 +265,8 @@ Find.register('Content.Highlighter', function (self) {
                 window.scrollBy(0, -100);
             }
         }
-        try {
-            if (options && options.scroll_markers_enabled) { updateScrollMarkerActive(index, options); }
-        } catch (e) {
-            console.error('Error updating scroll marker:', e);
-        }
+
+        if (options.scroll_markers) { updateScrollMarkerActive(index, options); }
     };
 
     /**
@@ -283,7 +276,7 @@ Find.register('Content.Highlighter', function (self) {
      * @param {number} index - The index of the occurrence that will be replaced
      * @param {string} replaceWith - The text that will replace the given occurrence of the regex
      * */
-    self.replace = function (index, replaceWith) {
+    self.replace = function(index, replaceWith) {
         let els = Array.from(document.querySelectorAll('.find-ext-occr' + index));
 
         if (els.length === 0) {
@@ -302,7 +295,7 @@ Find.register('Content.Highlighter', function (self) {
      * @private
      * @param {string} replaceWith - The text that will replace all occurrences of the regex
      * */
-    self.replaceAll = function (replaceWith) {
+    self.replaceAll = function(replaceWith) {
         let els = Array.from(document.querySelectorAll("[class*='find-ext-occr']"));
 
         let currentOccurrence = null;
@@ -313,7 +306,7 @@ Find.register('Content.Highlighter', function (self) {
 
             if (occurrenceFromClass !== currentOccurrence) {
                 currentOccurrence = occurrenceFromClass;
-                el.innerText = replaceWith;
+                el.innerText = replaceWith
             } else {
                 el.innerText = '';
             }
@@ -325,7 +318,7 @@ Find.register('Content.Highlighter', function (self) {
      *
      * @private
      * */
-    self.followLinkUnderFocus = function () {
+    self.followLinkUnderFocus = function() {
         let els = document.getElementsByClassName(indexHighlight);
         for (let index = 0; index < els.length; index++) {
             let el = els[index];
@@ -343,7 +336,7 @@ Find.register('Content.Highlighter', function (self) {
      *
      * @private
      * */
-    self.restore = function () {
+    self.restore = function() {
         let classes = [indexHighlight, allHighlight];
         for (let classIndex = 0; classIndex < classes.length; classIndex++) {
             let els = Array.from(document.querySelectorAll('.' + classes[classIndex]));
@@ -360,11 +353,8 @@ Find.register('Content.Highlighter', function (self) {
                 parent.normalize();
             }
         }
-        try {
-            removeAllScrollMarkers();
-        } catch (e) {
-            console.error('Error removing scroll markers:', e);
-        }
+
+        removeAllScrollMarkers();
     };
 
     // ── Scroll Marker / Fake Scrollbar Helpers ─────────────────────────────────────
@@ -604,7 +594,7 @@ Find.register('Content.Highlighter', function (self) {
 
     function createScrollMarkers(occurrenceMap, options) {
         try {
-            if (!options || !options.scroll_markers_enabled) return;
+            if (!options || !options.scroll_markers) return;
             if (!document.body || !document.documentElement) return;
 
             // Build fake scrollbar track (also clears previous)

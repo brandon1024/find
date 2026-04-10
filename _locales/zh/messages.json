@@ -198,11 +198,11 @@
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
   "extension_option_scroll_markers_text": {
-    "message": "启用滚动标记",
+    "message": "显示滚动标记",
     "description": "Text displayed beside the scroll markers toggle option."
   },
   "extension_option_scroll_markers_title": {
-    "message": "如果启用，滚动标记将出现在页面的右边缘，指示文档中所有匹配项的位置。",
+    "message": "若启用，滚动标记将出现在页面的右边缘，指示文档中所有匹配项的位置。",
     "description": "Tooltip text for the scroll markers option description icon."
   },
   "search_option_max_results_text": {

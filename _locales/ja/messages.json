@@ -198,11 +198,11 @@
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
   "extension_option_scroll_markers_text": {
-    "message": "スクロールマーカーを有効にする",
+    "message": "スクロールマーカーを表示",
     "description": "Text displayed beside the scroll markers toggle option."
   },
   "extension_option_scroll_markers_title": {
-    "message": "有効時：すべての一致箇所の位置を示すスクロールマーカーがページ右端に表示されます。",
+    "message": "有効時：すべての一致箇所の位置を示すスクロールマーカーがページ右端に表示されます",
     "description": "Tooltip text for the scroll markers option description icon."
   },
   "search_option_max_results_text": {
