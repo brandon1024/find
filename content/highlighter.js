@@ -337,6 +337,7 @@ Find.register('Content.Highlighter', function(self) {
      * @private
      * */
     self.restore = function() {
+        removeAllScrollMarkers();
         let classes = [indexHighlight, allHighlight];
         for (let classIndex = 0; classIndex < classes.length; classIndex++) {
             let els = Array.from(document.querySelectorAll('.' + classes[classIndex]));
@@ -354,7 +355,6 @@ Find.register('Content.Highlighter', function(self) {
             }
         }
 
-        removeAllScrollMarkers();
     };
 
     // ── Scroll Marker / Fake Scrollbar Helpers ─────────────────────────────────────
@@ -521,7 +521,7 @@ Find.register('Content.Highlighter', function(self) {
         }
     }
 
-    function createScrollMarker(occurrenceId, topPosition, color) {
+    function createScrollMarker(occurrenceId, topPosition, color, target) {
         try {
             if (topPosition === null || topPosition === undefined) return;
             const container = document.getElementById('find-ext-scrollbar-overlay');
@@ -548,7 +548,7 @@ Find.register('Content.Highlighter', function(self) {
                 'border: none',
                 'border-radius: 1px'
             ].join('; ');
-            container.appendChild(marker);
+            (target || container).appendChild(marker);
         } catch (e) {
             console.error('Error creating scroll marker:', e);
         }
@@ -610,19 +610,22 @@ Find.register('Content.Highlighter', function(self) {
                 } catch (e) { continue; }
             }
 
+            const fragment = document.createDocumentFragment();
             occurrenceIds.forEach(function (occurrenceId) {
                 try {
                     const occurrenceEl = document.querySelector('.find-ext-occr' + occurrenceId);
                     if (occurrenceEl) {
                         const markerTop = calculateScrollMarkerPosition(occurrenceEl);
                         if (markerTop !== null) {
-                            createScrollMarker(occurrenceId, markerTop, options.all_highlight_color.hexColor);
+                            createScrollMarker(occurrenceId, markerTop, options.all_highlight_color.hexColor, fragment);
                         }
                     }
                 } catch (e) {
                     console.error('Error creating marker for occurrence ' + occurrenceId + ':', e);
                 }
             });
+            const track = document.getElementById('find-ext-scrollbar-overlay');
+            if (track) { track.appendChild(fragment); }
         } catch (e) {
             console.error('Error in createScrollMarkers:', e);
         }
