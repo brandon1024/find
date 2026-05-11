@@ -219,7 +219,7 @@ Find.register('Content.Highlighter', function(self) {
         }
 
         if (options && options.scroll_markers) {
-            createScrollMarkers(occurrenceMap, options);
+            createScrollMarkers(options);
         }
     };
 
@@ -381,7 +381,7 @@ Find.register('Content.Highlighter', function(self) {
         return document.body;
     }
 
-    function injectFakeScrollbar(options) {
+    function injectFakeScrollbar() {
         // Remove any existing overlay first
         removeAllScrollMarkers();
         const dark = isPageDark();
@@ -575,12 +575,12 @@ Find.register('Content.Highlighter', function(self) {
         for (const el of strays) { if (el.parentNode) el.parentNode.removeChild(el); }
     }
 
-    function createScrollMarkers(occurrenceMap, options) {
+    function createScrollMarkers(options) {
         if (!options || !options.scroll_markers) return;
         if (!document.body || !document.documentElement) return;
 
         // Build fake scrollbar track (also clears previous)
-        injectFakeScrollbar(options);
+        injectFakeScrollbar();
 
         // Collect unique occurrence IDs from highlight spans
         const occurrenceIds = new Set();
