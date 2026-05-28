@@ -364,16 +364,6 @@ Find.register('Content.Highlighter', function(self) {
         return w > 0 ? w : 13;
     })();
 
-    function isPageDark() {
-        const bg = getComputedStyle(document.documentElement).backgroundColor
-            || getComputedStyle(document.body).backgroundColor;
-        const m = bg.match(/\d+/g);
-        if (!m) return window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const [r, g, b] = m.map(Number);
-        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        return luminance < 0.5;
-    }
-
     function getScrollingElement() {
         // Returns the element that actually scrolls the page
         if (document.scrollingElement) return document.scrollingElement;
@@ -385,10 +375,9 @@ Find.register('Content.Highlighter', function(self) {
     function injectFakeScrollbar() {
         // Remove any existing overlay first
         removeAllScrollMarkers();
-        const dark = isPageDark();
-        const trackColor = dark ? '#2b2b2b' : '#f1f1f1';
-        const thumbColor = dark ? '#6b6b6b' : '#aaaaaa';
-        const thumbHoverColor = dark ? '#888888' : '#888888';
+        const trackColor = '#2b2b2b';
+        const thumbColor = '#6b6b6b';
+        const thumbHoverColor = '#888888';
 
         // Suppress the native scrollbar
         const styleEl = document.createElement('style');
