@@ -358,10 +358,12 @@ Find.register('Content.Highlighter', function(self) {
 
     // ── Scroll Marker / Fake Scrollbar Helpers ─────────────────────────────────────
 
-    function getNativeScrollbarWidth() {
+    const scrollbarWidth = (function () {
         const w = window.innerWidth - document.documentElement.clientWidth;
+        // Using OS-native overlay scrollbars produces w=0 here.
         return w > 0 ? w : 13;
-    }
+    })();
+
     function isPageDark() {
         const bg = getComputedStyle(document.documentElement).backgroundColor
             || getComputedStyle(document.body).backgroundColor;
@@ -387,7 +389,6 @@ Find.register('Content.Highlighter', function(self) {
         const trackColor = dark ? '#2b2b2b' : '#f1f1f1';
         const thumbColor = dark ? '#6b6b6b' : '#aaaaaa';
         const thumbHoverColor = dark ? '#888888' : '#888888';
-        const sbWidth = getNativeScrollbarWidth();
 
         // Suppress the native scrollbar
         const styleEl = document.createElement('style');
@@ -404,7 +405,7 @@ Find.register('Content.Highlighter', function(self) {
             'position: fixed',
             'top: 0',
             'right: 0',
-            'width: ' + sbWidth + 'px',
+            'width: ' + scrollbarWidth + 'px',
             'height: 100vh',
             'z-index: 2147483647',
             'pointer-events: auto',
