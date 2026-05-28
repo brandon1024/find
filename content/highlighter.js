@@ -354,7 +354,6 @@ Find.register('Content.Highlighter', function(self) {
                 parent.normalize();
             }
         }
-
     };
 
     // ── Scroll Marker / Fake Scrollbar Helpers ─────────────────────────────────────
