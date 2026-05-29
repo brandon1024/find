@@ -439,14 +439,16 @@ Find.register('Content.Highlighter', function(self) {
         }
 
         updateThumb();
-        let scrollRafPending = false;
+        // Throttle down.
+        // "requestAnimationFrame()" is useless. See MDN document for "scroll event".
+        let ticking = false;
         const scrollListener = function () {
-            if (!scrollRafPending) {
-                scrollRafPending = true;
-                requestAnimationFrame(function () {
+            if (!ticking) {
+                ticking = true;
+                setTimeout(function () {
                     updateThumb();
-                    scrollRafPending = false;
-                });
+                    ticking = false;
+                }, (1000 / 60) /* 60 FPS */);
             }
         };
         window.addEventListener('scroll', scrollListener);
