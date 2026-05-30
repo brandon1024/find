@@ -466,12 +466,10 @@ Find.register('Content.Highlighter', function(self) {
         });
 
         // Drag thumb
-        let dragStartY = 0;
-        let dragStartScroll = 0;
         thumb.addEventListener('mousedown', function (e) {
             e.preventDefault();
-            dragStartY = e.clientY;
-            dragStartScroll = window.scrollY || getScrollingElement().scrollTop;
+            const dragStartY = e.clientY;
+            const dragStartScroll = window.scrollY || getScrollingElement().scrollTop;
             const onMove = function (e) {
                 const scrollEl = getScrollingElement();
                 const docHeight = scrollEl.scrollHeight;
