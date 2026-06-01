@@ -422,18 +422,24 @@ Find.register('Content.Highlighter', function(self) {
         track.appendChild(thumb);
         document.body.appendChild(track);
 
+        let currentScrollY = 0;
+        let docInvisibleHeight = 0;
         function updateThumb() {
             const scrollEl = getScrollingElement();
             const docHeight = scrollEl.scrollHeight;
             const viewHeight = window.innerHeight;
+
             if (docHeight <= viewHeight) {
                 thumb.style.display = 'none';
                 return;
             }
             thumb.style.display = 'block';
+
             const thumbH = Math.max(30, (viewHeight / docHeight) * viewHeight);
             const maxThumbTop = viewHeight - thumbH;
-            const scrollRatio = (window.scrollY || scrollEl.scrollTop) / (docHeight - viewHeight);
+            currentScrollY = window.scrollY || scrollEl.scrollTop;
+            docInvisibleHeight = docHeight - viewHeight;
+            const scrollRatio = currentScrollY / docInvisibleHeight;
             thumb.style.height = thumbH + 'px';
             thumb.style.top = Math.min(maxThumbTop, scrollRatio * maxThumbTop) + 'px';
         }
@@ -458,27 +464,20 @@ Find.register('Content.Highlighter', function(self) {
         // Click on track to jump
         track.addEventListener('click', function (e) {
             if (e.target === thumb) return;
-            const rect = track.getBoundingClientRect();
-            const ratio = (e.clientY - rect.top) / rect.height;
-            const scrollEl = getScrollingElement();
-            const targetY = ratio * (scrollEl.scrollHeight - window.innerHeight);
+            const ratio = (e.clientY - track.clientTop) / track.clientHeight;
+            const targetY = ratio * docInvisibleHeight;
             window.scrollTo({ top: targetY, behavior: 'smooth' });
         });
 
         // Drag thumb
         thumb.addEventListener('mousedown', function (e) {
             e.preventDefault();
+            const dragStartScrollY = currentScrollY;
             const dragStartY = e.clientY;
-            const dragStartScroll = window.scrollY || getScrollingElement().scrollTop;
             const onMove = function (e) {
-                const scrollEl = getScrollingElement();
-                const docHeight = scrollEl.scrollHeight;
-                const viewHeight = window.innerHeight;
-                const thumbH = Math.max(30, (viewHeight / docHeight) * viewHeight);
-                const trackH = viewHeight - thumbH;
-                const delta = e.clientY - dragStartY;
-                const scrollDelta = (delta / trackH) * (docHeight - viewHeight);
-                window.scrollTo(0, dragStartScroll + scrollDelta);
+                const ratio = (e.clientY - dragStartY) / (track.clientHeight - thumb.clientHeight /* exclude the thumb itself */);
+                const targetY = dragStartScrollY + ratio * docInvisibleHeight;
+                window.scrollTo(0, targetY);
             };
             const onUp = function () {
                 document.removeEventListener('mousemove', onMove);
