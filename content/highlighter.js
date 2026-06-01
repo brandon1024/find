@@ -504,10 +504,8 @@ Find.register('Content.Highlighter', function(self) {
         return Number.isFinite(finalPosition) ? finalPosition : null;
     }
 
-    function createScrollMarker(occurrenceId, topPosition, color, target) {
-        if (topPosition === null || topPosition === undefined) return;
-        const container = document.getElementById('find-ext-scrollbar-overlay');
-        if (!container) return;
+    function createScrollMarker(occurrenceId, topPosition, color) {
+        const container = document.createDocumentFragment();
         const cssTop = typeof topPosition === 'string' ? topPosition : (topPosition + 'px');
         const marker = document.createElement('div');
         marker.className = 'find-ext-scroll-marker find-ext-marker-' + occurrenceId;
@@ -530,7 +528,8 @@ Find.register('Content.Highlighter', function(self) {
             'border: none',
             'border-radius: 1px'
         ].join('; ');
-        (target || container).appendChild(marker);
+        container.appendChild(marker);
+        return container;
     }
 
     function updateScrollMarkerActive(index, options) {
@@ -568,28 +567,18 @@ Find.register('Content.Highlighter', function(self) {
         if (!document.body || !document.documentElement) return;
 
         // Build fake scrollbar track (also clears previous)
-        injectFakeScrollbar();
+        const track = injectFakeScrollbar();
 
-        // Collect unique occurrence IDs from highlight spans
-        const occurrenceIds = new Set();
-        const allOccurrences = Array.from(document.querySelectorAll("[class*='find-ext-occr']"));
-        for (let i = 0; i < allOccurrences.length; i++) {
-            const classMatch = allOccurrences[i].getAttribute('class').match(/find-ext-occr(\d+)/);
-            if (classMatch && classMatch[1]) occurrenceIds.add(classMatch[1]);
-        }
-
-        const fragment = document.createDocumentFragment();
-        occurrenceIds.forEach(function (occurrenceId) {
-            const occurrenceEl = document.querySelector('.find-ext-occr' + occurrenceId);
-            if (occurrenceEl) {
-                const markerTop = calculateScrollMarkerPosition(occurrenceEl);
-                if (markerTop !== null) {
-                    createScrollMarker(occurrenceId, markerTop, options.all_highlight_color.hexColor, fragment);
-                }
+        // Collect occurrence IDs from highlight spans
+        const occurrenceEls = Array.from(document.querySelectorAll("[class*='find-ext-occr']:not([class='find-ext-occr']"));
+        occurrenceEls.forEach(function (occurrenceEl) {
+            const classMatch = occurrenceEl.getAttribute('class').match(/find-ext-occr(\d+)/)
+            if (!classMatch || !classMatch[1]) return;
+            const markerTop = calculateScrollMarkerPosition(occurrenceEl);
+            if (markerTop !== null) {
+                track.appendChild(createScrollMarker(classMatch[1], markerTop, options.all_highlight_color.hexColor));
             }
         });
-        const track = document.getElementById('find-ext-scrollbar-overlay');
-        if (track) { track.appendChild(fragment); }
     }
 
     // ── Utility ────────────────────────────────────────────────────────────────────
