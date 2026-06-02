@@ -459,7 +459,6 @@ Find.register('Content.Highlighter', function(self) {
         };
         window.addEventListener('scroll', scrollListener);
         track._scrollListener = scrollListener;
-        track._styleEl = styleEl;
 
         // Click on track to jump
         track.addEventListener('click', function (e) {
@@ -550,10 +549,9 @@ Find.register('Content.Highlighter', function(self) {
         const track = document.getElementById('find-ext-scrollbar-overlay');
         if (track) {
             if (track._scrollListener) window.removeEventListener('scroll', track._scrollListener);
-            if (track._styleEl && track._styleEl.parentNode) track._styleEl.parentNode.removeChild(track._styleEl);
             if (track.parentNode) track.parentNode.removeChild(track);
         }
-        // Also remove any injected style that may have been orphaned
+        // Remove injected style
         const styleEl = document.getElementById('find-ext-scrollbar-style');
         if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
         // Remove any stray markers
