@@ -535,14 +535,13 @@ Find.register('Content.Highlighter', function(self) {
     function updateScrollMarkerActive(index, options) {
         const markers = Array.from(document.querySelectorAll('.find-ext-scroll-marker'));
         for (let i = 0; i < markers.length; i++) {
-            markers[i].style.backgroundColor = options.all_highlight_color.hexColor;
-            markers[i].style.zIndex = '2';
-        }
-        if (index !== null) {
-            const activeMarkers = Array.from(document.querySelectorAll('.find-ext-scroll-marker.find-ext-marker-' + index));
-            for (let i = 0; i < activeMarkers.length; i++) {
-                activeMarkers[i].style.backgroundColor = options.index_highlight_color.hexColor;
-                activeMarkers[i].style.zIndex = '3';
+            const marker = markers[i];
+            if (marker.classList.contains('find-ext-marker-' + index)) {
+                marker.style.backgroundColor = options.index_highlight_color.hexColor;
+                marker.style.zIndex = '3';
+            } else {
+                marker.style.backgroundColor = options.all_highlight_color.hexColor;
+                marker.style.zIndex = '2';
             }
         }
     }
