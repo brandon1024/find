@@ -505,13 +505,12 @@ Find.register('Content.Highlighter', function(self) {
 
     function createScrollMarker(occurrenceId, topPosition, color) {
         const container = document.createDocumentFragment();
-        const cssTop = typeof topPosition === 'string' ? topPosition : (topPosition + 'px');
         const marker = document.createElement('div');
         marker.className = 'find-ext-scroll-marker find-ext-marker-' + occurrenceId;
         marker.style.cssText = [
             'display: block',
             'position: absolute',
-            'top: ' + cssTop,
+            'top: ' + topPosition + 'px',
             'left: 0',
             'right: 0',
             'width: 100%',
