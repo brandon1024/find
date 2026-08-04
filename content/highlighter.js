@@ -380,15 +380,14 @@ Find.register('Content.Highlighter', function(self) {
         const thumbHoverColor = '#888888';
 
         // Suppress the native scrollbar
-        const styleEl = document.createElement('style');
+        const styleEl = document.head.appendChild(document.createElement('style'));
         styleEl.id = 'find-ext-scrollbar-style';
         styleEl.textContent =
             '::-webkit-scrollbar { width: 0px !important; height: 0px !important; }' +
             'html { scrollbar-width: none !important; }';
-        document.head.appendChild(styleEl);
 
         // Outer track — sits exactly where the native scrollbar was
-        const track = document.createElement('div');
+        const track = document.body.appendChild(document.createElement('div'));
         track.id = 'find-ext-scrollbar-overlay';
         track.style.cssText = [
             'position: fixed',
@@ -404,7 +403,7 @@ Find.register('Content.Highlighter', function(self) {
         ].join('; ');
 
         // Scroll thumb
-        const thumb = document.createElement('div');
+        const thumb = track.appendChild(document.createElement('div'));
         thumb.id = 'find-ext-scroll-thumb';
         thumb.style.cssText = [
             'position: absolute',
@@ -419,8 +418,6 @@ Find.register('Content.Highlighter', function(self) {
         ].join('; ');
         thumb.addEventListener('mouseenter', function () { thumb.style.background = thumbHoverColor; });
         thumb.addEventListener('mouseleave', function () { thumb.style.background = thumbColor; });
-        track.appendChild(thumb);
-        document.body.appendChild(track);
 
         let currentScrollY = 0;
         let docInvisibleHeight = 0;
@@ -505,7 +502,7 @@ Find.register('Content.Highlighter', function(self) {
 
     function createScrollMarker(occurrenceId, topPosition, color) {
         const container = document.createDocumentFragment();
-        const marker = document.createElement('div');
+        const marker = container.appendChild(document.createElement('div'));
         marker.className = 'find-ext-scroll-marker find-ext-marker-' + occurrenceId;
         marker.style.cssText = [
             'display: block',
@@ -526,7 +523,6 @@ Find.register('Content.Highlighter', function(self) {
             'border: none',
             'border-radius: 1px'
         ].join('; ');
-        container.appendChild(marker);
         return container;
     }
 
