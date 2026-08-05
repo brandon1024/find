@@ -372,14 +372,6 @@ Find.register('Content.Highlighter', function(self) {
         return w > 0 ? w : 13;
     })();
 
-    function getScrollingElement() {
-        // Returns the element that actually scrolls the page
-        if (document.scrollingElement) return document.scrollingElement;
-        const de = document.documentElement;
-        if (de.scrollHeight > de.clientHeight && getComputedStyle(de).overflowY !== 'visible') return de;
-        return document.body;
-    }
-
     function injectFakeScrollbar(options) {
         // Remove any existing overlay first
         removeAllScrollMarkers();
@@ -464,7 +456,7 @@ Find.register('Content.Highlighter', function(self) {
         let currentScrollY = 0;
         let docInvisibleHeight = 0;
         function updateThumb() {
-            const scrollEl = getScrollingElement();
+            const scrollEl = document.scrollingElement;
             const docHeight = scrollEl.scrollHeight;
             const viewHeight = window.innerHeight;
 
@@ -532,17 +524,12 @@ Find.register('Content.Highlighter', function(self) {
     }
 
     function calculateScrollMarkerPosition(highlightedNode) {
-        if (!highlightedNode || typeof highlightedNode.getBoundingClientRect !== 'function') return null;
         const clientRect = highlightedNode.getBoundingClientRect();
-        if (!clientRect || !clientRect.width || !clientRect.height) return null;
-        const scrollEl = getScrollingElement();
-        const docHeight = scrollEl.scrollHeight;
-        if (!docHeight || !Number.isFinite(docHeight) || docHeight === 0) return null;
+        const docHeight = document.scrollingElement.scrollHeight;
         const elementAbsoluteTop = window.scrollY + clientRect.top + (0.5 * clientRect.height);
         const proportion = elementAbsoluteTop / docHeight;
         const markerTop = proportion * window.innerHeight;
-        const finalPosition = Math.max(0, Math.min(window.innerHeight - 4, markerTop));
-        return Number.isFinite(finalPosition) ? finalPosition : null;
+        return Math.max(0, Math.min(window.innerHeight - 4, markerTop));
     }
 
     function createScrollMarker(occurrenceId, topPosition) {
