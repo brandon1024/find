@@ -375,9 +375,6 @@ Find.register('Content.Highlighter', function(self) {
     function injectFakeScrollbar(options) {
         // Remove any existing overlay first
         removeAllScrollMarkers();
-        const trackColor = '#2b2b2b';
-        const thumbColor = '#6b6b6b';
-        const thumbHoverColor = '#888888';
 
         // Suppress the native scrollbar
         const styleEl = document.head.appendChild(document.createElement('style'));
@@ -400,9 +397,14 @@ Find.register('Content.Highlighter', function(self) {
                 height: 100vh;
                 z-index: 2147483647;
                 pointer-events: auto;
-                background: ${trackColor};
+                background: #f1f1f1;
                 box-sizing: border-box;
                 overflow: hidden;
+            }
+            @media (prefers-color-scheme: dark) {
+                #find-ext-scrollbar-track {
+                    background: #2b2b2b;
+                }
             }
 
             #find-ext-scroll-thumb {
@@ -410,14 +412,19 @@ Find.register('Content.Highlighter', function(self) {
                 right: 0;
                 width: 100%;
                 min-height: 30px;
-                background: ${thumbColor};
+                background: #aaaaaa;
                 border-radius: 3px;
                 cursor: pointer;
                 box-sizing: border-box;
                 transition: background 0.15s;
             }
+            @media (prefers-color-scheme: dark) {
+                #find-ext-scroll-thumb {
+                    background: #6b6b6b;
+                }
+            }
             #find-ext-scroll-thumb:hover {
-                background: ${thumbHoverColor};
+                background: #888888;
             }
 
             [id^="find-ext-marker-"] {
