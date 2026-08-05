@@ -56,6 +56,7 @@ Find.register('Content.Highlighter', function(self) {
 
         //Iterate each text group
         let occIndex = 0;
+        const occTopPosition = new Map();
         for (let index = 0; index < occurrenceMap.groups; index++) {
             let uuids = occurrenceMap[index].uuids;
             let groupText = '';
@@ -185,6 +186,12 @@ Find.register('Content.Highlighter', function(self) {
                         inMatch = charMap[key].matched;
                         matchGroup.text += tags.openingMarkup;
                     }
+                    if (options && options.scroll_markers) {
+                        if (!occTopPosition.has(occIndex)) {
+                            const markerTop = calculateScrollMarkerPosition(document.getElementById(matchGroup.groupUUID))
+                            occTopPosition.set(occIndex, markerTop)
+                        }
+                    }
                 } else {
                     if (inMatch) {
                         inMatch = charMap[key].matched;
@@ -218,8 +225,9 @@ Find.register('Content.Highlighter', function(self) {
             }
         }
 
+        // Collect occurrence IDs from highlight spans
         if (options && options.scroll_markers) {
-            createScrollMarkers(options);
+            createScrollMarkers(occTopPosition, options);
         }
     };
 
@@ -568,22 +576,10 @@ Find.register('Content.Highlighter', function(self) {
         if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
     }
 
-    function createScrollMarkers(options) {
-        if (!options || !options.scroll_markers) return;
-        if (!document.body || !document.documentElement) return;
-
-        // Build fake scrollbar track (also clears previous)
+    function createScrollMarkers(occTopPositionMap, options) {
         const markerContainer = injectFakeScrollbar(options);
-
-        // Collect occurrence IDs from highlight spans
-        const occurrenceEls = Array.from(document.querySelectorAll("[class*='find-ext-occr']:not([class='find-ext-occr']"));
-        occurrenceEls.forEach(function (occurrenceEl) {
-            const classMatch = occurrenceEl.getAttribute('class').match(/find-ext-occr(\d+)/)
-            if (!classMatch || !classMatch[1]) return;
-            const markerTop = calculateScrollMarkerPosition(occurrenceEl);
-            if (markerTop !== null) {
-                markerContainer.appendChild(createScrollMarker(classMatch[1], markerTop));
-            }
+        occTopPositionMap.forEach((markerTop, occIndex) => {
+            markerContainer.appendChild(createScrollMarker(occIndex, markerTop));
         });
     }
 
