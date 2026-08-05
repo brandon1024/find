@@ -374,7 +374,7 @@ Find.register('Content.Highlighter', function(self) {
     class ScrollbarHighlightMaker {
         scrollbarWidth = (function () {
             const w = window.innerWidth - document.documentElement.clientWidth;
-            // Using OS-native overlay scrollbars produces w=0 here.
+            // Using OS-native overlay scrollbars produces w=0 here
             return w > 0 ? w : 13;
         })();
 
@@ -404,9 +404,8 @@ Find.register('Content.Highlighter', function(self) {
 
             this.overlay = document.body.appendChild(document.createElement('div'));
             const shadowRoot = this.overlay.attachShadow({mode: 'open'});
-            const rootStyle = shadowRoot.appendChild(document.createElement('style'));
 
-            rootStyle.textContent = `
+            shadowRoot.appendChild(document.createElement('style')).textContent = `
                 #find-ext-scrollbar-track {
                     position: fixed;
                     top: 0;
@@ -470,7 +469,7 @@ Find.register('Content.Highlighter', function(self) {
                 }
             `;
 
-            // Outer track — sits exactly where the native scrollbar was
+            // Scroll track, sits exactly where the native scrollbar was
             this.track = shadowRoot.appendChild(document.createElement('div'));
             this.track.id = 'find-ext-scrollbar-track';
 
@@ -478,6 +477,7 @@ Find.register('Content.Highlighter', function(self) {
             this.thumb = this.track.appendChild(document.createElement('div'));
             this.thumb.id = 'find-ext-scroll-thumb';
 
+            // Highlight markers
             this.markerContainer = this.track.appendChild(document.createElement('div'));
         }
 
@@ -492,18 +492,18 @@ Find.register('Content.Highlighter', function(self) {
             }
             this.thumb.style.display = 'block';
 
-            const thumbH = Math.max(30, (viewHeight / docHeight) * viewHeight);
-            const maxThumbTop = viewHeight - thumbH;
+            const thumbHeight = Math.max(30, (viewHeight / docHeight) * viewHeight);
+            const maxThumbTop = viewHeight - thumbHeight;
             this.currentScrollY = window.scrollY || scrollElement.scrollTop;
             this.docInvisibleHeight = docHeight - viewHeight;
             const scrollRatio = this.currentScrollY / this.docInvisibleHeight;
-            this.thumb.style.height = thumbH + 'px';
+            this.thumb.style.height = thumbHeight + 'px';
             this.thumb.style.top = Math.min(maxThumbTop, scrollRatio * maxThumbTop) + 'px';
         }
 
         bindScroll() {
-            // Throttle down.
-            // "requestAnimationFrame()" is useless. See MDN document for "scroll event".
+            // Throttle down here
+            // Do not use "requestAnimationFrame()", see MDN document for "scroll event"
             this.ticking = false;
             this.scrollListener = () => {
                 if (!this.ticking) {
@@ -528,7 +528,6 @@ Find.register('Content.Highlighter', function(self) {
         }
 
         bindThumbDrag() {
-            // Drag thumb
             this.thumb.addEventListener('mousedown', (e) => {
                 e.preventDefault();
                 const dragStartScrollY = this.currentScrollY;
@@ -568,15 +567,16 @@ Find.register('Content.Highlighter', function(self) {
             return container;
         }
 
-        setActive(index) {
+        setActive(occIndex) {
             const markers = this.markerContainer.children;
-            Array.from(markers).forEach((el, i) => {
-                el.className = i === index ? 'index_highlight' : '';
+            Array.from(markers).forEach((el, index) => {
+                el.className = index === occIndex ? 'index_highlight' : '';
             });
         }
 
         destroy() {
             window.removeEventListener('scroll', this.scrollListener);
+            // Other event listeners will be removed by GC
             this.overlay?.parentNode?.removeChild(this.overlay);
             this.globalStyle?.parentNode?.removeChild(this.globalStyle);
         }
