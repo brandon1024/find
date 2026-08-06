@@ -8,6 +8,7 @@ Find.register('Content.Highlighter', function(self) {
 
     const indexHighlight = 'find-ext-index-highlight';
     const allHighlight = 'find-ext-all-highlight';
+    let scrollbarMaker = null;
 
     /**
      * Highlight all occurrences of a regex in the page, using an occurrence map and regex.
@@ -18,6 +19,11 @@ Find.register('Content.Highlighter', function(self) {
      * @param {object} options - The search and highlight options
      * */
     self.highlightAll = function(occurrenceMap, regex, options) {
+        if (options && options.scroll_markers) {
+            scrollbarMaker?.destroy();
+            scrollbarMaker = new ScrollbarHighlightMaker(options);
+        }
+
         const tags = {
             occIndex: null,
             maxIndex: null,
@@ -185,6 +191,9 @@ Find.register('Content.Highlighter', function(self) {
                         inMatch = charMap[key].matched;
                         matchGroup.text += tags.openingMarkup;
                     }
+                    if (options && options.scroll_markers) {
+                        scrollbarMaker.addOccurrence(occIndex, document.getElementById(matchGroup.groupUUID));
+                    }
                 } else {
                     if (inMatch) {
                         inMatch = charMap[key].matched;
@@ -218,8 +227,10 @@ Find.register('Content.Highlighter', function(self) {
             }
         }
 
+        // Collect occurrence IDs from highlight spans
         if (options && options.scroll_markers) {
-            createScrollMarkers(occurrenceMap, options);
+            scrollbarMaker.mount();
+            scrollbarMaker.createMarkers();
         }
     };
 
@@ -266,7 +277,9 @@ Find.register('Content.Highlighter', function(self) {
             }
         }
 
-        if (options.scroll_markers) { updateScrollMarkerActive(index, options); }
+        if (options && options.scroll_markers) {
+            scrollbarMaker.setActive(index);
+        }
     };
 
     /**
@@ -337,7 +350,9 @@ Find.register('Content.Highlighter', function(self) {
      * @private
      * */
     self.restore = function() {
-        removeAllScrollMarkers();
+        scrollbarMaker?.destroy();
+        scrollbarMaker = null;
+
         let classes = [indexHighlight, allHighlight];
         for (let classIndex = 0; classIndex < classes.length; classIndex++) {
             let els = Array.from(document.querySelectorAll('.' + classes[classIndex]));
@@ -354,284 +369,239 @@ Find.register('Content.Highlighter', function(self) {
                 parent.normalize();
             }
         }
-
     };
 
-    // ── Scroll Marker / Fake Scrollbar Helpers ─────────────────────────────────────
+    class ScrollbarHighlightMaker {
+        scrollbarWidth = (function () {
+            const w = window.innerWidth - document.documentElement.clientWidth;
+            // Using OS-native overlay scrollbars produces w=0 here
+            return w > 0 ? w : 13;
+        })();
 
-    function getNativeScrollbarWidth() {
-        const w = window.innerWidth - document.documentElement.clientWidth;
-        return w > 0 ? w : 13;
-    }
-    function isPageDark() {
-        const bg = getComputedStyle(document.documentElement).backgroundColor
-            || getComputedStyle(document.body).backgroundColor;
-        const m = bg.match(/\d+/g);
-        if (!m) return window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const [r, g, b] = m.map(Number);
-        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        return luminance < 0.5;
-    }
+        constructor(options) {
+            this.options = options;
 
-    function getScrollingElement() {
-        // Returns the element that actually scrolls the page
-        if (document.scrollingElement) return document.scrollingElement;
-        const de = document.documentElement;
-        if (de.scrollHeight > de.clientHeight && getComputedStyle(de).overflowY !== 'visible') return de;
-        return document.body;
-    }
+            this.globalStyle = null;
 
-    function injectFakeScrollbar(options) {
-        // Remove any existing overlay first
-        removeAllScrollMarkers();
-        const dark = isPageDark();
-        const trackColor = dark ? '#2b2b2b' : '#f1f1f1';
-        const thumbColor = dark ? '#6b6b6b' : '#aaaaaa';
-        const thumbHoverColor = dark ? '#888888' : '#888888';
-        const sbWidth = getNativeScrollbarWidth();
+            this.overlay = null;
+            this.track = null;
+            this.thumb = null;
+            this.markerContainer = null;
 
-        // Suppress the native scrollbar
-        const styleEl = document.createElement('style');
-        styleEl.id = 'find-ext-scrollbar-style';
-        styleEl.textContent =
-            '::-webkit-scrollbar { width: 0px !important; height: 0px !important; }' +
-            'html { scrollbar-width: none !important; }';
-        document.head.appendChild(styleEl);
+            this.currentScrollY = 0;
+            this.docInvisibleHeight = 0;
+            this.scrollListener = null;
 
-        // Outer track — sits exactly where the native scrollbar was
-        const track = document.createElement('div');
-        track.id = 'find-ext-scrollbar-overlay';
-        track.style.cssText = [
-            'position: fixed',
-            'top: 0',
-            'right: 0',
-            'width: ' + sbWidth + 'px',
-            'height: 100vh',
-            'z-index: 2147483647',
-            'pointer-events: auto',
-            'background: ' + trackColor,
-            'box-sizing: border-box',
-            'overflow: hidden'
-        ].join('; ');
-
-        // Scroll thumb
-        const thumb = document.createElement('div');
-        thumb.id = 'find-ext-scroll-thumb';
-        thumb.style.cssText = [
-            'position: absolute',
-            'right: 0',
-            'width: 100%',
-            'min-height: 30px',
-            'background: ' + thumbColor,
-            'border-radius: 3px',
-            'cursor: pointer',
-            'box-sizing: border-box',
-            'transition: background 0.15s'
-        ].join('; ');
-        thumb.addEventListener('mouseenter', function () { thumb.style.background = thumbHoverColor; });
-        thumb.addEventListener('mouseleave', function () { thumb.style.background = thumbColor; });
-        track.appendChild(thumb);
-        document.body.appendChild(track);
-
-        function updateThumb() {
-            const scrollEl = getScrollingElement();
-            const docHeight = scrollEl.scrollHeight;
-            const viewHeight = window.innerHeight;
-            if (docHeight <= viewHeight) {
-                thumb.style.display = 'none';
-                return;
-            }
-            thumb.style.display = 'block';
-            const thumbH = Math.max(30, (viewHeight / docHeight) * viewHeight);
-            const maxThumbTop = viewHeight - thumbH;
-            const scrollRatio = (window.scrollY || scrollEl.scrollTop) / (docHeight - viewHeight);
-            thumb.style.height = thumbH + 'px';
-            thumb.style.top = Math.min(maxThumbTop, scrollRatio * maxThumbTop) + 'px';
+            this.occTopPositionMap = new Map();
         }
 
-        updateThumb();
-        let scrollRafPending = false;
-        const scrollListener = function () {
-            if (!scrollRafPending) {
-                scrollRafPending = true;
-                requestAnimationFrame(function () {
-                    updateThumb();
-                    scrollRafPending = false;
-                });
+        addComponents() {
+            // Suppress the native scrollbar
+            this.globalStyle = document.head.appendChild(document.createElement('style'));
+            this.globalStyle.textContent =
+                '::-webkit-scrollbar { width: 0px !important; height: 0px !important; }' +
+                'html { scrollbar-width: none !important; }';
+
+            this.overlay = document.body.appendChild(document.createElement('div'));
+            const shadowRoot = this.overlay.attachShadow({mode: 'open'});
+
+            shadowRoot.appendChild(document.createElement('style')).textContent = `
+                #find-ext-scrollbar-track {
+                    position: fixed;
+                    top: 0;
+                    right: 0;
+                    width: ${this.scrollbarWidth}px;
+                    height: 100vh;
+                    z-index: 2147483647;
+                    pointer-events: auto;
+                    background: #f1f1f1;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                }
+                @media (prefers-color-scheme: dark) {
+                    #find-ext-scrollbar-track {
+                        background: #2b2b2b;
+                    }
+                }
+
+                #find-ext-scroll-thumb {
+                    position: absolute;
+                    right: 0;
+                    width: 100%;
+                    min-height: 30px;
+                    background: #aaaaaa;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    box-sizing: border-box;
+                    transition: background 0.15s;
+                }
+                @media (prefers-color-scheme: dark) {
+                    #find-ext-scroll-thumb {
+                        background: #6b6b6b;
+                    }
+                }
+                #find-ext-scroll-thumb:hover {
+                    background: #888888;
+                }
+
+                [id^="find-ext-marker-"] {
+                    display: block;
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    width: 100%;
+                    height: 4px;
+                    min-height: 4px;
+                    background-color: ${this.options.all_highlight_color.hexColor};
+                    opacity: 0.85;
+                    z-index: 2;
+                    box-sizing: border-box;
+                    pointer-events: none;
+                    margin: 0;
+                    padding: 0;
+                    border: none;
+                    border-radius: 1px;
+                }
+
+                [id^="find-ext-marker-"].index_highlight {
+                    background-color: ${this.options.index_highlight_color.hexColor};
+                    z-index: 3;
+                }
+            `;
+
+            // Scroll track, sits exactly where the native scrollbar was
+            this.track = shadowRoot.appendChild(document.createElement('div'));
+            this.track.id = 'find-ext-scrollbar-track';
+
+            // Scroll thumb
+            this.thumb = this.track.appendChild(document.createElement('div'));
+            this.thumb.id = 'find-ext-scroll-thumb';
+
+            // Highlight markers
+            this.markerContainer = this.track.appendChild(document.createElement('div'));
+        }
+
+        updateThumb() {
+            const scrollElement = document.scrollingElement;
+            const docHeight = scrollElement.scrollHeight;
+            const viewHeight = window.innerHeight;
+
+            if (docHeight <= viewHeight) {
+                this.thumb.style.display = 'none';
+                return;
             }
-        };
-        window.addEventListener('scroll', scrollListener);
-        track._scrollListener = scrollListener;
-        track._styleEl = styleEl;
+            this.thumb.style.display = 'block';
 
-        // Click on track to jump
-        track.addEventListener('click', function (e) {
-            if (e.target === thumb) return;
-            const rect = track.getBoundingClientRect();
-            const ratio = (e.clientY - rect.top) / rect.height;
-            const scrollEl = getScrollingElement();
-            const targetY = ratio * (scrollEl.scrollHeight - window.innerHeight);
-            window.scrollTo({ top: targetY, behavior: 'smooth' });
-        });
+            const thumbHeight = Math.max(30, (viewHeight / docHeight) * viewHeight);
+            const maxThumbTop = viewHeight - thumbHeight;
+            this.currentScrollY = window.scrollY || scrollElement.scrollTop;
+            this.docInvisibleHeight = docHeight - viewHeight;
+            const scrollRatio = this.currentScrollY / this.docInvisibleHeight;
+            this.thumb.style.height = thumbHeight + 'px';
+            this.thumb.style.top = Math.min(maxThumbTop, scrollRatio * maxThumbTop) + 'px';
+        }
 
-        // Drag thumb
-        let dragStartY = 0;
-        let dragStartScroll = 0;
-        thumb.addEventListener('mousedown', function (e) {
-            e.preventDefault();
-            dragStartY = e.clientY;
-            dragStartScroll = window.scrollY || getScrollingElement().scrollTop;
-            const onMove = function (e) {
-                const scrollEl = getScrollingElement();
-                const docHeight = scrollEl.scrollHeight;
-                const viewHeight = window.innerHeight;
-                const thumbH = Math.max(30, (viewHeight / docHeight) * viewHeight);
-                const trackH = viewHeight - thumbH;
-                const delta = e.clientY - dragStartY;
-                const scrollDelta = (delta / trackH) * (docHeight - viewHeight);
-                window.scrollTo(0, dragStartScroll + scrollDelta);
+        bindScroll() {
+            // Throttle down here
+            // Do not use "requestAnimationFrame()", see MDN document for "scroll event"
+            this.ticking = false;
+            this.scrollListener = () => {
+                if (!this.ticking) {
+                    this.ticking = true;
+                    setTimeout(() => {
+                        this.updateThumb();
+                        this.ticking = false;
+                    }, (1000 / 60) /* 60 FPS */);
+                }
             };
-            const onUp = function () {
-                document.removeEventListener('mousemove', onMove);
-                document.removeEventListener('mouseup', onUp);
-            };
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onUp);
-        });
+            window.addEventListener('scroll', this.scrollListener);
+        }
 
-        return track;
-    }
+        bindTrackClick() {
+            // Click on track to jump
+            this.track.addEventListener('click', (e) => {
+                if (e.target === this.thumb) return;
+                const ratio = (e.clientY - this.track.clientTop) / this.track.clientHeight;
+                const targetY = ratio * this.docInvisibleHeight;
+                window.scrollTo({ top: targetY, behavior: 'smooth' });
+            });
+        }
 
-    function calculateScrollMarkerPosition(highlightedNode) {
-        try {
-            if (!highlightedNode || typeof highlightedNode.getBoundingClientRect !== 'function') return null;
-            const clientRect = highlightedNode.getBoundingClientRect();
-            if (!clientRect || !clientRect.width || !clientRect.height) return null;
-            const scrollEl = getScrollingElement();
-            const docHeight = scrollEl.scrollHeight;
-            if (!docHeight || !Number.isFinite(docHeight) || docHeight === 0) return null;
+        bindThumbDrag() {
+            this.thumb.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                const dragStartScrollY = this.currentScrollY;
+                const dragStartY = e.clientY;
+                const onMove = (e) => {
+                    const ratio = (e.clientY - dragStartY) / (this.track.clientHeight - this.thumb.clientHeight /* exclude the thumb itself */);
+                    const targetY = dragStartScrollY + ratio * this.docInvisibleHeight;
+                    window.scrollTo(0, targetY);
+                };
+                const onUp = function () {
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onUp);
+                };
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+            });
+        }
+
+
+        /**
+         * @private
+         * */
+        calculateMarkerPosition(el) {
+            const clientRect = el.getBoundingClientRect();
+            const docHeight = document.scrollingElement.scrollHeight;
             const elementAbsoluteTop = window.scrollY + clientRect.top + (0.5 * clientRect.height);
             const proportion = elementAbsoluteTop / docHeight;
             const markerTop = proportion * window.innerHeight;
-            const finalPosition = Math.max(0, Math.min(window.innerHeight - 4, markerTop));
-            return Number.isFinite(finalPosition) ? finalPosition : null;
-        } catch (e) {
-            console.error('Error calculating scroll marker position:', e);
-            return null;
+            return Math.max(0, Math.min(window.innerHeight - 4, markerTop));
         }
-    }
 
-    function createScrollMarker(occurrenceId, topPosition, color, target) {
-        try {
-            if (topPosition === null || topPosition === undefined) return;
-            const container = document.getElementById('find-ext-scrollbar-overlay');
-            if (!container) return;
-            const cssTop = typeof topPosition === 'string' ? topPosition : (topPosition + 'px');
-            const marker = document.createElement('div');
-            marker.className = 'find-ext-scroll-marker find-ext-marker-' + occurrenceId;
-            marker.style.cssText = [
-                'display: block',
-                'position: absolute',
-                'top: ' + cssTop,
-                'left: 0',
-                'right: 0',
-                'width: 100%',
-                'height: 4px',
-                'min-height: 4px',
-                'background-color: ' + (color || '#ffff00'),
-                'opacity: 0.85',
-                'z-index: 2',
-                'box-sizing: border-box',
-                'pointer-events: none',
-                'margin: 0',
-                'padding: 0',
-                'border: none',
-                'border-radius: 1px'
-            ].join('; ');
-            (target || container).appendChild(marker);
-        } catch (e) {
-            console.error('Error creating scroll marker:', e);
+        createMarker(occurrenceId, topPosition) {
+            const container = document.createDocumentFragment();
+            const marker = container.appendChild(document.createElement('div'));
+            marker.id = 'find-ext-marker-' + occurrenceId;
+            marker.style.top = topPosition + 'px';
+            return container;
         }
-    }
 
-    function updateScrollMarkerActive(index, options) {
-        try {
-            const markers = Array.from(document.querySelectorAll('.find-ext-scroll-marker'));
-            for (let i = 0; i < markers.length; i++) {
-                markers[i].style.backgroundColor = options.all_highlight_color.hexColor;
-                markers[i].style.zIndex = '2';
-            }
-            if (index !== null) {
-                const activeMarkers = Array.from(document.querySelectorAll('.find-ext-scroll-marker.find-ext-marker-' + index));
-                for (let i = 0; i < activeMarkers.length; i++) {
-                    activeMarkers[i].style.backgroundColor = options.index_highlight_color.hexColor;
-                    activeMarkers[i].style.zIndex = '3';
-                }
-            }
-        } catch (e) {
-            console.error('Error updating scroll marker active state:', e);
-        }
-    }
-
-    function removeAllScrollMarkers() {
-        try {
-            const track = document.getElementById('find-ext-scrollbar-overlay');
-            if (track) {
-                if (track._scrollListener) window.removeEventListener('scroll', track._scrollListener);
-                if (track._styleEl && track._styleEl.parentNode) track._styleEl.parentNode.removeChild(track._styleEl);
-                if (track.parentNode) track.parentNode.removeChild(track);
-            }
-            // Also remove any injected style that may have been orphaned
-            const styleEl = document.getElementById('find-ext-scrollbar-style');
-            if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
-            // Remove any stray markers
-            const strays = Array.from(document.querySelectorAll('.find-ext-scroll-marker'));
-            for (const el of strays) { if (el.parentNode) el.parentNode.removeChild(el); }
-        } catch (e) {
-            console.error('Error removing scroll markers:', e);
-        }
-    }
-
-    function createScrollMarkers(occurrenceMap, options) {
-        try {
-            if (!options || !options.scroll_markers) return;
-            if (!document.body || !document.documentElement) return;
-
-            // Build fake scrollbar track (also clears previous)
-            injectFakeScrollbar(options);
-
-            // Collect unique occurrence IDs from highlight spans
-            const occurrenceIds = new Set();
-            const allOccurrences = Array.from(document.querySelectorAll("[class*='find-ext-occr']"));
-            for (let i = 0; i < allOccurrences.length; i++) {
-                try {
-                    const classMatch = allOccurrences[i].getAttribute('class').match(/find-ext-occr(\d+)/);
-                    if (classMatch && classMatch[1]) occurrenceIds.add(classMatch[1]);
-                } catch (e) { continue; }
-            }
-
-            const fragment = document.createDocumentFragment();
-            occurrenceIds.forEach(function (occurrenceId) {
-                try {
-                    const occurrenceEl = document.querySelector('.find-ext-occr' + occurrenceId);
-                    if (occurrenceEl) {
-                        const markerTop = calculateScrollMarkerPosition(occurrenceEl);
-                        if (markerTop !== null) {
-                            createScrollMarker(occurrenceId, markerTop, options.all_highlight_color.hexColor, fragment);
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error creating marker for occurrence ' + occurrenceId + ':', e);
-                }
+        setActive(occIndex) {
+            const markers = this.markerContainer.children;
+            Array.from(markers).forEach((el, index) => {
+                el.className = index === occIndex ? 'index_highlight' : '';
             });
-            const track = document.getElementById('find-ext-scrollbar-overlay');
-            if (track) { track.appendChild(fragment); }
-        } catch (e) {
-            console.error('Error in createScrollMarkers:', e);
+        }
+
+        destroy() {
+            window.removeEventListener('scroll', this.scrollListener);
+            // Other event listeners will be removed by GC
+            this.overlay?.parentNode?.removeChild(this.overlay);
+            this.globalStyle?.parentNode?.removeChild(this.globalStyle);
+        }
+
+        createMarkers() {
+            this.occTopPositionMap.forEach((markerTop, occIndex) => {
+                this.markerContainer.appendChild(this.createMarker(occIndex, markerTop));
+            });
+        }
+
+        addOccurrence(occIndex, el) {
+            if (!this.occTopPositionMap.has(occIndex)) {
+                const markerTop = this.calculateMarkerPosition(el);
+                this.occTopPositionMap.set(occIndex, markerTop);
+            }
+        }
+
+        mount() {
+            this.addComponents();
+            this.bindTrackClick();
+            this.bindThumbDrag();
+            this.updateThumb();
+            this.bindScroll();
         }
     }
-
-    // ── Utility ────────────────────────────────────────────────────────────────────
 
     function isElementInViewport(element) {
         let elementBoundingRect = element.getBoundingClientRect();
