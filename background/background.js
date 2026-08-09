@@ -369,7 +369,8 @@ Find.register('Background', function (self) {
 
         //Loop over all text nodes in documentRepresentation
         for(const key in documentRepresentation) {
-            const textNodes = documentRepresentation[key].group, preformatted = documentRepresentation[key].preformatted;
+            const textNodes = documentRepresentation[key].group;
+            const preformatted = documentRepresentation[key].preformatted;
             let textGroup = '';
             const uuids = [];
             for(let nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
@@ -391,7 +392,8 @@ Find.register('Background', function (self) {
 
             for(let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
                 const occMapIndex = matchesIndex + (count - matches.length);
-                occurrenceMap.occurrenceIndexMap[occMapIndex] = { groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex] };
+                occurrenceMap.occurrenceIndexMap[occMapIndex] =
+                        { groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex] };
             }
 
             groupIndex++;

@@ -158,7 +158,8 @@ Find.register('Popup.SearchPane', function (self) {
     };
 
     /**
-     * Momentarily display an icon in the inotification area to notify the user that text was not copied to the clipboard
+     * Momentarily display an icon in the notification area to notify the user
+     * that text was not copied to the clipboard
      * due to an unexpected error.
      * */
     self.flashClipboardCopyErrorIcon = function () {

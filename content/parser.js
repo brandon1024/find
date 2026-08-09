@@ -21,7 +21,8 @@ Find.register('Content.Parser', function (self) {
 	 * @return {object} the document representation object
 	 * */
     self.buildDOMReferenceObject = function () {
-        const DOMTreeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
+        const DOMTreeWalker = document.createTreeWalker(document.body,
+            NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
         const DOMModelObject = {};
         let reachedEndOfTree = false;
         let groupIndex = 0;

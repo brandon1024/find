@@ -93,7 +93,9 @@ Find.register('Content.Highlighter', function (self) {
                 charMap.length = count;
             }
 
-            //Format text nodes (whitespaces) whilst keeping references to their nodes in the DOM, updating charMap ignorable characters
+            /* Format text nodes (whitespaces) whilst keeping references to their
+            * nodes in the DOM, updating charMap ignorable characters
+            */
             if (!occurrenceMap[index].preformatted) {
                 let info;
 
@@ -184,7 +186,8 @@ Find.register('Content.Highlighter', function (self) {
                         matchGroup.text += tags.openingMarkup;
                     }
                     if (options && options.scroll_markers) {
-                        Find.Content.ScrollbarHighlightMaker.addOccurrence(occIndex, document.getElementById(matchGroup.groupUUID));
+                        Find.Content.ScrollbarHighlightMaker.addOccurrence(occIndex,
+                            document.getElementById(matchGroup.groupUUID));
                     }
                 } else {
                     if (inMatch) {
@@ -261,7 +264,8 @@ Find.register('Content.Highlighter', function (self) {
         if (!isElementInViewport(els[0])) {
             els[0].scrollIntoView(true);
 
-            const docHeight = Math.max(document.documentElement.clientHeight, document.documentElement.offsetHeight, document.documentElement.scrollHeight);
+            const docHeight = Math.max(document.documentElement.clientHeight,
+                document.documentElement.offsetHeight, document.documentElement.scrollHeight);
             const bottomScrollPos = window.pageYOffset + window.innerHeight;
             if (bottomScrollPos + 100 < docHeight) {
                 window.scrollBy(0, -100);
