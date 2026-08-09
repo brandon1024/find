@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
 /**
  * Create the Background namespace. The background coordinates activities between the browser
  * action popup and the content in the web page. The background keeps track of the state of the
  * search, along with other necessary data to seek, replace, and perform other actions efficiently.
  * */
-Find.register("Background", function(self) {
+Find.register('Background', function (self) {
 
     /**
      * Allocated on the namespace to allow the BrowserActionProxy to communicate installation
@@ -20,14 +20,14 @@ Find.register("Background", function(self) {
 
     Find.browser.contextMenus.removeAll(() => {
         Find.browser.contextMenus.create({
-            title: Find.browser.i18n.getMessage("contextmenu_show_help_title"),
-            contexts: [(Find.browserId !== 'Firefox') ? "action" : "browser_action"],
+            title: Find.browser.i18n.getMessage('contextmenu_show_help_title'),
+            contexts: [(Find.browserId !== 'Firefox') ? 'action' : 'browser_action'],
             id: 'show-help'
         });
 
         Find.browser.contextMenus.onClicked.addListener((info) => {
             if(info.menuItemId === 'show-help') {
-                Find.browser.tabs.create({url: Find.browser.runtime.getURL("docs/index.html")});
+                Find.browser.tabs.create({ url: Find.browser.runtime.getURL('docs/index.html') });
             }
         });
     });
@@ -39,10 +39,10 @@ Find.register("Background", function(self) {
         self.installationDetails = installation;
 
         if(Find.browserId !== 'Firefox') {
-            let scripts =  Find.browser.runtime.getManifest().content_scripts[0].js;
+            const scripts =  Find.browser.runtime.getManifest().content_scripts[0].js;
             Find.browser.tabs.query({}, (tabs) => {
                 for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
-                    let url = tabs[tabIndex].url;
+                    const url = tabs[tabIndex].url;
                     // Without the "tabs" permission, browser's internal webpage (e.g., "chrome://" or "chrome-extension://") has no "url"
                     if(!url
                         || url.match(/^https:\/\/chrome\.google\.com\/webstore\/.*/)
@@ -51,13 +51,13 @@ Find.register("Background", function(self) {
                         continue;
                     }
 
-                    Find.Background.ContentProxy.executeScript(tabs[tabIndex], {files: scripts});
+                    Find.Background.ContentProxy.executeScript(tabs[tabIndex], { files: scripts });
                 }
             });
         }
 
         if(installation.reason === 'install') {
-            Find.browser.tabs.create({url: Find.browser.runtime.getURL("docs/index.html")});
+            Find.browser.tabs.create({ url: Find.browser.runtime.getURL('docs/index.html') });
         }
     });
 
@@ -73,8 +73,8 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
-    self.initializeBrowserAction = function(message, tab, sendResponse) {
-        let resp = {};
+    self.initializeBrowserAction = function (message, tab, sendResponse) {
+        const resp = {};
         resp.activeTab = tab;
 
         Find.Background.ContentProxy.fetch(tab, (response) => {
@@ -86,7 +86,7 @@ Find.register("Background", function(self) {
                 index = response.index || 0;
             }
 
-            sendResponse({action: 'browser_action_init', response: resp});
+            sendResponse({ action: 'browser_action_init', response: resp });
         });
     };
 
@@ -96,7 +96,7 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} callback - Optional callback .
      * */
-    self.initializePage = function(tab, callback) {
+    self.initializePage = function (tab, callback) {
         Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
             documentRepresentation = model;
 
@@ -114,12 +114,12 @@ Find.register("Background", function(self) {
      * @param {boolean} [restoreHighlights] - If undefined or true, remove highlights. If false,
      * highlights are not removed, and are persisted in the page.
      * */
-    self.restorePageState = function(tab, restoreHighlights) {
+    self.restorePageState = function (tab, restoreHighlights) {
         if(restoreHighlights === undefined || restoreHighlights) {
             Find.Background.ContentProxy.clearPageHighlights(tab);
         }
 
-        let uuids = getUUIDsFromModelObject(documentRepresentation);
+        const uuids = getUUIDsFromModelObject(documentRepresentation);
         Find.Background.ContentProxy.restoreWebPage(tab, uuids);
 
         documentRepresentation = null;
@@ -142,7 +142,7 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
-    self.updateSearch = function(message, tab, sendResponse) {
+    self.updateSearch = function (message, tab, sendResponse) {
         try {
             if(!documentRepresentation) {
                 self.initializePage(tab, () => {
@@ -157,12 +157,12 @@ Find.register("Background", function(self) {
 
             //If searching by string, escape all regex metacharacters
             if(!self.options.find_by_regex) {
-                regex = regex.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+                regex = regex.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
             }
 
             //Ensure non-empty search
             if(regex.length === 0) {
-                sendResponse({action: 'empty_regex'});
+                sendResponse({ action: 'empty_regex' });
                 Find.Background.ContentProxy.clearPageHighlights(tab);
                 return;
             }
@@ -202,7 +202,7 @@ Find.register("Background", function(self) {
                 total: viewableTotal
             });
         } catch(e) {
-            sendResponse({action: 'invalid_regex', error: e.message});
+            sendResponse({ action: 'invalid_regex', error: e.message });
             Find.Background.ContentProxy.clearPageHighlights(tab);
         }
     };
@@ -216,9 +216,9 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
-    self.seekSearch = function(message, seekForward, tab, sendResponse) {
+    self.seekSearch = function (message, seekForward, tab, sendResponse) {
         self.options= message.options;
-        let indexCap = self.options.max_results !== 0;
+        const indexCap = self.options.max_results !== 0;
 
         //If reached end, reset index
         if(seekForward) {
@@ -230,8 +230,8 @@ Find.register("Background", function(self) {
         //Invoke seek action
         Find.Background.ContentProxy.seekHighlight(tab, index, self.options);
 
-        let viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
-        let viewableTotal = (indexCap && self.options.max_results <= regexOccurrenceMap.length) ?
+        const viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
+        const viewableTotal = (indexCap && self.options.max_results <= regexOccurrenceMap.length) ?
             self.options.max_results : regexOccurrenceMap.length;
         sendResponse({
             action: 'index_update',
@@ -249,18 +249,18 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
-    self.replaceNext = function(message, tab, sendResponse) {
+    self.replaceNext = function (message, tab, sendResponse) {
         Find.Background.ContentProxy.replaceOccurrence(tab, message.index - 1, message.replaceWith, message.options);
 
         //Restore Web Page
         Find.Background.ContentProxy.clearPageHighlights(tab);
 
-        let uuids = getUUIDsFromModelObject(documentRepresentation);
+        const uuids = getUUIDsFromModelObject(documentRepresentation);
         Find.Background.ContentProxy.restoreWebPage(tab, uuids, () => {
             //Rebuild documentRepresentation and invalidate
             Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
                 documentRepresentation = model;
-                sendResponse({action: 'invalidate'});
+                sendResponse({ action: 'invalidate' });
             });
         });
     };
@@ -274,18 +274,18 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
-    self.replaceAll = function(message, tab, sendResponse) {
+    self.replaceAll = function (message, tab, sendResponse) {
         Find.Background.ContentProxy.replaceAllOccurrences(tab, message.replaceWith, message.options);
 
         //Restore Web Page
         Find.Background.ContentProxy.clearPageHighlights(tab);
 
-        let uuids = getUUIDsFromModelObject(documentRepresentation);
+        const uuids = getUUIDsFromModelObject(documentRepresentation);
         Find.Background.ContentProxy.restoreWebPage(tab, uuids, () => {
             //Rebuild documentRepresentation and invalidate
             Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
                 documentRepresentation = model;
-                sendResponse({action: 'invalidate'});
+                sendResponse({ action: 'invalidate' });
             });
         });
     };
@@ -297,9 +297,9 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
-    self.followLinkUnderFocus = function(message, tab, sendResponse) {
+    self.followLinkUnderFocus = function (message, tab, sendResponse) {
         Find.Background.ContentProxy.followLinkUnderFocus(tab);
-        sendResponse({action: 'close'});
+        sendResponse({ action: 'close' });
     };
 
     /**
@@ -313,12 +313,12 @@ Find.register("Background", function(self) {
      * @param {object} tab - Information about the active tab in the current window.
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
-    self.extractOccurrences = function(message, tab, sendResponse) {
-        let cardinality = message.options.cardinality;
+    self.extractOccurrences = function (message, tab, sendResponse) {
+        const cardinality = message.options.cardinality;
         let resp;
 
         if(cardinality === 'all') {
-            let occurrences = [];
+            const occurrences = [];
             for(let occIndex = 0; occIndex < regexOccurrenceMap.length; occIndex++) {
                 occurrences.push(regexOccurrenceMap.occurrenceIndexMap[occIndex].occurrence);
             }
@@ -328,7 +328,7 @@ Find.register("Background", function(self) {
             resp = regexOccurrenceMap.occurrenceIndexMap[index].occurrence;
         }
 
-        sendResponse({action: 'get_occurrence', response: resp});
+        sendResponse({ action: 'get_occurrence', response: resp });
     };
 
     /**
@@ -360,7 +360,7 @@ Find.register("Background", function(self) {
      * @return {object} occurrence map
      * */
     function buildOccurrenceMap(documentRepresentation, regex, options) {
-        let occurrenceMap = {occurrenceIndexMap: {}, length: null, groups: null};
+        const occurrenceMap = { occurrenceIndexMap: {}, length: null, groups: null };
         let count = 0;
         let groupIndex = 0;
 
@@ -368,16 +368,16 @@ Find.register("Background", function(self) {
         regex = (options.match_case) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
 
         //Loop over all text nodes in documentRepresentation
-        for(let key in documentRepresentation) {
-            let textNodes = documentRepresentation[key].group, preformatted = documentRepresentation[key].preformatted;
+        for(const key in documentRepresentation) {
+            const textNodes = documentRepresentation[key].group, preformatted = documentRepresentation[key].preformatted;
             let textGroup = '';
-            let uuids = [];
+            const uuids = [];
             for(let nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
                 textGroup += textNodes[nodeIndex].text;
                 uuids.push(textNodes[nodeIndex].elementUUID);
             }
 
-            let matches = textGroup.match(regex);
+            const matches = textGroup.match(regex);
             if(!matches) {
                 continue;
             }
@@ -390,8 +390,8 @@ Find.register("Background", function(self) {
             };
 
             for(let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
-                let occMapIndex = matchesIndex + (count - matches.length);
-                occurrenceMap.occurrenceIndexMap[occMapIndex] = {groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex]};
+                const occMapIndex = matchesIndex + (count - matches.length);
+                occurrenceMap.occurrenceIndexMap[occMapIndex] = { groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex] };
             }
 
             groupIndex++;
@@ -418,7 +418,7 @@ Find.register("Background", function(self) {
      * */
     function computeSubsequentIndex(index, regexOccurrenceMap, options) {
         //If reached end, reset index
-        let indexCap = self.options.max_results !== 0;
+        const indexCap = self.options.max_results !== 0;
         if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1)) {
             return 0;
         }
@@ -437,7 +437,7 @@ Find.register("Background", function(self) {
      * */
     function computePrecedingIndex(index, regexOccurrenceMap, options) {
         //If reached start, set index to last occurrence
-        let indexCap = self.options.max_results !== 0;
+        const indexCap = self.options.max_results !== 0;
         if(index <= 0) {
             if(indexCap && options.max_results <= regexOccurrenceMap.length) {
                 return options.max_results - 1;
@@ -457,10 +457,10 @@ Find.register("Background", function(self) {
      * @return {array} a list of UUIDs
      * */
     function getUUIDsFromModelObject(documentRepresentation) {
-        let uuids = [];
+        const uuids = [];
 
-        for(let key in documentRepresentation) {
-            let textNodes = documentRepresentation[key].group;
+        for(const key in documentRepresentation) {
+            const textNodes = documentRepresentation[key].group;
             for(let index = 0; index < textNodes.length; index++) {
                 uuids.push(textNodes[index].elementUUID);
             }
