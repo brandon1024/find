@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
 /**
  * Create the Background ContentProxy namespace. Serves as mediator between the content
  * in the web page and the background scripts.
  * */
-Find.register("Background.ContentProxy", function(self) {
+Find.register('Background.ContentProxy', function (self) {
 
     /**
      * Request from a given page a representation of the text nodes in the page's document.
@@ -13,8 +13,8 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {function} callback - The callback function that will utilize the document object model.
      * @param {function} [error] - Callback function for handing an error.
      * */
-    self.buildDocumentRepresentation = function(tab, callback, error) {
-        Find.browser.tabs.sendMessage(tab.id, {action: 'init'}, (response) => {
+    self.buildDocumentRepresentation = function (tab, callback, error) {
+        Find.browser.tabs.sendMessage(tab.id, { action: 'init' }, (response) => {
             if(response && response.model) {
                 callback(response.model);
             } else if(error) {
@@ -30,7 +30,7 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {array} nodeReferences - Array of node reference UUIDs.
      * @param {function} [callback] - Callback invoked when the page is restored.
      * */
-    self.restoreWebPage = function(tab, nodeReferences, callback) {
+    self.restoreWebPage = function (tab, nodeReferences, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
             action: 'restore',
             uuids: nodeReferences
@@ -47,7 +47,7 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {object} options - The search options
      * @param {function} [callback] - Callback invoked when the page highlights are updated.
      * */
-    self.updatePageHighlights = function(tab, regex, index, occurrenceMap, options, callback) {
+    self.updatePageHighlights = function (tab, regex, index, occurrenceMap, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
             action: 'update',
             occurrenceMap: occurrenceMap,
@@ -65,7 +65,7 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {object} options - The search options
      * @param {function} [callback] - Callback invoked when complete.
      * */
-    self.seekHighlight = function(tab, index, options, callback) {
+    self.seekHighlight = function (tab, index, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
             action: 'seek',
             index: index,
@@ -79,8 +79,8 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {object} tab - The tab from which to remove all highlights
      * @param {function} [callback] - Callback invoked when the highlights are removed from the page.
      * */
-    self.clearPageHighlights = function(tab, callback) {
-        Find.browser.tabs.sendMessage(tab.id, {action: 'highlight_restore'}, callback);
+    self.clearPageHighlights = function (tab, callback) {
+        Find.browser.tabs.sendMessage(tab.id, { action: 'highlight_restore' }, callback);
     };
 
     /**
@@ -92,7 +92,7 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {object} options - The search options
      * @param {function} [callback] - Callback invoked when the occurrence is replaced.
      * */
-    self.replaceOccurrence = function(tab, index, replaceWith, options, callback) {
+    self.replaceOccurrence = function (tab, index, replaceWith, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
             action: 'replace',
             index: index,
@@ -109,7 +109,7 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {object} options - The search options
      * @param {function} [callback] - Callback invoked when the occurrences are replaced.
      * */
-    self.replaceAllOccurrences = function(tab, replaceWith, options, callback) {
+    self.replaceAllOccurrences = function (tab, replaceWith, options, callback) {
         Find.browser.tabs.sendMessage(tab.id, {
             action: 'replace_all',
             replaceWith: replaceWith,
@@ -123,8 +123,8 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {object} tab - The tab with the search
      * @param {function} [callback] - Callback invoked once the operation is complete.
      * */
-    self.followLinkUnderFocus = function(tab, callback) {
-        Find.browser.tabs.sendMessage(tab.id, {action: 'follow_link'}, callback);
+    self.followLinkUnderFocus = function (tab, callback) {
+        Find.browser.tabs.sendMessage(tab.id, { action: 'follow_link' }, callback);
     };
 
     /**
@@ -134,8 +134,8 @@ Find.register("Background.ContentProxy", function(self) {
      * @param {object} tab - The tab to fetch.
      * @param {function} callback - Callback invoked once the operation is complete.
      * */
-    self.fetch = function(tab, callback) {
-        Find.browser.tabs.sendMessage(tab.id, {action: 'fetch'}, callback);
+    self.fetch = function (tab, callback) {
+        Find.browser.tabs.sendMessage(tab.id, { action: 'fetch' }, callback);
     };
 
     /**
@@ -146,7 +146,7 @@ Find.register("Background.ContentProxy", function(self) {
      * both may not be set at the same time.
      * @param {function} [callback] - Callback invoked once the operation is complete.
      * */
-    self.executeScript = function(tab, details, callback) {
-        Find.browser.scripting.executeScript({target: {tabId: tab.id}, ...details}, callback);
+    self.executeScript = function (tab, details, callback) {
+        Find.browser.scripting.executeScript({ target: { tabId: tab.id }, ...details }, callback);
     };
 });
