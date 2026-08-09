@@ -8,7 +8,7 @@ Find.register('Popup.SearchPane', function (self) {
     /**
      * Register event handlers.
      * */
-    self.init = function() {
+    self.init = function () {
         document.getElementById('search-field').addEventListener('keyup', (e) => {
             if(e.ctrlKey && e.shiftKey && e.key === 'Enter') {
                 //CTRL+SHIFT+ENTER => Enter Link
@@ -23,9 +23,9 @@ Find.register('Popup.SearchPane', function (self) {
                 //ENTER => Next Highlight (seek)
                 Find.Popup.BrowserAction.seekForwards();
             } else if(e.ctrlKey && e.altKey && e.code === 'KeyC') {
-                Find.Popup.BrowserAction.getOccurrence({cardinality: 'single'});
+                Find.Popup.BrowserAction.getOccurrence({ cardinality: 'single' });
             } else if(e.ctrlKey && e.altKey && e.code === 'KeyA') {
-                Find.Popup.BrowserAction.getOccurrence({cardinality: 'all'});
+                Find.Popup.BrowserAction.getOccurrence({ cardinality: 'all' });
             }
         }, true);
 
@@ -48,7 +48,7 @@ Find.register('Popup.SearchPane', function (self) {
         }, true);
 
         document.getElementById('copy-text-to-clipboard-button').addEventListener('click', () => {
-            Find.Popup.BrowserAction.getOccurrence({cardinality: 'all'});
+            Find.Popup.BrowserAction.getOccurrence({ cardinality: 'all' });
         }, true);
 
         document.getElementById('saved-expressions-toggle-button').addEventListener('click', () => {
@@ -74,7 +74,7 @@ Find.register('Popup.SearchPane', function (self) {
      * @param {boolean} enable - Optional boolean value. If true or undefined, enables the buttons.
      * Otherwise disables the buttons.
      * */
-    self.enableButtons = function(enable) {
+    self.enableButtons = function (enable) {
         document.getElementById('search-prev-button').disabled = enable !== undefined && !enable;
         document.getElementById('search-next-button').disabled = enable !== undefined && !enable;
     };
@@ -84,7 +84,7 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @return {string} the text in the search field.
      * */
-    self.getSearchFieldText = function() {
+    self.getSearchFieldText = function () {
         return document.getElementById('search-field').value;
     };
 
@@ -93,21 +93,21 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @param {string} text - The text to place in the search field.
      * */
-    self.setSearchFieldText = function(text) {
+    self.setSearchFieldText = function (text) {
         document.getElementById('search-field').value = text;
     };
 
     /**
      * Place focus on the search field.
      * */
-    self.focusSearchField = function() {
+    self.focusSearchField = function () {
         document.getElementById('search-field').focus();
     };
 
     /**
      * Select all the text in the search field.
      * */
-    self.selectSearchField = function() {
+    self.selectSearchField = function () {
         document.getElementById('search-field').select();
     };
 
@@ -117,7 +117,7 @@ Find.register('Popup.SearchPane', function (self) {
      * @param {number} occurrence - The index of the current occurrence
      * @param {number} count - The total number of occurrences
      * */
-    self.updateIndexText = function(occurrence, count) {
+    self.updateIndexText = function (occurrence, count) {
         document.getElementById('index-text').innerText = formatNumber(occurrence)
             + ' of ' + formatNumber(count);
     };
@@ -125,7 +125,7 @@ Find.register('Popup.SearchPane', function (self) {
     /**
      * Clear the search occurrence index text.
      * */
-    self.clearIndexText = function() {
+    self.clearIndexText = function () {
         document.getElementById('index-text').innerText = '';
     };
 
@@ -134,7 +134,7 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @param {boolean} flag - Whether or not to display the icon.
      * */
-    self.showMalformedRegexIcon = function(flag) {
+    self.showMalformedRegexIcon = function (flag) {
         document.getElementById('invalid-regex-icon').style.display = flag ? 'initial' : 'none';
     };
 
@@ -144,7 +144,7 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @param {boolean} flag - Whether or not to display the icon.
      * */
-    self.showOfflineFileErrorIcon = function(flag) {
+    self.showOfflineFileErrorIcon = function (flag) {
         document.getElementById('offline-file-search-err').style.display = flag ? 'initial' : 'none';
     };
 
@@ -152,8 +152,8 @@ Find.register('Popup.SearchPane', function (self) {
      * Momentarily display an icon in the notification area to notify the user that text was copied to the clipboard
      * successfully.
      * */
-    self.flashClipboardCopyIcon = function() {
-        let el = document.getElementById('clipboard-copy-icon');
+    self.flashClipboardCopyIcon = function () {
+        const el = document.getElementById('clipboard-copy-icon');
         flashElement(el);
     };
 
@@ -161,8 +161,8 @@ Find.register('Popup.SearchPane', function (self) {
      * Momentarily display an icon in the inotification area to notify the user that text was not copied to the clipboard
      * due to an unexpected error.
      * */
-    self.flashClipboardCopyErrorIcon = function() {
-        let el = document.getElementById('clipboard-copy-error');
+    self.flashClipboardCopyErrorIcon = function () {
+        const el = document.getElementById('clipboard-copy-error');
         flashElement(el);
     };
 
@@ -170,24 +170,24 @@ Find.register('Popup.SearchPane', function (self) {
      * Momentarily display an icon in the notification area to notify the user that an iframe was encountered, and
      * that some occurrences of the regex may not be highlighted in the page.
      * */
-    self.flashIframesFoundWarningIcon = function() {
-        let el = document.getElementById('iframes-found-icon');
+    self.flashIframesFoundWarningIcon = function () {
+        const el = document.getElementById('iframes-found-icon');
         flashElement(el);
     };
 
     /**
      * Momentarily display an icon in the notification area to provide an installation message to the user.
      * */
-    self.flashInstallInformationIcon = function() {
-        let el = document.getElementById('install-information');
+    self.flashInstallInformationIcon = function () {
+        const el = document.getElementById('install-information');
         flashElement(el);
     };
 
     /**
      * Momentarily display an icon in the notification area to provide update information message to the user.
      * */
-    self.flashUpdateInformationIcon = function() {
-        let el = document.getElementById('update-information');
+    self.flashUpdateInformationIcon = function () {
+        const el = document.getElementById('update-information');
         flashElement(el);
     };
 
@@ -196,7 +196,7 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
      * */
-    self.hideOptionsPaneToggleButton = function(hide) {
+    self.hideOptionsPaneToggleButton = function (hide) {
         document.getElementById('search-toggle-options-button').style.display = hide ? 'none' : 'initial';
     };
 
@@ -205,7 +205,7 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
      * */
-    self.hideSavedExpressionsPaneToggleButton = function(hide) {
+    self.hideSavedExpressionsPaneToggleButton = function (hide) {
         document.getElementById('saved-expressions-toggle-button').style.display = hide ? 'none' : 'initial';
     };
 
@@ -214,7 +214,7 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
      * */
-    self.hideCopyOccurrencesToClipboardButton = function(hide) {
+    self.hideCopyOccurrencesToClipboardButton = function (hide) {
         document.getElementById('copy-text-to-clipboard-button').style.display = hide ? 'none' : 'initial';
     };
 
@@ -223,7 +223,7 @@ Find.register('Popup.SearchPane', function (self) {
      *
      * @param {boolean} hide - If true, hides the button. Otherwise makes the button visible.
      * */
-    self.hideFindReplacePaneToggleButton = function(hide) {
+    self.hideFindReplacePaneToggleButton = function (hide) {
         document.getElementById('find-replace-button').style.display = hide ? 'none' : 'initial';
     };
 
@@ -241,7 +241,7 @@ Find.register('Popup.SearchPane', function (self) {
      * @param {Element} el - The element to flash
      * */
     function flashElement(el) {
-        let timeoutFunction = () => {
+        const timeoutFunction = () => {
             el.style.display = 'none';
         };
 
@@ -252,7 +252,7 @@ Find.register('Popup.SearchPane', function (self) {
         let timeoutHandle = window.setTimeout(timeoutFunction, 3000);
 
         //Self de-registering event handler
-        let handler = (event) => {
+        const handler = (event) => {
             if(el === event.target) {
                 return;
             }
@@ -288,7 +288,7 @@ Find.register('Popup.SearchPane', function (self) {
      * @return {string} a the number formatted as a string with thousands separators
      * */
     function formatNumber(x) {
-        let parts = x.toString().split('.');
+        const parts = x.toString().split('.');
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         return parts.join('.');
     }
