@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
 /**
  * Create the Background ContentProxy namespace. Serves as mediator between the background scripts
  * and the browser action popup.
  * */
-Find.register("Background.BrowserActionProxy", function() {
+Find.register('Background.BrowserActionProxy', function () {
 
     /**
      * Initialize the port connection with the browser action popup.
@@ -15,12 +15,12 @@ Find.register("Background.BrowserActionProxy", function() {
         }
 
         if(Find.Background.installationDetails) {
-            browserActionPort.postMessage({action: 'install', details: Find.Background.installationDetails});
+            browserActionPort.postMessage({ action: 'install', details: Find.Background.installationDetails });
             Find.Background.installationDetails = null;
         }
 
         let activeTab = null;
-        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        Find.browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             activeTab = tabs[0];
 
             // invoke action on message from popup script
@@ -53,7 +53,7 @@ Find.register("Background.BrowserActionProxy", function() {
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
     function actionDispatch(message, tab, sendResponse) {
-        let action = message.action;
+        const action = message.action;
         switch(action) {
             case 'update':
                 Find.Background.updateSearch(message, tab, sendResponse);
