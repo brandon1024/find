@@ -252,7 +252,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * Return whether or not the given url is within the browser internal namespace.
      *
      * @private
-     * @argument {string} url - The URL to check.
+     * @param {string} url - The URL to check.
      * @return {boolean} True if URL is within the browser internal namespace, false otherwise.
      * */
     function isWithinBrowserNamespace(url) {
@@ -271,7 +271,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * Return whether or not the given url is within the browser official website or newtab namespace.
      *
      * @private
-     * @argument {string} url - The URL to check.
+     * @param {string} url - The URL to check.
      * @return {boolean} True if URL is within the browser official website or newtab namespace, false otherwise.
      * */
     function isWithinBrowserWebsiteNamespace(url) {
@@ -290,7 +290,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * Return whether or not the given url is a PDF.
      *
      * @private
-     * @argument {string} url - The URL to check.
+     * @param {string} url - The URL to check.
      * @return {boolean} True if URL is a PDF, false otherwise.
      * */
     function isPDF(url) {
@@ -301,7 +301,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * Return whether or not the given url is a local file.
      *
      * @private
-     * @argument {string} url - The URL to check.
+     * @param {string} url - The URL to check.
      * @return {boolean} True if URL is a local file, false otherwise.
      * */
     function isLocalFile(url) {

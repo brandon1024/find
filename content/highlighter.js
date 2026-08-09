@@ -366,7 +366,7 @@ Find.register('Content.Highlighter', function (self) {
      * Restore the page by removing any highlighting markup.
      *
      * @private
-     * @argument {HTMLElement} element - The element to check if it is in the viewport
+     * @param {HTMLElement} element - The element to check if it is in the viewport
      * @return {boolean} - True if the element is in the viewport, false otherwise
      * */
     function isElementInViewport(element) {
