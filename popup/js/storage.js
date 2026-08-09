@@ -25,9 +25,8 @@ Find.register('Popup.Storage', function (self) {
      * argument to the callback function.
      *
      * @param {function} callback - The callback function to handle the data.
-     * @return {object} The saved expressions, or null if it cannot be retrieved.
      * */
-    self.retrieveSavedExpressions = function(callback) {
+    self.retrieveSavedExpressions = function (callback) {
         retrieve(SAVED_EXPRESSIONS_KEY, callback);
     };
 
@@ -37,9 +36,8 @@ Find.register('Popup.Storage', function (self) {
      * argument to the callback function.
      *
      * @param {function} callback - The callback function to handle the data.
-     * @return {object} The saved expressions, or null if it does not exist or cannot be retrieved.
      * */
-    self.retrieveOptions = function(callback) {
+    self.retrieveOptions = function (callback) {
         retrieve(OPTIONS_KEY, callback);
     };
 
@@ -49,9 +47,8 @@ Find.register('Popup.Storage', function (self) {
      * argument to the callback function.
      *
      * @param {function} callback - The callback function to handle the data.
-     * @return {object} The history, or null if it does not exist or cannot be retrieved.
      * */
-    self.retrieveHistory = function(callback) {
+    self.retrieveHistory = function (callback) {
         retrieve(HISTORY_KEY, callback);
     };
 
@@ -63,7 +60,7 @@ Find.register('Popup.Storage', function (self) {
      * @param {function} [callback] - The callback function to execute once the
      * save operation is complete.
      * */
-    self.saveExpressions = function(data, callback) {
+    self.saveExpressions = function (data, callback) {
         save(SAVED_EXPRESSIONS_KEY, data, callback);
     };
 
@@ -75,7 +72,7 @@ Find.register('Popup.Storage', function (self) {
      * @param {function} [callback] - The callback function to execute once the
      * save operation is complete.
      * */
-    self.saveOptions = function(data, callback) {
+    self.saveOptions = function (data, callback) {
         save(OPTIONS_KEY, data, callback);
     };
 
@@ -87,7 +84,7 @@ Find.register('Popup.Storage', function (self) {
      * @param {function} [callback] - The callback function to execute once the
      * save operation is complete.
      * */
-    self.saveHistory = function(data, callback) {
+    self.saveHistory = function (data, callback) {
         save(HISTORY_KEY, data, callback);
     };
 
@@ -98,7 +95,7 @@ Find.register('Popup.Storage', function (self) {
      * @param {function} [callback] - The callback function to execute once the
      * clear operation is complete.
      * */
-    self.clearStorage = function(callback) {
+    self.clearStorage = function (callback) {
         Find.browser.storage.local.clear(callback);
     };
 
@@ -108,7 +105,7 @@ Find.register('Popup.Storage', function (self) {
      *
      * @param {boolean} value - True if storage is locked, false otherwise.
      * */
-    self.lockStorage = function(value) {
+    self.lockStorage = function (value) {
         locked = value;
     };
 
@@ -117,7 +114,7 @@ Find.register('Popup.Storage', function (self) {
      *
      * @return {boolean} True if the storage is locked, false otherwise.
      * */
-    self.isStorageLocked = function() {
+    self.isStorageLocked = function () {
         return locked;
     };
 
@@ -151,7 +148,7 @@ Find.register('Popup.Storage', function (self) {
      * */
     function save(key, data, callback) {
         if(!locked) {
-            let payload = {};
+            const payload = {};
             payload[key] = data;
 
             Find.browser.storage.local.set(payload, callback);
