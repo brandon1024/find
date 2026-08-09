@@ -9,21 +9,21 @@
  * */
 Find.register('Popup.History', function (self) {
 
-	let cachedHistory = null;
-	let currentHostname = null;
+    let cachedHistory = null;
+    let currentHostname = null;
 
-	/**
+    /**
 	 * Since the hostname is only available when the popup is initialized,
 	 * the hostname can be set here at initialization time and so it can
 	 * be referenced later.
 	 *
 	 * @param {string} hostname - The hostname of the current page in the active tab.
 	 * */
-	self.setHostname = function (hostname) {
-		currentHostname = hostname;
-	};
+    self.setHostname = function (hostname) {
+        currentHostname = hostname;
+    };
 
-	/**
+    /**
 	 * Retrieve the last search query for the current host, passing the
 	 * result to the given callback function.
 	 *
@@ -34,24 +34,24 @@ Find.register('Popup.History', function (self) {
 	 * argument that is the last known search query for this host, or null
 	 * if current hostname is not set, or no such information exists.
 	 * */
-	self.retrieveForHost = function(callback) {
-		if (!currentHostname) {
-			callback();
-			return;
-		}
+    self.retrieveForHost = function (callback) {
+        if (!currentHostname) {
+            callback();
+            return;
+        }
 
-		Find.Popup.Storage.retrieveHistory((history) => {
-			if (history && history[currentHostname]) {
-				callback(history[currentHostname].expression);
+        Find.Popup.Storage.retrieveHistory((history) => {
+            if (history && history[currentHostname]) {
+                callback(history[currentHostname].expression);
 
-				cachedHistory = history;
-			} else {
-				callback(null);
-			}
-		});
-	};
+                cachedHistory = history;
+            } else {
+                callback(null);
+            }
+        });
+    };
 
-	/**
+    /**
 	 * Update the history entry for the current host with the new expression,
 	 * invoking the given callback when the operation is complete.
 	 *
@@ -62,48 +62,48 @@ Find.register('Popup.History', function (self) {
 	 * @param {function} callback - The optional callback function invoked when the
 	 * operation is complete.
 	 * */
-	self.saveForHost = function(expression, callback) {
-		if (!callback) {
-			callback = () => {};
-		}
+    self.saveForHost = function (expression, callback) {
+        if (!callback) {
+            callback = () => {};
+        }
 
-		if (!currentHostname) {
-			callback();
-			return;
-		}
+        if (!currentHostname) {
+            callback();
+            return;
+        }
 
-		// if we cached the history, don't bother fetching from local storage
-		if (cachedHistory) {
-			cachedHistory[currentHostname] = {
-				expression: expression,
-				timestamp: Date.now()
-			};
+        // if we cached the history, don't bother fetching from local storage
+        if (cachedHistory) {
+            cachedHistory[currentHostname] = {
+                expression: expression,
+                timestamp: Date.now()
+            };
 
-			// prune and save
-			cachedHistory = prune(cachedHistory);
-			Find.Popup.Storage.saveHistory(cachedHistory, callback);
-		} else {
-			Find.Popup.Storage.retrieveHistory((history) => {
-				if (!history) {
-					history = {};
-				}
+            // prune and save
+            cachedHistory = prune(cachedHistory);
+            Find.Popup.Storage.saveHistory(cachedHistory, callback);
+        } else {
+            Find.Popup.Storage.retrieveHistory((history) => {
+                if (!history) {
+                    history = {};
+                }
 
-				history[currentHostname] = {
-					expression: expression,
-					timestamp: Date.now()
-				};
+                history[currentHostname] = {
+                    expression: expression,
+                    timestamp: Date.now()
+                };
 
-				history = prune(history);
+                history = prune(history);
 
-				Find.Popup.Storage.saveHistory(history, () => {
-					cachedHistory = history;
-					callback();
-				});
-			});
-		}
-	};
+                Find.Popup.Storage.saveHistory(history, () => {
+                    cachedHistory = history;
+                    callback();
+                });
+            });
+        }
+    };
 
-	/**
+    /**
 	 * Prune old search history data to avoid exceeding localstorage space
 	 * limitations.
 	 *
@@ -114,27 +114,27 @@ Find.register('Popup.History', function (self) {
 	 * @param {object} history - History data.
 	 * @return {object} Pruned history data.
 	 * */
-	function prune(history) {
-		// only prune of number of items is over 100
-		if (history && Object.keys(history).length <= 100)
-			return history;
+    function prune(history) {
+        // only prune of number of items is over 100
+        if (history && Object.keys(history).length <= 100)
+            return history;
 
-		let temporary = [];
-		for (let key in history) {
-			temporary.push({k: key, v: history[key]});
-		}
+        let temporary = [];
+        for (const key in history) {
+            temporary.push({ k: key, v: history[key] });
+        }
 
-		temporary.sort((a, b) => {
-			return a.v.timestamp - b.v.timestamp;
-		});
+        temporary.sort((a, b) => {
+            return a.v.timestamp - b.v.timestamp;
+        });
 
-		temporary = temporary.slice((temporary.length - 100), temporary.length);
+        temporary = temporary.slice((temporary.length - 100), temporary.length);
 
-		let prunedHistory = {};
-		for (let element of temporary) {
-			prunedHistory[element.k] = element.v;
-		}
+        const prunedHistory = {};
+        for (const element of temporary) {
+            prunedHistory[element.k] = element.v;
+        }
 
-		return prunedHistory;
-	}
+        return prunedHistory;
+    }
 });
