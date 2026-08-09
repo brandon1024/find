@@ -4,19 +4,19 @@
  * Create the Popup BackgroundProxy namespace.
  * */
 Find.register('Popup.BackgroundProxy', function (self) {
-    let port = Find.browser.runtime.connect({name: 'popup_to_background_port'});
+    const port = Find.browser.runtime.connect({ name: 'popup_to_background_port' });
 
     /**
      * Register the port message listener.
      * */
-    self.openConnection = function() {
+    self.openConnection = function () {
         registerPortListener(port);
     };
 
     /**
      * Close the port.
      * */
-    self.closeConnection = function() {
+    self.closeConnection = function () {
         port.disconnect();
     };
 
@@ -25,7 +25,7 @@ Find.register('Popup.BackgroundProxy', function (self) {
      *
      * @param {object} message - The message to post to the background script.
      * */
-    self.postMessage = function(message) {
+    self.postMessage = function (message) {
         port.postMessage(message);
     };
 
