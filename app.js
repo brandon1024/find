@@ -39,12 +39,12 @@ const Find = (function () {
      * @param {registerCallback} callback - A function that initializes the namespace.
      * @return the namespace
      * */
-    self.register = function(path, callback) {
-        let pathKeys = path.split('.');
+    self.register = function (path, callback) {
+        const pathKeys = path.split('.');
         let parent = self;
 
         for(let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
-            let key = pathKeys[keyIndex];
+            const key = pathKeys[keyIndex];
             if(typeof parent[key] === 'undefined') {
                 parent[key] = {};
             }
@@ -72,12 +72,12 @@ const Find = (function () {
      * @param {string} path - The namespace path.
      * @return the namespace.
      * */
-    self.getContext = function(path) {
-        let pathKeys = path.split('.');
+    self.getContext = function (path) {
+        const pathKeys = path.split('.');
         let parent = self;
 
         for(let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
-            let key = pathKeys[keyIndex];
+            const key = pathKeys[keyIndex];
             if(typeof parent[key] === 'undefined') {
                 return undefined;
             }
@@ -93,7 +93,7 @@ const Find = (function () {
      *
      * @private
      * @param {object} obj - The object in question
-     * @return boolean true if the object is a function, false otherwise
+     * @return {Boolean} true if the object is a function, false otherwise
      * */
     function isFunction(obj) {
         return !!(obj && obj.constructor && obj.call && obj.apply);
