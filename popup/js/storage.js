@@ -124,7 +124,7 @@ Find.register('Popup.Storage', function (self) {
      *
      * @private
      * @param {string} key - The key associated with the data being retrieved.
-     * @param {function} callback - The callback function that will accept the data.
+     * @return {function} callback - The callback function that will accept the data.
      * */
     function retrieve(key, callback) {
         if (locked) {
