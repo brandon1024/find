@@ -14,39 +14,116 @@
         "decode": "writable"
     },
     "rules": {
-        "no-unused-vars": ["error", { "varsIgnorePattern": "(Find)|(encode)|(decode)" }],
-
-        "require-jsdoc": ["warn", {
-            "require": {
-                "FunctionDeclaration": true,
-                "MethodDefinition": true,
-                "ClassDeclaration": true,
-                "ArrowFunctionExpression": false,
-                "FunctionExpression": false
+        "no-unused-vars": [
+            "error",
+            {
+                "varsIgnorePattern": "(Find)|(encode)|(decode)"
             }
-        }],
-        "valid-jsdoc": ["warn", {
-            "requireReturn": false,
-            "requireParamDescription": true,
-            "requireReturnDescription": true,
-            "prefer": { "return": "return" }
-        }],
-
-        "camelcase": ["off"],
-
-        "indent": ["error", 4, { "SwitchCase": 1 }],
-        "quotes": ["warn", "single", { "avoidEscape": true }],
-        "semi": ["error", "always"],
-        "comma-dangle": ["error", "never"],
-        "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
-        "object-curly-spacing": ["error", "always"],
-        "space-before-function-paren": ["error", { "anonymous": "always", "named": "never", "asyncArrow": "always" }],
-        "arrow-parens": ["error", "always"],
-        "no-multiple-empty-lines": ["warn", { "max": 2 }],
-        "max-len": ["warn", { "code": 120, "ignoreUrls": true, "ignoreStrings": true }],
-
-        "no-var": ["error"],
-        "prefer-const": ["warn"],
-        "eqeqeq": ["error", "smart"]
-    }
+        ],
+        "require-jsdoc": [
+            "warn",
+            {
+                "require": {
+                    "FunctionDeclaration": true,
+                    "MethodDefinition": true,
+                    "ClassDeclaration": true,
+                    "ArrowFunctionExpression": false,
+                    "FunctionExpression": false
+                }
+            }
+        ],
+        "valid-jsdoc": [
+            "warn",
+            {
+                "requireReturn": false,
+                "requireParamDescription": true,
+                "requireReturnDescription": true,
+                "prefer": {
+                    "return": "return"
+                }
+            }
+        ],
+        "camelcase": [
+            "off"
+        ],
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "quotes": [
+            "warn",
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "comma-dangle": [
+            "error",
+            "never"
+        ],
+        "brace-style": [
+            "error",
+            "1tbs",
+            {
+                "allowSingleLine": true
+            }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "arrow-parens": [
+            "error",
+            "always"
+        ],
+        "no-multiple-empty-lines": [
+            "warn",
+            {
+                "max": 2
+            }
+        ],
+        "max-len": [
+            "warn",
+            {
+                "code": 120,
+                "ignoreUrls": true,
+                "ignoreStrings": true
+            }
+        ],
+        "no-var": [
+            "error"
+        ],
+        "prefer-const": [
+            "warn"
+        ],
+        "eqeqeq": [
+            "error",
+            "smart"
+        ]
+    },
+    "overrides": [
+        {
+            "files": [
+                "background/service_worker.js"
+            ],
+            "env": {
+                "serviceworker": true
+            }
+        }
+    ]
 }
