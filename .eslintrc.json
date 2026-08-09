@@ -17,9 +17,10 @@
         "no-unused-vars": [
             "error",
             {
-                "varsIgnorePattern": "(Find)|(encode)|(decode)"
-            }
-        ],
+                "varsIgnorePattern": "(Find)|(encode)|(decode)",
+                "argsIgnorePattern": "^self$"
+                }
+            ],
         "require-jsdoc": [
             "warn",
             {
@@ -124,6 +125,10 @@
             "env": {
                 "serviceworker": true
             }
+        },
+        {
+            "files": ["app.js"],
+            "rules": { "no-redeclare": "off" }
         }
     ]
 }
