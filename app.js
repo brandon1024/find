@@ -37,7 +37,7 @@ const Find = (function () {
      *
      * @param {string} path - The namespace path.
      * @param {registerCallback} callback - A function that initializes the namespace.
-     * @return {type} the namespace
+     * @return {object} The initialized namespace object.
      * */
     self.register = function (path, callback) {
         const pathKeys = path.split('.');
@@ -70,7 +70,7 @@ const Find = (function () {
      * Retrieve a given namespace using a string path.
      *
      * @param {string} path - The namespace path.
-     * @return {type}the namespace.
+     * @return {object} The initialized namespace object.
      * */
     self.getContext = function (path) {
         const pathKeys = path.split('.');
