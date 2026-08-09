@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 importScripts('../app.js');
 importScripts('./browser-action-proxy.js');
