@@ -19,8 +19,8 @@
             {
                 "varsIgnorePattern": "(Find)|(encode)|(decode)",
                 "argsIgnorePattern": "^self$"
-                }
-            ],
+            }
+        ],
         "require-jsdoc": [
             "warn",
             {
@@ -115,6 +115,10 @@
         "eqeqeq": [
             "error",
             "smart"
+        ],
+        "array-bracket-spacing": [
+            "error",
+            "never"
         ]
     },
     "overrides": [
@@ -127,8 +131,31 @@
             }
         },
         {
-            "files": ["app.js"],
-            "rules": { "no-redeclare": "off" }
+            "files": [
+                "app.js"
+            ],
+            "rules": {
+                "no-redeclare": "off"
+            }
+        },
+        {
+            "files": [
+                "jest.config.js",
+                "test/**/*.js",
+                "test/mock-extension-apis.js"
+            ],
+            "env": {
+                "node": true,
+                "jest": true,
+                "commonjs": true
+            },
+            "rules": {
+                "indent": [
+                    "error",
+                    2
+                ],
+                "require-jsdoc": "off"
+            }
         }
     ]
 }

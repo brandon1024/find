@@ -19,7 +19,8 @@ function loadScript(relativePath) {
   eval(code);
 }
 
-function setViewport({ innerWidth = 1280, innerHeight = 800, clientWidth = 1280, scrollHeight = 800, scrollY = 0 } = {}) {
+function setViewport({ innerWidth = 1280, innerHeight = 800, clientWidth = 1280, scrollHeight = 800, scrollY = 0
+} = {}) {
   Object.defineProperty(window, 'innerWidth', { value: innerWidth, configurable: true });
   Object.defineProperty(window, 'innerHeight', { value: innerHeight, configurable: true });
   Object.defineProperty(document.documentElement, 'clientWidth', { value: clientWidth, configurable: true });
