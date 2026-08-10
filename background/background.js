@@ -26,7 +26,7 @@ Find.register('Background', function (self) {
         });
 
         Find.browser.contextMenus.onClicked.addListener((info) => {
-            if(info.menuItemId === 'show-help') {
+            if (info.menuItemId === 'show-help') {
                 Find.browser.tabs.create({ url: Find.browser.runtime.getURL('docs/index.html') });
             }
         });
@@ -38,13 +38,13 @@ Find.register('Background', function (self) {
     Find.browser.runtime.onInstalled.addListener((installation) => {
         self.installationDetails = installation;
 
-        if(Find.browserId !== 'Firefox') {
-            const scripts =  Find.browser.runtime.getManifest().content_scripts[0].js;
+        if (Find.browserId !== 'Firefox') {
+            const scripts = Find.browser.runtime.getManifest().content_scripts[0].js;
             Find.browser.tabs.query({}, (tabs) => {
-                for(let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+                for (let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
                     const url = tabs[tabIndex].url;
                     // Without the "tabs" permission, browser's internal webpage (e.g., "chrome://" or "chrome-extension://") has no "url"
-                    if(!url
+                    if (!url
                         || url.match(/^https:\/\/chrome\.google\.com\/webstore\/.*/)
                         || url.match(/^https:\/\/chromewebstore\.google\.com\/.*/)
                         || url.match(/^https:\/\/microsoftedge\.microsoft\.com\/.*/)) {
@@ -56,7 +56,7 @@ Find.register('Background', function (self) {
             });
         }
 
-        if(installation.reason === 'install') {
+        if (installation.reason === 'install') {
             Find.browser.tabs.create({ url: Find.browser.runtime.getURL('docs/index.html') });
         }
     });
@@ -79,7 +79,7 @@ Find.register('Background', function (self) {
 
         Find.Background.ContentProxy.fetch(tab, (response) => {
             resp.isReachable = response && response.success;
-            if(resp.isReachable) {
+            if (resp.isReachable) {
                 resp.selectedText = response.selection;
                 resp.regex = response.regex;
                 resp.iframes = response.iframes;
@@ -115,7 +115,7 @@ Find.register('Background', function (self) {
      * highlights are not removed, and are persisted in the page.
      * */
     self.restorePageState = function (tab, restoreHighlights) {
-        if(restoreHighlights === undefined || restoreHighlights) {
+        if (restoreHighlights === undefined || restoreHighlights) {
             Find.Background.ContentProxy.clearPageHighlights(tab);
         }
 
@@ -144,7 +144,7 @@ Find.register('Background', function (self) {
      * */
     self.updateSearch = function (message, tab, sendResponse) {
         try {
-            if(!documentRepresentation) {
+            if (!documentRepresentation) {
                 self.initializePage(tab, () => {
                     self.updateSearch(message, tab, sendResponse);
                 });
@@ -156,12 +156,12 @@ Find.register('Background', function (self) {
             let regex = message.regex;
 
             //If searching by string, escape all regex metacharacters
-            if(!self.options.find_by_regex) {
+            if (!self.options.find_by_regex) {
                 regex = regex.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
             }
 
             //Ensure non-empty search
-            if(regex.length === 0) {
+            if (regex.length === 0) {
                 sendResponse({ action: 'empty_regex' });
                 Find.Background.ContentProxy.clearPageHighlights(tab);
                 return;
@@ -169,15 +169,15 @@ Find.register('Background', function (self) {
 
             //Build occurrence map, reposition index if necessary
             regexOccurrenceMap = buildOccurrenceMap(documentRepresentation, regex, self.options);
-            if(index > regexOccurrenceMap.length-1) {
-                if(regexOccurrenceMap.length !== 0) {
+            if (index > regexOccurrenceMap.length - 1) {
+                if (regexOccurrenceMap.length !== 0) {
                     index = regexOccurrenceMap.length - 1;
                 } else {
                     index = 0;
                 }
             }
 
-            if(self.options.max_results !== 0 && index >= self.options.max_results) {
+            if (self.options.max_results !== 0 && index >= self.options.max_results) {
                 index = self.options.max_results - 1;
             }
 
@@ -186,13 +186,13 @@ Find.register('Background', function (self) {
 
             //If occurrence map empty, viewable index is zero
             let viewableIndex = index + 1;
-            if(regexOccurrenceMap.length === 0) {
+            if (regexOccurrenceMap.length === 0) {
                 viewableIndex = 0;
             }
 
             //if occurrence map larger than max results, viewable total is max results
             let viewableTotal = regexOccurrenceMap.length;
-            if(self.options.max_results !== 0 && self.options.max_results <= regexOccurrenceMap.length) {
+            if (self.options.max_results !== 0 && self.options.max_results <= regexOccurrenceMap.length) {
                 viewableTotal = self.options.max_results;
             }
 
@@ -201,7 +201,7 @@ Find.register('Background', function (self) {
                 index: viewableIndex,
                 total: viewableTotal
             });
-        } catch(e) {
+        } catch (e) {
             sendResponse({ action: 'invalid_regex', error: e.message });
             Find.Background.ContentProxy.clearPageHighlights(tab);
         }
@@ -217,11 +217,11 @@ Find.register('Background', function (self) {
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
     self.seekSearch = function (message, seekForward, tab, sendResponse) {
-        self.options= message.options;
+        self.options = message.options;
         const indexCap = self.options.max_results !== 0;
 
         //If reached end, reset index
-        if(seekForward) {
+        if (seekForward) {
             index = computeSubsequentIndex(index, regexOccurrenceMap, self.options);
         } else {
             index = computePrecedingIndex(index, regexOccurrenceMap, self.options);
@@ -230,7 +230,7 @@ Find.register('Background', function (self) {
         //Invoke seek action
         Find.Background.ContentProxy.seekHighlight(tab, index, self.options);
 
-        const viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index+1;
+        const viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index + 1;
         const viewableTotal = (indexCap && self.options.max_results <= regexOccurrenceMap.length) ?
             self.options.max_results : regexOccurrenceMap.length;
         sendResponse({
@@ -317,9 +317,9 @@ Find.register('Background', function (self) {
         const cardinality = message.options.cardinality;
         let resp;
 
-        if(cardinality === 'all') {
+        if (cardinality === 'all') {
             const occurrences = [];
-            for(let occIndex = 0; occIndex < regexOccurrenceMap.length; occIndex++) {
+            for (let occIndex = 0; occIndex < regexOccurrenceMap.length; occIndex++) {
                 occurrences.push(regexOccurrenceMap.occurrenceIndexMap[occIndex].occurrence);
             }
 
@@ -368,18 +368,18 @@ Find.register('Background', function (self) {
         regex = (options.match_case) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
 
         //Loop over all text nodes in documentRepresentation
-        for(const key in documentRepresentation) {
+        for (const key in documentRepresentation) {
             const textNodes = documentRepresentation[key].group;
             const preformatted = documentRepresentation[key].preformatted;
             let textGroup = '';
             const uuids = [];
-            for(let nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
+            for (let nodeIndex = 0; nodeIndex < textNodes.length; nodeIndex++) {
                 textGroup += textNodes[nodeIndex].text;
                 uuids.push(textNodes[nodeIndex].elementUUID);
             }
 
             const matches = textGroup.match(regex);
-            if(!matches) {
+            if (!matches) {
                 continue;
             }
 
@@ -390,16 +390,16 @@ Find.register('Background', function (self) {
                 preformatted: preformatted
             };
 
-            for(let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
+            for (let matchesIndex = 0; matchesIndex < matches.length; matchesIndex++) {
                 const occMapIndex = matchesIndex + (count - matches.length);
                 occurrenceMap.occurrenceIndexMap[occMapIndex] =
-                        { groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex] };
+                    { groupIndex: groupIndex, subIndex: matchesIndex, occurrence: matches[matchesIndex] };
             }
 
             groupIndex++;
 
             //If reached maxIndex, exit
-            if(options.max_results !== 0 && count >= options.max_results) {
+            if (options.max_results !== 0 && count >= options.max_results) {
                 break;
             }
         }
@@ -421,7 +421,7 @@ Find.register('Background', function (self) {
     function computeSubsequentIndex(index, regexOccurrenceMap, options) {
         //If reached end, reset index
         const indexCap = self.options.max_results !== 0;
-        if(index >= regexOccurrenceMap.length-1 || (indexCap && index >= options.max_results-1)) {
+        if (index >= regexOccurrenceMap.length - 1 || (indexCap && index >= options.max_results - 1)) {
             return 0;
         }
 
@@ -440,8 +440,8 @@ Find.register('Background', function (self) {
     function computePrecedingIndex(index, regexOccurrenceMap, options) {
         //If reached start, set index to last occurrence
         const indexCap = self.options.max_results !== 0;
-        if(index <= 0) {
-            if(indexCap && options.max_results <= regexOccurrenceMap.length) {
+        if (index <= 0) {
+            if (indexCap && options.max_results <= regexOccurrenceMap.length) {
                 return options.max_results - 1;
             }
 
@@ -461,9 +461,9 @@ Find.register('Background', function (self) {
     function getUUIDsFromModelObject(documentRepresentation) {
         const uuids = [];
 
-        for(const key in documentRepresentation) {
+        for (const key in documentRepresentation) {
             const textNodes = documentRepresentation[key].group;
-            for(let index = 0; index < textNodes.length; index++) {
+            for (let index = 0; index < textNodes.length; index++) {
                 uuids.push(textNodes[index].elementUUID);
             }
         }
