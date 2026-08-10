@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/brandon1024/find",
   "devDependencies": {
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
   }
 }
