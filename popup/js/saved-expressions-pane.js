@@ -6,9 +6,9 @@
 Find.register('Popup.SavedExpressionsPane', function (self) {
 
     /**
-	 * Initialize the saved expressions pane. Registers button event handlers, and loads
-	 * the saved expressions from local storage and builds expression entry elements.
-	 * */
+     * Initialize the saved expressions pane. Registers button event handlers, and loads
+     * the saved expressions from local storage and builds expression entry elements.
+     * */
     self.init = function () {
         document.getElementById('clear-saved-expressions-button').addEventListener('click', () => {
             self.clearSavedExpressions();
@@ -20,8 +20,8 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 
         const parentEl = document.getElementById('saved-expressions-entry-list');
         Find.Popup.Storage.retrieveSavedExpressions((data) => {
-            if(data && data.length) {
-                for(let index = 0; index < data.length; index++) {
+            if (data && data.length) {
+                for (let index = 0; index < data.length; index++) {
                     const entryEl = buildExpressionEntryElement(data[index]);
                     parentEl.appendChild(entryEl);
                 }
@@ -32,13 +32,13 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
     };
 
     /**
-	 * Display or hide the saved expressions pane.
-	 *
-	 * @param {boolean} value - True to display the pane, false to hide.
-	 * */
+     * Display or hide the saved expressions pane.
+     *
+     * @param {boolean} value - True to display the pane, false to hide.
+     * */
     self.show = function (value) {
         const el = document.getElementById('saved-expressions-body');
-        if(value === undefined || value) {
+        if (value === undefined || value) {
             el.style.display = 'inherit';
         } else {
             el.style.display = 'none';
@@ -46,12 +46,12 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
     };
 
     /**
-	 * Toggle the saved expressions pane. If the pane is hidden, it will be shown.
-	 * Otherwise it will be hidden.
-	 * */
+     * Toggle the saved expressions pane. If the pane is hidden, it will be shown.
+     * Otherwise it will be hidden.
+     * */
     self.toggle = function () {
         const el = document.getElementById('saved-expressions-body');
-        if(el.style.display === 'none' || el.style.display === '') {
+        if (el.style.display === 'none' || el.style.display === '') {
             self.show(true);
         } else {
             self.show(false);
@@ -59,24 +59,24 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
     };
 
     /**
-	 * Save the regex from the search field into the local storage, and create
-	 * an expression entry in the saved expressions pane.
-	 *
-	 * If the regex already exists in the saved expressions, the entry is moved to the
-	 * front of the expressions array, and the entry in the saved expressions pane is placed
-	 * at the top.
-	 * */
+     * Save the regex from the search field into the local storage, and create
+     * an expression entry in the saved expressions pane.
+     *
+     * If the regex already exists in the saved expressions, the entry is moved to the
+     * front of the expressions array, and the entry in the saved expressions pane is placed
+     * at the top.
+     * */
     self.saveEntry = function () {
         const regex = Find.Popup.SearchPane.getSearchFieldText();
-        if(!regex) {
+        if (!regex) {
             return;
         }
 
         Find.Popup.Storage.retrieveSavedExpressions((data) => {
-            if(data) {
+            if (data) {
                 //Remove existing entry, if it exists
-                for(let index = 0; index < data.length; index++) {
-                    if(data[index] === regex) {
+                for (let index = 0; index < data.length; index++) {
+                    if (data[index] === regex) {
                         data.splice(index, 1);
                         break;
                     }
@@ -90,7 +90,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
             //Add new entry as first child
             const parentEl = document.getElementById('saved-expressions-entry-list');
             for (let index = 0; index < parentEl.children.length; index++) {
-                if(parentEl.children[index].dataset.regex === regex) {
+                if (parentEl.children[index].dataset.regex === regex) {
                     parentEl.removeChild(parentEl.children[index]);
                     break;
                 }
@@ -101,7 +101,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 
             //Remove null entry, if it exists
             const nullEntry = document.getElementById('null-entry');
-            if(nullEntry) {
+            if (nullEntry) {
                 nullEntry.parentNode.removeChild(nullEntry);
             }
 
@@ -113,10 +113,10 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
     };
 
     /**
-	 * Remove all saved expression entries from the pane and local storage.
-	 * Inserts a null entry to describe to the user that no expression entries
-	 * exist.
-	 * */
+     * Remove all saved expression entries from the pane and local storage.
+     * Inserts a null entry to describe to the user that no expression entries
+     * exist.
+     * */
     self.clearSavedExpressions = function () {
         const parentEl = document.getElementById('saved-expressions-entry-list');
         while (parentEl.firstChild) {
@@ -129,13 +129,13 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
     };
 
     /**
-	 * Construct an expression entry element, along with it's event handlers
-	 * and reference information.
-	 *
-	 * @private
-	 * @param {string} regex - The regular expression to display in the entry body.
-	 * @returns {HTMLElement} The constructed expression entry element.
-	 * */
+     * Construct an expression entry element, along with it's event handlers
+     * and reference information.
+     *
+     * @private
+     * @param {string} regex - The regular expression to display in the entry body.
+     * @returns {HTMLElement} The constructed expression entry element.
+     * */
     function buildExpressionEntryElement(regex) {
         // Set search field with regex and update search. Also invoke saveEntry(), which
         // will place regex at top of saved expression entries and update local storage.
@@ -155,10 +155,10 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
             entry.parentNode.removeChild(entry);
 
             Find.Popup.Storage.retrieveSavedExpressions((data) => {
-                if(data) {
+                if (data) {
                     //Remove existing entry, if it exists
-                    for(let index = 0; index < data.length; index++) {
-                        if(data[index] === regex) {
+                    for (let index = 0; index < data.length; index++) {
+                        if (data[index] === regex) {
                             data.splice(index, 1);
                             break;
                         }
@@ -166,7 +166,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
                 }
 
                 const parentEl = document.getElementById('saved-expressions-entry-list');
-                if(!parentEl.children.length) {
+                if (!parentEl.children.length) {
                     parentEl.appendChild(buildNullExpressionEntryElement());
                 }
 
@@ -209,11 +209,11 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
     }
 
     /**
-	 * Create a null entry with the given text as the body.
-	 *
-	 * @private
-	 * @returns {HTMLElement} The constructed null entry element.
-	 * */
+     * Create a null entry with the given text as the body.
+     *
+     * @private
+     * @returns {HTMLElement} The constructed null entry element.
+     * */
     function buildNullExpressionEntryElement() {
         const text = Find.Popup.i18n.getLocalizedString('no_expressions_found_text');
 
@@ -241,9 +241,9 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
     }
 
     /**
-	 * Simple DOM element builder class.
-	 * @param {Document} doc - The document to create elements in.
-	 * */
+     * Simple DOM element builder class.
+     * @param {Document} doc - The document to create elements in.
+     * */
     const ElementBuilder = function (doc) {
 
         let el = null;
@@ -259,7 +259,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
         };
 
         this.addClass = function () {
-            for(let index = 0; index < arguments.length; index++) {
+            for (let index = 0; index < arguments.length; index++) {
                 el.classList.add(arguments[index]);
             }
             return this;
