@@ -105,7 +105,8 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
                 nullEntry.parentNode.removeChild(nullEntry);
             }
 
-            console.log(data);
+            // Assumed a debug left in
+            // console.log(data);
 
             Find.Popup.Storage.saveExpressions(data);
         });
