@@ -51,3 +51,19 @@ global.Find = {
         return parent;
     }
 };
+
+/**
+ * encode/decode are declared as globals in .eslintrc.json (varsIgnorePattern
+ * includes "encode" and "decode"), backed at runtime by lib/html-entity-handler.
+ * These are minimal, real HTML-entity implementations (not identity stubs) so
+ * tests exercise realistic behavior for text containing &, <, >, etc.
+ * */
+global.encode = (str) => String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+global.decode = (str) => String(str)
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
