@@ -25,21 +25,41 @@ describe('Background.updateSearch - regex/literal escaping', () => {
 
     beforeEach(() => {
         jest.resetModules();
-        // Fresh Find namespace per test so registrations don't leak across tests
+        delete global.Find; // force a fresh namespace; previous test's stale closures otherwise persist
         require('../test/mock-extension-apis.js');
+
+        // Full ContentProxy stub - covers every method background.js is known to call.
+        // If a test still reports 'invalid_regex', debugLastResponse() below will log the
+        // real error (e.g. "X is not a function") so you know exactly what to add here.
+        global.Find = global.Find || {};
+        global.Find.Background = global.Find.Background || {};
+        global.Find.Background.ContentProxy = {
+            buildDocumentRepresentation: jest.fn((t, cb) => cb({})),
+            clearPageHighlights: jest.fn(),
+            fetch: jest.fn(),
+            executeScript: jest.fn(),
+            seekHighlight: jest.fn(),
+            replaceOccurrence: jest.fn(),
+            replaceAllOccurrences: jest.fn(),
+            restoreWebPage: jest.fn((t, uuids, cb) => cb && cb()),
+            followLinkUnderFocus: jest.fn(),
+            updatePageHighlights: jest.fn()
+        };
+
         loadScript('background/background.js');
 
         tab = { id: 1, url: 'https://example.com' };
         sendResponse = jest.fn();
-
-        // Stub ContentProxy calls used by updateSearch/initializePage
-        global.Find.Background.ContentProxy = {
-            buildDocumentRepresentation: (t, cb) => cb({}),
-            clearPageHighlights: jest.fn(),
-            fetch: jest.fn(),
-            executeScript: jest.fn()
-        };
     });
+
+    function debugLastResponse() {
+        const response = sendResponse.mock.calls[0] && sendResponse.mock.calls[0][0];
+        if (response && response.action === 'invalid_regex') {
+            // eslint-disable-next-line no-console
+            console.log('DEBUG invalid_regex error:', response.error);
+        }
+        return response;
+    }
 
     test('literal search escapes regex metacharacters without breaking the match', () => {
         const message = {
@@ -47,12 +67,9 @@ describe('Background.updateSearch - regex/literal escaping', () => {
             options: { find_by_regex: false, match_case: true, max_results: 0 }
         };
 
-        expect(() => {
-            global.Find.Background.updateSearch(message, tab, sendResponse);
-        }).not.toThrow();
+        global.Find.Background.updateSearch(message, tab, sendResponse);
+        const response = debugLastResponse();
 
-        // sendResponse should be called with a valid action, not 'invalid_regex'
-        const response = sendResponse.mock.calls[0][0];
         expect(response.action).not.toBe('invalid_regex');
     });
 
@@ -62,11 +79,9 @@ describe('Background.updateSearch - regex/literal escaping', () => {
             options: { find_by_regex: true, match_case: true, max_results: 0 }
         };
 
-        expect(() => {
-            global.Find.Background.updateSearch(message, tab, sendResponse);
-        }).not.toThrow();
+        global.Find.Background.updateSearch(message, tab, sendResponse);
+        const response = debugLastResponse();
 
-        const response = sendResponse.mock.calls[0][0];
         expect(response.action).not.toBe('invalid_regex');
     });
 
@@ -78,25 +93,9 @@ describe('Background.updateSearch - regex/literal escaping', () => {
             options: { find_by_regex: false, match_case: true, max_results: 0 }
         };
 
-        expect(() => {
-            global.Find.Background.updateSearch(message, tab, sendResponse);
-        }).not.toThrow();
+        global.Find.Background.updateSearch(message, tab, sendResponse);
+        const response = debugLastResponse();
 
-        const response = sendResponse.mock.calls[0][0];
         expect(response.action).not.toBe('invalid_regex');
     });
-
-    test('literal search escapes regex metacharacters without breaking the match', () => {
-    const message = {
-        regex: 'a.b*c',
-        options: { find_by_regex: false, match_case: true, max_results: 0 }
-    };
-
-    global.Find.Background.updateSearch(message, tab, sendResponse);
-
-    console.log('DEBUG response:', JSON.stringify(sendResponse.mock.calls[0][0]));
-
-    const response = sendResponse.mock.calls[0][0];
-    expect(response.action).not.toBe('invalid_regex');
-});
 });
