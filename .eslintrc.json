@@ -45,7 +45,7 @@
             }
         ],
         "camelcase": [
-            "off"
+            "error"
         ],
         "indent": [
             "error",
