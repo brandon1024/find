@@ -261,4 +261,38 @@ describe('Popup.SavedExpressionsPane', () => {
       expect(global.Find.Popup.Storage.saveExpressions).toHaveBeenCalledWith([]);
     });
   });
+
+  describe('ElementBuilder.addClass (via buildExpressionEntryElement)', () => {
+    test('applies all expected classes to a rendered saved expression entry', () => {
+      global.Find.Popup.Storage.retrieveSavedExpressions.mockImplementation((cb) => cb(['quick']));
+
+      SavedExpressionsPane.init();
+
+      const entry = document.querySelector('.saved-expression-entry');
+      expect(entry).not.toBeNull();
+      expect(entry.dataset.regex).toBe('quick');
+
+      const entryText = entry.querySelector('.saved-expression-entry-text');
+      const entryButton = entry.querySelector('.saved-expression-entry-button');
+      const deleteButton = entry.querySelector('.delete-saved-expression-entry-button');
+
+      expect(entryText).not.toBeNull();
+      expect(entryButton).not.toBeNull();
+      expect(deleteButton).not.toBeNull();
+    });
+
+    test('applies all expected classes when an entry is added via saveEntry', () => {
+      global.Find.Popup.SearchPane.getSearchFieldText.mockReturnValue('quick');
+      global.Find.Popup.Storage.retrieveSavedExpressions.mockImplementation((cb) => cb([]));
+
+      SavedExpressionsPane.saveEntry();
+
+      const entry = document.querySelector('.saved-expression-entry');
+      expect(entry).not.toBeNull();
+      expect(entry.dataset.regex).toBe('quick');
+      expect(entry.querySelector('.saved-expression-entry-text')).not.toBeNull();
+      expect(entry.querySelector('.saved-expression-entry-button')).not.toBeNull();
+      expect(entry.querySelector('.delete-saved-expression-entry-button')).not.toBeNull();
+    });
+  });
 });
