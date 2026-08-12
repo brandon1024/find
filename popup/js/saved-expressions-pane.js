@@ -4,7 +4,6 @@
  * Create the Popup SavedExpressionsPane namespace.
  * */
 Find.register('Popup.SavedExpressionsPane', function (self) {
-
     /**
      * Initialize the saved expressions pane. Registers button event handlers, and loads
      * the saved expressions from local storage and builds expression entry elements.
@@ -74,7 +73,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 
         Find.Popup.Storage.retrieveSavedExpressions((data) => {
             if (data) {
-                //Remove existing entry, if it exists
+                // Remove existing entry, if it exists
                 for (let index = 0; index < data.length; index++) {
                     if (data[index] === regex) {
                         data.splice(index, 1);
@@ -87,7 +86,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 
             data.unshift(regex);
 
-            //Add new entry as first child
+            // Add new entry as first child
             const parentEl = document.getElementById('saved-expressions-entry-list');
             for (let index = 0; index < parentEl.children.length; index++) {
                 if (parentEl.children[index].dataset.regex === regex) {
@@ -99,7 +98,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
             const entryEl = buildExpressionEntryElement(regex);
             parentEl.insertBefore(entryEl, parentEl.firstChild);
 
-            //Remove null entry, if it exists
+            // Remove null entry, if it exists
             const nullEntry = document.getElementById('null-entry');
             if (nullEntry) {
                 nullEntry.parentNode.removeChild(nullEntry);
@@ -156,7 +155,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 
             Find.Popup.Storage.retrieveSavedExpressions((data) => {
                 if (data) {
-                    //Remove existing entry, if it exists
+                    // Remove existing entry, if it exists
                     for (let index = 0; index < data.length; index++) {
                         if (data[index] === regex) {
                             data.splice(index, 1);
@@ -245,7 +244,6 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
      * @param {Document} doc - The document to create elements in.
      * */
     const ElementBuilder = function (doc) {
-
         let el = null;
 
         this.createElement = function (name) {

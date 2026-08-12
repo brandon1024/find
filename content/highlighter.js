@@ -5,7 +5,6 @@
  * the page and is used to highlight occurrences of a regex in the page.
  * */
 Find.register('Content.Highlighter', function (self) {
-
     const indexHighlight = 'find-ext-index-highlight';
     const allHighlight = 'find-ext-all-highlight';
 
@@ -31,7 +30,7 @@ Find.register('Content.Highlighter', function (self) {
                 if (this.occIndex !== index) {
                     this.occIndex = index;
 
-                    //If reached max number of occurrences to show, don't highlight text
+                    // If reached max number of occurrences to show, don't highlight text
                     if (this.maxIndex == null || this.occIndex <= this.maxIndex) {
                         const style = 'all: unset; background-color: ' + options.allHighlightColor.hexColor + '; color: black;';
                         const classList = 'find-ext-occr' + index + ' ' + allHighlight;
@@ -58,7 +57,7 @@ Find.register('Content.Highlighter', function (self) {
             regex = new RegExp(regex, 'mi');
         }
 
-        //Iterate each text group
+        // Iterate each text group
         let occIndex = 0;
         for (let index = 0; index < occurrenceMap.groups; index++) {
             const uuids = occurrenceMap[index].uuids;
@@ -66,7 +65,7 @@ Find.register('Content.Highlighter', function (self) {
             const charMap = {};
             const charIndexMap = [];
 
-            //Build groupText, charMap and charIndexMap
+            // Build groupText, charMap and charIndexMap
             let count = 0;
             for (let uuidIndex = 0; uuidIndex < uuids.length; uuidIndex++) {
                 const el = document.getElementById(uuids[uuidIndex]);
@@ -99,13 +98,13 @@ Find.register('Content.Highlighter', function (self) {
             if (!occurrenceMap[index].preformatted) {
                 let info;
 
-                //Replace all whitespace characters (\t \n\r) with the space character
+                // Replace all whitespace characters (\t \n\r) with the space character
                 while ((info = /[\t\n\r]/.exec(groupText)) !== null) {
                     charMap[charIndexMap[info.index]].ignorable = true;
                     groupText = groupText.replace(/[\t\n\r]/, ' ');
                 }
 
-                //Truncate consecutive whitespaces
+                // Truncate consecutive whitespaces
                 while ((info = / {2,}/.exec(groupText)) !== null) {
                     const len = info[0].length;
                     const offset = info.index;
@@ -119,7 +118,7 @@ Find.register('Content.Highlighter', function (self) {
                     groupText = groupText.replace(/ {2,}/, ' ');
                 }
 
-                //Collapse leading or trailing whitespaces
+                // Collapse leading or trailing whitespaces
                 while ((info = /^ | $/.exec(groupText)) !== null) {
                     const len = info[0].length;
                     const offset = info.index;
@@ -134,7 +133,7 @@ Find.register('Content.Highlighter', function (self) {
                 }
             }
 
-            //Perform complex regex search, updating charMap matched characters
+            // Perform complex regex search, updating charMap matched characters
             let info;
             while ((info = regex.exec(groupText)) !== null) {
                 const len = info[0].length;
@@ -158,13 +157,13 @@ Find.register('Content.Highlighter', function (self) {
                 groupText = groupText.substring(offset + len);
             }
 
-            //Wrap matched characters in an element with class indexHighlight and occurrenceIdentifier
+            // Wrap matched characters in an element with class indexHighlight and occurrenceIdentifier
             const matchGroup = { text: '', groupUUID: charMap[0].nodeUUID };
             let inMatch = false;
             for (let key = 0; key < charMap.length; key++) {
                 tags.update(occIndex);
 
-                //If Transitioning Into New Text Group
+                // If Transitioning Into New Text Group
                 if (matchGroup.groupUUID !== charMap[key].nodeUUID) {
                     if (inMatch) {
                         matchGroup.text += tags.closingMarkup;
@@ -179,7 +178,7 @@ Find.register('Content.Highlighter', function (self) {
                     }
                 }
 
-                //If Current Character is Matched
+                // If Current Character is Matched
                 if (charMap[key].matched) {
                     if (!inMatch) {
                         inMatch = charMap[key].matched;
@@ -210,7 +209,7 @@ Find.register('Content.Highlighter', function (self) {
                     }
                 }
 
-                //If End of Map Reached
+                // If End of Map Reached
                 if (key === charMap.length - 1) {
                     if (inMatch) {
                         matchGroup.text += tags.closingMarkup;

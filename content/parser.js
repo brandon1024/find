@@ -13,13 +13,12 @@
  * document representation object.
  * */
 Find.register('Content.Parser', function (self) {
-
     /**
-	 * Walk the pages DOM tree and construct the document representation object, while
-	 * wrapping text nodes with wrapper elements.
-	 *
-	 * @return {object} the document representation object
-	 * */
+    * Walk the pages DOM tree and construct the document representation object, while
+    * wrapping text nodes with wrapper elements.
+    *
+    * @return {object} the document representation object
+    * */
     self.buildDOMReferenceObject = function () {
         const DOMTreeWalker = document.createTreeWalker(document.body,
             NodeFilter.SHOW_ALL, { acceptNode: nodeFilter }, false);
@@ -143,10 +142,10 @@ Find.register('Content.Parser', function (self) {
     };
 
     /**
-	 * Restore the web page by removing any wrapper elements.
-	 *
-	 * @param {array} uuids - A list of UUIDs
-	 * */
+    * Restore the web page by removing any wrapper elements.
+    *
+    * @param {array} uuids - A list of UUIDs
+    * */
     self.restoreWebPage = function (uuids) {
         for (let index = 0; index < uuids.length; index++) {
             const el = document.getElementById(uuids[index]);
@@ -162,12 +161,12 @@ Find.register('Content.Parser', function (self) {
     };
 
     /**
-	 * Filter used by the DOM tree walker. Used to skip certain elements.
-	 * @private
-	 * @param {Element} node - The DOM node.
-	 * @return {number} NodeFilter.FILTER_ACCEPT if the node is accepted, or NodeFilter.FILTER_REJECT
-	 * if the node is rejected.
-	 * */
+    * Filter used by the DOM tree walker. Used to skip certain elements.
+    * @private
+    * @param {Element} node - The DOM node.
+    * @return {number} NodeFilter.FILTER_ACCEPT if the node is accepted, or NodeFilter.FILTER_REJECT
+    * if the node is rejected.
+    * */
     function nodeFilter(node) {
         if (isElementNode(node)) {
             switch (node.tagName.toLowerCase()) {
@@ -190,15 +189,15 @@ Find.register('Content.Parser', function (self) {
     }
 
     /**
-	 * Decode any HTML character entities, strip consecutive whitespaces,
-	 * and return the node text value.
-	 *
-	 * @private
-	 * @param {Node} node - The DOM node.
-	 * @param {boolean} preformatted - Whether or not the node is a preformatted text element.
-	 * @param {boolean} elementBoundary - Whether the element is a boundary element.
-	 * @return {string} the formatted text.
-	 * */
+    * Decode any HTML character entities, strip consecutive whitespaces,
+    * and return the node text value.
+    *
+    * @private
+    * @param {Node} node - The DOM node.
+    * @param {boolean} preformatted - Whether or not the node is a preformatted text element.
+    * @param {boolean} elementBoundary - Whether the element is a boundary element.
+    * @return {string} the formatted text.
+    * */
     function formatTextNodeValue(node, preformatted, elementBoundary) {
         if (isElementNode(node)) {
             return;
@@ -218,17 +217,17 @@ Find.register('Content.Parser', function (self) {
     }
 
     /**
-	 * Determine whether a given node is preformatted.
-	 *
-	 * A node is preformatted if it has:
-	 * - tag name 'pre'
-	 * - style 'whitespace: pre'
-	 *
-	 * @private
-	 * @param {Element} node - The DOM node.
-	 * @return {boolean} true of the element is a preformatted element, false if the
-	 * element is not preformatted, and undefined if the node is not an element.
-	 * */
+    * Determine whether a given node is preformatted.
+    *
+    * A node is preformatted if it has:
+    * - tag name 'pre'
+    * - style 'whitespace: pre'
+    *
+    * @private
+    * @param {Element} node - The DOM node.
+    * @return {boolean} true of the element is a preformatted element, false if the
+    * element is not preformatted, and undefined if the node is not an element.
+    * */
     function isPreformattedElement(node) {
         if (!isElementNode(node)) {
             return undefined;
@@ -247,13 +246,13 @@ Find.register('Content.Parser', function (self) {
     }
 
     /**
-	 * Determine whether a given node is visible in the page.
-	 *
-	 * @private
-	 * @param {Node} node - The DOM node.
-	 * @return {boolean} true if the element is hidden, false if the element is visible,
-	 * and undefined if the not an element.
-	 * */
+    * Determine whether a given node is visible in the page.
+    *
+    * @private
+    * @param {Node} node - The DOM node.
+    * @return {boolean} true if the element is hidden, false if the element is visible,
+    * and undefined if the not an element.
+    * */
     function isHiddenElement(node) {
         if (!isElementNode(node)) {
             return undefined;
@@ -276,40 +275,40 @@ Find.register('Content.Parser', function (self) {
     }
 
     /**
-	 * Determine whether or not a given DOM node is an Element.
-	 *
-	 * @private
-	 * @param {Node} node - The DOM node.
-	 * @return {boolean} true if the node is an element, false otherwise.
-	 * */
+    * Determine whether or not a given DOM node is an Element.
+    *
+    * @private
+    * @param {Node} node - The DOM node.
+    * @return {boolean} true if the node is an element, false otherwise.
+    * */
     function isElementNode(node) {
         return node.nodeType === Node.ELEMENT_NODE;
     }
 
     /**
-	 * Determine whether or not a given DOM node is a text node.
-	 *
-	 * @private
-	 * @param {Node} node - The DOM node.
-	 * @return {boolean} true if the node is a text node, false otherwise.
-	 * */
+    * Determine whether or not a given DOM node is a text node.
+    *
+    * @private
+    * @param {Node} node - The DOM node.
+    * @return {boolean} true if the node is a text node, false otherwise.
+    * */
     function isTextNode(node) {
         return node.nodeType === Node.TEXT_NODE;
     }
 
     /**
-	 * Determine whether or not an element is inline-level or block-level.
-	 *
-	 * @private
-	 * @param {Element} element - The DOM element.
-	 * @return {boolean} true if the element is inline, false otherwise.
-	 * */
+    * Determine whether or not an element is inline-level or block-level.
+    *
+    * @private
+    * @param {Element} element - The DOM element.
+    * @return {boolean} true if the element is inline, false otherwise.
+    * */
     function isInlineLevelElement(element) {
         if (!isElementNode(element)) {
             return false;
         }
 
-        //Special case: will treat <br> as block element
+        // Special case: will treat <br> as block element
         const elementTagName = element.tagName.toLowerCase();
         if (elementTagName === 'br') {
             return false;
@@ -323,23 +322,23 @@ Find.register('Content.Parser', function (self) {
     }
 
     /**
-	 * Determine whether a text node value is whitespace only.
-	 *
-	 * @private
-	 * @param {Node} node - The DOM node.
-	 * @return {boolean} true if the node value is whitespace only, false otherwise.
-	 * */
+    * Determine whether a text node value is whitespace only.
+    *
+    * @private
+    * @param {Node} node - The DOM node.
+    * @return {boolean} true if the node value is whitespace only, false otherwise.
+    * */
     function isNodeTextValueWhitespaceOnly(node) {
         return !(/[^\t\n\r ]/.test(node.nodeValue));
     }
 
     /**
-	 * Determine the depth of a given node in the DOM tree.
-	 *
-	 * @private
-	 * @param {Node} node - The DOM node.
-	 * @return {number} the depth of the DOM node in the tree.
-	 * */
+    * Determine the depth of a given node in the DOM tree.
+    *
+    * @private
+    * @param {Node} node - The DOM node.
+    * @return {number} the depth of the DOM node in the tree.
+    * */
     function getNodeTreeDepth(node) {
         let depth = -1;
 
@@ -352,11 +351,11 @@ Find.register('Content.Parser', function (self) {
     }
 
     /**
-	 * Generate a UUIDv4.
-	 *
-	 * @private
-	 * @return {string} a new UUIDv4.
-	 * */
+    * Generate a UUIDv4.
+    *
+    * @private
+    * @return {string} a new UUIDv4.
+    * */
     function generateElementUUID() {
         const generateBlock = (size) => {
             let block = '';

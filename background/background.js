@@ -6,7 +6,6 @@
  * search, along with other necessary data to seek, replace, and perform other actions efficiently.
  * */
 Find.register('Background', function (self) {
-
     /**
      * Allocated on the namespace to allow the BrowserActionProxy to communicate installation
      * details to the browser action popup if the extension was recently installed or updated.
@@ -155,19 +154,19 @@ Find.register('Background', function (self) {
             self.options = message.options;
             let regex = message.regex;
 
-            //If searching by string, escape all regex metacharacters
+            // If searching by string, escape all regex metacharacters
             if (!self.options.findByRegex) {
                 regex = regex.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
             }
 
-            //Ensure non-empty search
+            // Ensure non-empty search
             if (regex.length === 0) {
                 sendResponse({ action: 'empty_regex' });
                 Find.Background.ContentProxy.clearPageHighlights(tab);
                 return;
             }
 
-            //Build occurrence map, reposition index if necessary
+            // Build occurrence map, reposition index if necessary
             regexOccurrenceMap = buildOccurrenceMap(documentRepresentation, regex, self.options);
             if (index > regexOccurrenceMap.length - 1) {
                 if (regexOccurrenceMap.length !== 0) {
@@ -181,16 +180,16 @@ Find.register('Background', function (self) {
                 index = self.options.maxResults - 1;
             }
 
-            //Invoke update action
+            // Invoke update action
             Find.Background.ContentProxy.updatePageHighlights(tab, regex, index, regexOccurrenceMap, self.options);
 
-            //If occurrence map empty, viewable index is zero
+            // If occurrence map empty, viewable index is zero
             let viewableIndex = index + 1;
             if (regexOccurrenceMap.length === 0) {
                 viewableIndex = 0;
             }
 
-            //if occurrence map larger than max results, viewable total is max results
+            // if occurrence map larger than max results, viewable total is max results
             let viewableTotal = regexOccurrenceMap.length;
             if (self.options.maxResults !== 0 && self.options.maxResults <= regexOccurrenceMap.length) {
                 viewableTotal = self.options.maxResults;
@@ -220,14 +219,14 @@ Find.register('Background', function (self) {
         self.options = message.options;
         const indexCap = self.options.maxResults !== 0;
 
-        //If reached end, reset index
+        // If reached end, reset index
         if (seekForward) {
             index = computeSubsequentIndex(index, regexOccurrenceMap, self.options);
         } else {
             index = computePrecedingIndex(index, regexOccurrenceMap, self.options);
         }
 
-        //Invoke seek action
+        // Invoke seek action
         Find.Background.ContentProxy.seekHighlight(tab, index, self.options);
 
         const viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index + 1;
@@ -252,12 +251,12 @@ Find.register('Background', function (self) {
     self.replaceNext = function (message, tab, sendResponse) {
         Find.Background.ContentProxy.replaceOccurrence(tab, message.index - 1, message.replaceWith, message.options);
 
-        //Restore Web Page
+        // Restore Web Page
         Find.Background.ContentProxy.clearPageHighlights(tab);
 
         const uuids = getUUIDsFromModelObject(documentRepresentation);
         Find.Background.ContentProxy.restoreWebPage(tab, uuids, () => {
-            //Rebuild documentRepresentation and invalidate
+            // Rebuild documentRepresentation and invalidate
             Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
                 documentRepresentation = model;
                 sendResponse({ action: 'invalidate' });
@@ -277,12 +276,12 @@ Find.register('Background', function (self) {
     self.replaceAll = function (message, tab, sendResponse) {
         Find.Background.ContentProxy.replaceAllOccurrences(tab, message.replaceWith, message.options);
 
-        //Restore Web Page
+        // Restore Web Page
         Find.Background.ContentProxy.clearPageHighlights(tab);
 
         const uuids = getUUIDsFromModelObject(documentRepresentation);
         Find.Background.ContentProxy.restoreWebPage(tab, uuids, () => {
-            //Rebuild documentRepresentation and invalidate
+            // Rebuild documentRepresentation and invalidate
             Find.Background.ContentProxy.buildDocumentRepresentation(tab, (model) => {
                 documentRepresentation = model;
                 sendResponse({ action: 'invalidate' });
@@ -367,7 +366,7 @@ Find.register('Background', function (self) {
         regex = regex.replace(/ /g, '\\s');
         regex = (options.matchCase) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
 
-        //Loop over all text nodes in documentRepresentation
+        // Loop over all text nodes in documentRepresentation
         for (const key in documentRepresentation) {
             if (!Object.prototype.hasOwnProperty.call(documentRepresentation, key)) {
                 continue;
@@ -401,7 +400,7 @@ Find.register('Background', function (self) {
 
             groupIndex++;
 
-            //If reached maxIndex, exit
+            // If reached maxIndex, exit
             if (options.maxResults !== 0 && count >= options.maxResults) {
                 break;
             }
@@ -422,7 +421,7 @@ Find.register('Background', function (self) {
      * @return {number} the new index
      * */
     function computeSubsequentIndex(index, regexOccurrenceMap, options) {
-        //If reached end, reset index
+        // If reached end, reset index
         const indexCap = self.options.maxResults !== 0;
         if (index >= regexOccurrenceMap.length - 1 || (indexCap && index >= options.maxResults - 1)) {
             return 0;
@@ -441,7 +440,7 @@ Find.register('Background', function (self) {
      * @return {number} the new index
      * */
     function computePrecedingIndex(index, regexOccurrenceMap, options) {
-        //If reached start, set index to last occurrence
+        // If reached start, set index to last occurrence
         const indexCap = self.options.maxResults !== 0;
         if (index <= 0) {
             if (indexCap && options.maxResults <= regexOccurrenceMap.length) {

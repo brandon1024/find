@@ -5,7 +5,6 @@
  * the appropriate background functions.
  * */
 Find.register('Background.Omni', function (self) {
-
     Find.browser.omnibox.onInputStarted.addListener(() => {
         Find.browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             Find.Background.initializePage(tabs[0]);
@@ -126,5 +125,4 @@ Find.register('Background.Omni', function (self) {
             hexColor: '#fff000'
         })
     });
-
 });

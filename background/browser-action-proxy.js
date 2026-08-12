@@ -5,7 +5,6 @@
  * and the browser action popup.
  * */
 Find.register('Background.BrowserActionProxy', function () {
-
     /**
      * Initialize the port connection with the browser action popup.
      * */

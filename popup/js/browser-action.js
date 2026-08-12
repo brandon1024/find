@@ -4,7 +4,6 @@
  * Create the Popup BrowserAction namespace.
  * */
 Find.register('Popup.BrowserAction', function (self) {
-
     let initialized = false;
     let index = 0;
 
@@ -17,17 +16,17 @@ Find.register('Popup.BrowserAction', function (self) {
 
         document.body.addEventListener('keyup', (e) => {
             if (e.code === 'KeyO' && e.ctrlKey && e.altKey) {
-                //CTRL+ALT+O => Toggle Options Pane
+                // CTRL+ALT+O => Toggle Options Pane
                 Find.Popup.OptionsPane.toggle();
                 Find.Popup.ReplacePane.show(false);
                 Find.Popup.SavedExpressionsPane.show(false);
             } else if (e.code === 'KeyR' && e.ctrlKey && e.altKey) {
-                //CTRL+ALT+R => Toggle Replace Pane
+                // CTRL+ALT+R => Toggle Replace Pane
                 Find.Popup.ReplacePane.toggle();
                 Find.Popup.OptionsPane.show(false);
                 Find.Popup.SavedExpressionsPane.show(false);
             } else if (e.code === 'KeyH' && e.ctrlKey && e.altKey) {
-                //CTRL+ALT+R => Toggle Replace Pane
+                // CTRL+ALT+R => Toggle Replace Pane
                 Find.Popup.SavedExpressionsPane.toggle();
                 Find.Popup.OptionsPane.show(false);
                 Find.Popup.ReplacePane.show(false);

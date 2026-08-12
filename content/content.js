@@ -5,7 +5,6 @@
  * page and delegates messages to the parser or highlighter.
  * */
 Find.register('Content', function (self) {
-
     /**
      * State variables, used to recover the extension state if the extension
      * is closed accidentally.
@@ -38,7 +37,7 @@ Find.register('Content', function (self) {
                 return false;
         }
 
-        //Highlighter Actions
+        // Highlighter Actions
         switch (message.action) {
             case 'update':
                 regex = message.regex;

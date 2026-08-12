@@ -4,23 +4,22 @@
  * Create the Popup SearchPane namespace.
  * */
 Find.register('Popup.SearchPane', function (self) {
-
     /**
      * Register event handlers.
      * */
     self.init = function () {
         document.getElementById('search-field').addEventListener('keyup', (e) => {
             if (e.ctrlKey && e.shiftKey && e.key === 'Enter') {
-                //CTRL+SHIFT+ENTER => Enter Link
+                // CTRL+SHIFT+ENTER => Enter Link
                 Find.Popup.BrowserAction.followLink();
             } else if ((e.key === 'Enter' && e.shiftKey) || (e.key === 'F3' && e.shiftKey)) {
-                //SHIFT+ENTER => Previous Highlight (seek)
+                // SHIFT+ENTER => Previous Highlight (seek)
                 Find.Popup.BrowserAction.seekBackwards();
             } else if (e.key === 'Escape' || (e.key === 'Enter' && e.ctrlKey)) {
-                //ESC OR CTRL+ENTER => Close Extension
+                // ESC OR CTRL+ENTER => Close Extension
                 Find.Popup.BrowserAction.closeExtension();
             } else if (e.key === 'Enter' || e.key === 'F3') {
-                //ENTER => Next Highlight (seek)
+                // ENTER => Next Highlight (seek)
                 Find.Popup.BrowserAction.seekForwards();
             } else if (e.ctrlKey && e.altKey && e.code === 'KeyC') {
                 Find.Popup.BrowserAction.getOccurrence({ cardinality: 'single' });
@@ -246,13 +245,13 @@ Find.register('Popup.SearchPane', function (self) {
             el.style.display = 'none';
         };
 
-        //Show information icon
+        // Show information icon
         el.style.display = 'initial';
 
-        //Hide icon after 3 seconds
+        // Hide icon after 3 seconds
         let timeoutHandle = window.setTimeout(timeoutFunction, 3000);
 
-        //Self de-registering event handler
+        // Self de-registering event handler
         const handler = (event) => {
             if (el === event.target) {
                 return;
@@ -264,7 +263,7 @@ Find.register('Popup.SearchPane', function (self) {
             document.getElementById('popup-body').removeEventListener('keyup', handler);
         };
 
-        //Add event listeners
+        // Add event listeners
         document.getElementById('popup-body').addEventListener('click', handler);
         document.getElementById('popup-body').addEventListener('keyup', handler);
 

@@ -5,7 +5,6 @@
  * in the web page and the background scripts.
  * */
 Find.register('Background.ContentProxy', function (self) {
-
     /**
      * Request from a given page a representation of the text nodes in the page's document.
      *

@@ -4,7 +4,6 @@
  * Create the Popup OptionsPane namespace.
  * */
 Find.register('Popup.OptionsPane', function (self) {
-
     /**
      * Default options. This object and all of it's properties are immutable.
      * To use this object, it must be cloned into a mutable object.
@@ -53,7 +52,7 @@ Find.register('Popup.OptionsPane', function (self) {
             }
         });
 
-        //Add toggle switches event listeners
+        // Add toggle switches event listeners
         document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', (e) => {
             options.findByRegex = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
@@ -102,7 +101,7 @@ Find.register('Popup.OptionsPane', function (self) {
             Find.Popup.BrowserAction.updateSearch();
         });
 
-        //Add max results slider event listeners
+        // Add max results slider event listeners
         const maxResultsSlider = document.getElementById('max-results-slider');
         maxResultsSlider.addEventListener('change', (e) => {
             const rangeValues = [1, 10, 25, 50, 75, 100, 150, 200, 300, 400, 0];
@@ -120,7 +119,7 @@ Find.register('Popup.OptionsPane', function (self) {
             applyMaxResultsSliderOptions();
         });
 
-        //Add indexHighlightColor slider listeners
+        // Add indexHighlightColor slider listeners
         const indexHighlightHueSlider = document.getElementById('index-highlight-hue-slider');
         indexHighlightHueSlider.addEventListener('change', (e) => {
             options.indexHighlightColor.hue = e.target.value;
@@ -181,7 +180,7 @@ Find.register('Popup.OptionsPane', function (self) {
             Find.Popup.BrowserAction.updateSearch();
         });
 
-        //Add all highlight color slider listeners
+        // Add all highlight color slider listeners
         const allHighlightHueSlider = document.getElementById('all-highlight-hue-slider');
         allHighlightHueSlider.addEventListener('change', (e) => {
             options.allHighlightColor.hue = e.target.value;
@@ -242,7 +241,7 @@ Find.register('Popup.OptionsPane', function (self) {
             Find.Popup.BrowserAction.updateSearch();
         });
 
-        //Add reset all options button listener
+        // Add reset all options button listener
         const resetAllOptionsButton = document.getElementById('reset-options-button');
         resetAllOptionsButton.addEventListener('click', () => {
             options = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
@@ -389,7 +388,7 @@ Find.register('Popup.OptionsPane', function (self) {
      * @private
      * */
     function applyIndexHighlightColorSliderOptions() {
-        //Index Highlight Color Options
+        // Index Highlight Color Options
         document.getElementById('index-highlight-hue-slider').value = options.indexHighlightColor.hue;
         document.getElementById('index-highlight-saturation-slider').value = options.indexHighlightColor.saturation;
         document.getElementById('index-highlight-value-slider').value = options.indexHighlightColor.value;
@@ -479,16 +478,16 @@ Find.register('Popup.OptionsPane', function (self) {
             saturation = properties.saturation;
             value = properties.value;
         } else if ('red' in properties && 'green' in properties && 'blue' in properties) {
-            const HSVColor = RGBToHSV(properties.red, properties.green, properties.blue);
-            hue = HSVColor.hue;
-            saturation = HSVColor.saturation;
-            value = HSVColor.value;
+            const hsvColor = rgbToHsv(properties.red, properties.green, properties.blue);
+            hue = hsvColor.hue;
+            saturation = hsvColor.saturation;
+            value = hsvColor.value;
         } else if ('hexCode' in properties) {
-            const RGBColor = hexColorCodeToRGB(properties.hexCode);
-            const HSVColor = RGBToHSV(RGBColor.red, RGBColor.green, RGBColor.blue);
-            hue = HSVColor.hue;
-            saturation = HSVColor.saturation;
-            value = HSVColor.value;
+            const rgbColor = hexColorCodeToRGB(properties.hexCode);
+            const hsvColor = rgbToHsv(rgbColor.red, rgbColor.green, rgbColor.blue);
+            hue = hsvColor.hue;
+            saturation = hsvColor.saturation;
+            value = hsvColor.value;
         }
 
         this.getHue = function () {
@@ -504,8 +503,8 @@ Find.register('Popup.OptionsPane', function (self) {
         };
 
         this.getHexColorCode = function () {
-            const RGBColor = HSVToRGB(hue, saturation, value);
-            return RGBToHexColorCode(RGBColor.red, RGBColor.green, RGBColor.blue);
+            const rgbColor = hsvToRGB(hue, saturation, value);
+            return rgbToHexColorCode(rgbColor.red, rgbColor.green, rgbColor.blue);
         };
 
         /**
@@ -517,7 +516,7 @@ Find.register('Popup.OptionsPane', function (self) {
          * @return {object} an object with three fields, red green and blue, where each are integers between 0
          * and 255 (inclusive)
          * */
-        function HSVToRGB(hue, saturation, value) {
+        function hsvToRGB(hue, saturation, value) {
             const chroma = value * saturation;
             const intermediate = chroma * (1 - Math.abs((hue / 60) % 2 - 1));
             const match = value - chroma;
@@ -564,7 +563,7 @@ Find.register('Popup.OptionsPane', function (self) {
          * @param {number} blue - An integer between 0 and 255 (inclusive)
          * @return {object} an object with three keys, hue saturation and value.
          * */
-        function RGBToHSV(red, green, blue) {
+        function rgbToHsv(red, green, blue) {
             red = red / 255;
             green = green / 255;
             blue = blue / 255;
@@ -621,7 +620,7 @@ Find.register('Popup.OptionsPane', function (self) {
          * @param {red} blue - An integer between 0 and 255 inclusive
          * @return {string} hex color code from RGB values.
          * */
-        function RGBToHexColorCode(red, green, blue) {
+        function rgbToHexColorCode(red, green, blue) {
             return '#' + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
         }
     };

@@ -4,7 +4,6 @@
  * Create the Popup ReplacePane namespace.
  * */
 Find.register('Popup.ReplacePane', function (self) {
-
     /**
      * Register event handlers.
      * */

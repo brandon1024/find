@@ -7,7 +7,6 @@
  * writes will have no effect. By default, the storage is unlocked.
  * */
 Find.register('Popup.Storage', function (self) {
-
     const SAVED_EXPRESSIONS_KEY = 'expressions';
     const OPTIONS_KEY = 'options';
     const HISTORY_KEY = 'history';

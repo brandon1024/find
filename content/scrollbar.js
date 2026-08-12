@@ -11,7 +11,6 @@
  * (draggable thumb, click-to-jump track) plus one marker per occurrence.
  * */
 Find.register('Content.ScrollbarHighlightMaker', function (self) {
-
     const FALLBACK_SCROLLBAR_WIDTH = 13;
     const MIN_THUMB_HEIGHT = 30;
     const MARKER_HEIGHT = 4;

@@ -4,7 +4,6 @@
  * Create the Popup BackgroundProxy namespace.
  * */
 Find.register('Popup.i18n', function (self) {
-
     /**
      * Internationalize the browser action popup.
      *
