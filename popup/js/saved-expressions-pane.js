@@ -256,10 +256,8 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
             return this;
         };
 
-        this.addClass = function () {
-            for (let index = 0; index < arguments.length; index++) {
-                el.classList.add(arguments[index]);
-            }
+        this.addClass = function (...classNames) {
+            el.classList.add(...classNames);
             return this;
         };
 
