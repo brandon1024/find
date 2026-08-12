@@ -149,12 +149,12 @@ Find.register('Popup.Storage', function (self) {
      * save operation is complete.
      * */
     function save(key, data, callback) {
-        if(!locked) {
+        if (!locked) {
             const payload = {};
             payload[key] = data;
 
             Find.browser.storage.local.set(payload, callback);
-        } else if(callback) {
+        } else if (callback) {
             callback();
         }
     }

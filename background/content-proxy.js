@@ -15,9 +15,9 @@ Find.register('Background.ContentProxy', function (self) {
      * */
     self.buildDocumentRepresentation = function (tab, callback, error) {
         Find.browser.tabs.sendMessage(tab.id, { action: 'init' }, (response) => {
-            if(response && response.model) {
+            if (response && response.model) {
                 callback(response.model);
-            } else if(error) {
+            } else if (error) {
                 error();
             }
         });

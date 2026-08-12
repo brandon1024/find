@@ -16,17 +16,17 @@ Find.register('Popup.BrowserAction', function (self) {
         Find.Popup.BackgroundProxy.postMessage({ action: 'browser_action_init' });
 
         document.body.addEventListener('keyup', (e) => {
-            if(e.code === 'KeyO' && e.ctrlKey && e.altKey) {
+            if (e.code === 'KeyO' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+O => Toggle Options Pane
                 Find.Popup.OptionsPane.toggle();
                 Find.Popup.ReplacePane.show(false);
                 Find.Popup.SavedExpressionsPane.show(false);
-            } else if(e.code === 'KeyR' && e.ctrlKey && e.altKey) {
+            } else if (e.code === 'KeyR' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+R => Toggle Replace Pane
                 Find.Popup.ReplacePane.toggle();
                 Find.Popup.OptionsPane.show(false);
                 Find.Popup.SavedExpressionsPane.show(false);
-            } else if(e.code === 'KeyH' && e.ctrlKey && e.altKey) {
+            } else if (e.code === 'KeyH' && e.ctrlKey && e.altKey) {
                 //CTRL+ALT+R => Toggle Replace Pane
                 Find.Popup.SavedExpressionsPane.toggle();
                 Find.Popup.OptionsPane.show(false);
@@ -57,25 +57,25 @@ Find.register('Popup.BrowserAction', function (self) {
         // this is the only time we have the active window hostname
         Find.Popup.History.setHostname(new URL(url).hostname);
 
-        if(isWithinBrowserNamespace(url) || isWithinBrowserWebsiteNamespace(url)) {
+        if (isWithinBrowserNamespace(url) || isWithinBrowserWebsiteNamespace(url)) {
             Find.Popup.MessagePane.showInternalRestrictedBrowserPageErrorMessage();
             self.error('forbidden_url');
-        } else if(isPDF(url)) {
+        } else if (isPDF(url)) {
             Find.Popup.MessagePane.showPDFSearchErrorMessage();
             self.error('pdf_unsupported');
-        } else if(isLocalFile(url) && !initInformation.isReachable) {
+        } else if (isLocalFile(url) && !initInformation.isReachable) {
             Find.Popup.MessagePane.showOfflineFileErrorMessage();
             self.error('offline_file');
         } else {
-            if(initInformation.iframes > 0) {
+            if (initInformation.iframes > 0) {
                 Find.Popup.SearchPane.flashIframesFoundWarningIcon();
             }
 
-            if(initInformation.selectedText) {
+            if (initInformation.selectedText) {
                 Find.Popup.SearchPane.setSearchFieldText(initInformation.selectedText);
                 Find.Popup.SearchPane.selectSearchField();
                 self.updateSearch();
-            } else if(initInformation.regex != null) {
+            } else if (initInformation.regex != null) {
                 Find.Popup.SearchPane.setSearchFieldText(initInformation.regex);
                 Find.Popup.SearchPane.selectSearchField();
                 self.updateSearch();
@@ -118,7 +118,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * If the search has not yet been initialized, it will invoke updateSearch().
      * */
     self.seekForwards = function () {
-        if(!initialized) {
+        if (!initialized) {
             self.updateSearch();
             return;
         }
@@ -134,7 +134,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * If the search has not yet been initialized, it will invoke updateSearch().
      * */
     self.seekBackwards = function () {
-        if(!initialized) {
+        if (!initialized) {
             self.updateSearch();
             return;
         }
@@ -166,7 +166,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * Follow the link at the current search index.
      * */
     self.followLink = function () {
-        if(!initialized) {
+        if (!initialized) {
             self.updateSearch();
             return;
         }
@@ -181,7 +181,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * @param {object} options - The options to be used by the background script.
      * */
     self.getOccurrence = function (options) {
-        if(!initialized) {
+        if (!initialized) {
             self.updateSearch();
             return;
         }
@@ -241,9 +241,9 @@ Find.register('Popup.BrowserAction', function (self) {
      * @param {object} details - A simple object containing a single key 'reason', with the value 'install' or 'update'.
      * */
     self.showInstallUpdateDetails = function (details) {
-        if(details.reason === 'install') {
+        if (details.reason === 'install') {
             Find.Popup.SearchPane.flashInstallInformationIcon();
-        } else if(details.reason === 'update') {
+        } else if (details.reason === 'update') {
             Find.Popup.SearchPane.flashUpdateInformationIcon();
         }
     };
@@ -256,11 +256,11 @@ Find.register('Popup.BrowserAction', function (self) {
      * @return {boolean} True if URL is within the browser internal namespace, false otherwise.
      * */
     function isWithinBrowserNamespace(url) {
-        if(url.match(/^(about|view-source):.*/)) {
+        if (url.match(/^(about|view-source):.*/)) {
             return true;
         }
 
-        if(Find.browserId !== 'Firefox') {
+        if (Find.browserId !== 'Firefox') {
             return url.match(/^(chrome(-extension)?|edge):\/\/.*/);
         } else {
             return url.match(/^moz-extension:\/\/.*/);
@@ -275,7 +275,7 @@ Find.register('Popup.BrowserAction', function (self) {
      * @return {boolean} True if URL is within the browser official website or newtab namespace, false otherwise.
      * */
     function isWithinBrowserWebsiteNamespace(url) {
-        if(Find.browserId !== 'Firefox') {
+        if (Find.browserId !== 'Firefox') {
             return url.match(/^https:\/\/chrome\.google\.com\/webstore\/.*/)
                 || url.match(/^https:\/\/chromewebstore\.google\.com\/.*/)
                 || url.match(/^https:\/\/microsoftedge\.microsoft\.com\/.*/)

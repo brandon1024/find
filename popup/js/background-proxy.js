@@ -46,7 +46,7 @@ Find.register('Popup.BackgroundProxy', function (self) {
      * @param {object} response - The message received from the port.
      * */
     function messageHandler(response) {
-        switch(response.action) {
+        switch (response.action) {
             case 'install':
                 Find.Popup.BrowserAction.showInstallUpdateDetails(response.details);
                 break;

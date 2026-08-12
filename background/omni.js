@@ -84,7 +84,7 @@ Find.register('Background.Omni', function (self) {
     function retrieveOptions(callback) {
         Find.browser.storage.local.get('options', (data) => {
             const options = data['options'];
-            if(!options) {
+            if (!options) {
                 return callback(JSON.parse(JSON.stringify(DEFAULT_OPTIONS)));
             }
 

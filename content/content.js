@@ -39,7 +39,7 @@ Find.register('Content', function (self) {
         }
 
         //Highlighter Actions
-        switch(message.action) {
+        switch (message.action) {
             case 'update':
                 regex = message.regex;
                 index = message.index;

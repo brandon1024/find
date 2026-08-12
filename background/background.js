@@ -369,6 +369,9 @@ Find.register('Background', function (self) {
 
         //Loop over all text nodes in documentRepresentation
         for (const key in documentRepresentation) {
+            if (!Object.prototype.hasOwnProperty.call(documentRepresentation, key)) {
+                continue;
+            }
             const textNodes = documentRepresentation[key].group;
             const preformatted = documentRepresentation[key].preformatted;
             let textGroup = '';
@@ -462,6 +465,10 @@ Find.register('Background', function (self) {
         const uuids = [];
 
         for (const key in documentRepresentation) {
+            if (!Object.prototype.hasOwnProperty.call(documentRepresentation, key)) {
+                continue;
+            }
+
             const textNodes = documentRepresentation[key].group;
             for (let index = 0; index < textNodes.length; index++) {
                 uuids.push(textNodes[index].elementUUID);

@@ -48,7 +48,7 @@ Find.register('Popup.OptionsPane', function (self) {
             applyOptions();
 
             Find.Popup.Storage.saveOptions(options);
-            if(Find.incognito) {
+            if (Find.incognito) {
                 Find.Popup.Storage.lockStorage(!options.persistent_storage_incognito);
             }
         });
@@ -166,7 +166,7 @@ Find.register('Popup.OptionsPane', function (self) {
         const indexHighlightColorHexCodeField = document.getElementById('index-highlight-color-value');
         indexHighlightColorHexCodeField.addEventListener('input', (e) => {
             const hexColor = e.target.innerText;
-            if(!hexColor.match(/#[0-9a-f]{6}/)) {
+            if (!hexColor.match(/#[0-9a-f]{6}/)) {
                 return;
             }
 
@@ -227,7 +227,7 @@ Find.register('Popup.OptionsPane', function (self) {
         const allHighlightColorHexCodeField = document.getElementById('all-highlight-color-value');
         allHighlightColorHexCodeField.addEventListener('input', (e) => {
             const hexColor = e.target.innerText;
-            if(!hexColor.match(/#[0-9a-f]{6}/)) {
+            if (!hexColor.match(/#[0-9a-f]{6}/)) {
                 return;
             }
 
@@ -260,7 +260,7 @@ Find.register('Popup.OptionsPane', function (self) {
      * */
     self.show = function (value) {
         const el = document.getElementById('options-body');
-        if(value === undefined || value) {
+        if (value === undefined || value) {
             el.style.display = 'inherit';
         } else {
             el.style.display = 'none';
@@ -272,7 +272,7 @@ Find.register('Popup.OptionsPane', function (self) {
      * */
     self.toggle = function () {
         const el = document.getElementById('options-body');
-        if(el.style.display === 'none' || el.style.display === '') {
+        if (el.style.display === 'none' || el.style.display === '') {
             self.show(true);
         } else {
             self.show(false);
@@ -376,7 +376,7 @@ Find.register('Popup.OptionsPane', function (self) {
     function applyMaxResultsSliderOptions() {
         const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
         document.getElementById('max-results-slider').value = rangeValues.indexOf(options.max_results);
-        if(options.max_results === 0) {
+        if (options.max_results === 0) {
             document.getElementById('max-results-slider-value').innerText = '∞';
         } else {
             document.getElementById('max-results-slider-value').innerText = options.max_results.toString();
@@ -474,16 +474,16 @@ Find.register('Popup.OptionsPane', function (self) {
         let saturation = 0;
         let value = 0;
 
-        if('hue' in properties && 'saturation' in properties && 'value' in properties) {
+        if ('hue' in properties && 'saturation' in properties && 'value' in properties) {
             hue = properties.hue;
             saturation = properties.saturation;
             value = properties.value;
-        } else if('red' in properties && 'green' in properties && 'blue' in properties) {
+        } else if ('red' in properties && 'green' in properties && 'blue' in properties) {
             const HSVColor = RGBToHSV(properties.red, properties.green, properties.blue);
             hue = HSVColor.hue;
             saturation = HSVColor.saturation;
             value = HSVColor.value;
-        } else if('hexCode' in properties) {
+        } else if ('hexCode' in properties) {
             const RGBColor = hexColorCodeToRGB(properties.hexCode);
             const HSVColor = RGBToHSV(RGBColor.red, RGBColor.green, RGBColor.blue);
             hue = HSVColor.hue;
@@ -574,13 +574,13 @@ Find.register('Popup.OptionsPane', function (self) {
             const delta = maxChroma - minChroma;
 
             let hue;
-            if(delta === 0) {
+            if (delta === 0) {
                 hue = 0;
-            } else if(maxChroma === red) {
+            } else if (maxChroma === red) {
                 hue = 60 * (((green - blue) / delta) % 6);
-            } else if(maxChroma === green) {
+            } else if (maxChroma === green) {
                 hue = 60 * (((blue - red) / delta) + 2);
-            } else if(maxChroma === blue) {
+            } else if (maxChroma === blue) {
                 hue = 60 * (((red - green) / delta) + 4);
             }
 
@@ -601,7 +601,7 @@ Find.register('Popup.OptionsPane', function (self) {
          * */
         function hexColorCodeToRGB(hexCode) {
             hexCode = hexCode.replace('#','');
-            if(!hexCode.match(/[0-9a-f]{6}/)) {
+            if (!hexCode.match(/[0-9a-f]{6}/)) {
                 return undefined;
             }
 

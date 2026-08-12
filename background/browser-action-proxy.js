@@ -10,11 +10,11 @@ Find.register('Background.BrowserActionProxy', function () {
      * Initialize the port connection with the browser action popup.
      * */
     Find.browser.runtime.onConnect.addListener((browserActionPort) => {
-        if(browserActionPort.name !== 'popup_to_background_port') {
+        if (browserActionPort.name !== 'popup_to_background_port') {
             return;
         }
 
-        if(Find.Background.installationDetails) {
+        if (Find.Background.installationDetails) {
             browserActionPort.postMessage({ action: 'install', details: Find.Background.installationDetails });
             Find.Background.installationDetails = null;
         }
@@ -32,7 +32,7 @@ Find.register('Background.BrowserActionProxy', function () {
 
             // handle extension close
             browserActionPort.onDisconnect.addListener(() => {
-                if(!Find.Background.options || !Find.Background.options.persistent_highlights) {
+                if (!Find.Background.options || !Find.Background.options.persistent_highlights) {
                     Find.Background.restorePageState(activeTab);
                 } else {
                     Find.Background.restorePageState(activeTab, false);
@@ -54,7 +54,7 @@ Find.register('Background.BrowserActionProxy', function () {
      * */
     function actionDispatch(message, tab, sendResponse) {
         const action = message.action;
-        switch(action) {
+        switch (action) {
             case 'update':
                 Find.Background.updateSearch(message, tab, sendResponse);
                 break;

@@ -119,7 +119,31 @@
         "array-bracket-spacing": [
             "error",
             "never"
-        ]
+        ],
+        "no-invalid-this": "error",
+        "guard-for-in": "error",
+        "no-caller": "error",
+        "no-extend-native": "error",
+        "no-extra-bind": "error",
+        "no-multi-spaces": "error",
+        "no-multi-str": "error",
+        "no-new-wrappers": "error",
+        "no-throw-literal": "error",
+        "no-with": "error",
+        "prefer-promise-reject-errors": "error",
+        "no-irregular-whitespace": "error",
+        "curly": [
+            "error",
+            "multi-line"
+        ],
+        "block-spacing": [
+            "error",
+            "always"
+        ],
+        "key-spacing": "error",
+        "keyword-spacing": "error",
+        "no-trailing-spaces": "error",
+        "eol-last": "error"
     },
     "overrides": [
         {

@@ -170,7 +170,7 @@ Find.register('Content.Parser', function (self) {
 	 * */
     function nodeFilter(node) {
         if (isElementNode(node)) {
-            switch(node.tagName.toLowerCase()) {
+            switch (node.tagName.toLowerCase()) {
                 case 'script':
                 case 'noscript':
                 case 'style':

@@ -25,7 +25,7 @@ Find.register('Popup.ReplacePane', function (self) {
      * */
     self.show = function (value) {
         const el = document.getElementById('replace-body');
-        if(value === undefined || value) {
+        if (value === undefined || value) {
             el.style.display = 'inherit';
         } else {
             el.style.display = 'none';
@@ -37,7 +37,7 @@ Find.register('Popup.ReplacePane', function (self) {
      * */
     self.toggle = function () {
         const el = document.getElementById('replace-body');
-        if(el.style.display === 'none' || el.style.display === '') {
+        if (el.style.display === 'none' || el.style.display === '') {
             self.show(true);
         } else {
             self.show(false);

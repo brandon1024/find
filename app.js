@@ -43,9 +43,9 @@ const Find = (function () {
         const pathKeys = path.split('.');
         let parent = self;
 
-        for(let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
+        for (let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
             const key = pathKeys[keyIndex];
-            if(typeof parent[key] === 'undefined') {
+            if (typeof parent[key] === 'undefined') {
                 parent[key] = {};
             }
 
@@ -53,8 +53,8 @@ const Find = (function () {
         }
 
         callback(parent);
-        if(parent && isFunction(parent.init)) {
-            if(document.readyState === 'complete') {
+        if (parent && isFunction(parent.init)) {
+            if (document.readyState === 'complete') {
                 parent.init();
             } else {
                 window.addEventListener('load', () => {
@@ -76,9 +76,9 @@ const Find = (function () {
         const pathKeys = path.split('.');
         let parent = self;
 
-        for(let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
+        for (let keyIndex = 0; keyIndex < pathKeys.length; keyIndex++) {
             const key = pathKeys[keyIndex];
-            if(typeof parent[key] === 'undefined') {
+            if (typeof parent[key] === 'undefined') {
                 return undefined;
             }
 
