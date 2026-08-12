@@ -34,8 +34,8 @@ function mockElementRect(el, { top = 0, height = 20 } = {}) {
 }
 
 const DEFAULT_OPTIONS = {
-  index_highlight_color: { hexColor: '#ff9813' },
-  all_highlight_color: { hexColor: '#fff000' }
+  indexHighlightColor: { hexColor: '#ff9813' },
+  allHighlightColor: { hexColor: '#fff000' }
 };
 
 describe('Content.ScrollbarHighlightMaker', () => {

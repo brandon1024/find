@@ -8,8 +8,8 @@
  *    `new RegExp(regex, flags)` internally, mirroring background.js.
  *  - occurrenceMap.groups is a count; occurrenceMap[index] = { uuids, preformatted }.
  *  - uuids are DOM element ids resolved via document.getElementById.
- *  - options.all_highlight_color.hexColor is read unconditionally.
- *  - options.index_highlight_color.hexColor is read by seekHighlight.
+ *  - options.allHighlightColor.hexColor is read unconditionally.
+ *  - options.indexHighlightColor.hexColor is read by seekHighlight.
  *  - ScrollbarHighlightMaker needs: init, addOccurrence, mount, createMarkers,
  *    setActive, destroy.
  *  - encode/decode are real globals (see mock-extension-apis.js), not Find-namespaced.
@@ -43,11 +43,11 @@ function debugError(fn) {
 
 function baseOptions(overrides) {
   return Object.assign({
-    match_case: true,
-    scroll_markers: false,
-    max_results: 0,
-    all_highlight_color: { hexColor: '#ffff00' },
-    index_highlight_color: { hexColor: '#ff9900' }
+    matchCase: true,
+    scrollMarkers: false,
+    maxResults: 0,
+    allHighlightColor: { hexColor: '#ffff00' },
+    indexHighlightColor: { hexColor: '#ff9900' }
   }, overrides);
 }
 
@@ -118,13 +118,13 @@ describe('Content.Highlighter', () => {
       expect(highlighted[0].textContent).toBe('3.99');
     });
 
-    test('is case-insensitive when match_case option is false', () => {
+    test('is case-insensitive when matchCase option is false', () => {
       setPageText('node-1', 'The Quick Brown Fox');
       const occurrenceMap = occurrenceMapFor('node-1');
 
       const err = debugError(() => {
         global.Find.Content.Highlighter.highlightAll(
-          occurrenceMap, 'quick', baseOptions({ match_case: false })
+          occurrenceMap, 'quick', baseOptions({ matchCase: false })
         );
       });
       expect(err).toBeNull();
@@ -156,13 +156,13 @@ describe('Content.Highlighter', () => {
       expect(document.getElementById('node-1').querySelector('tag')).toBeNull();
     });
 
-    test('does not throw when scroll_markers is enabled', () => {
+    test('does not throw when scrollMarkers is enabled', () => {
       setPageText('node-1', 'the quick brown fox');
       const occurrenceMap = occurrenceMapFor('node-1');
 
       const err = debugError(() => {
         global.Find.Content.Highlighter.highlightAll(
-          occurrenceMap, 'quick', baseOptions({ scroll_markers: true })
+          occurrenceMap, 'quick', baseOptions({ scrollMarkers: true })
         );
       });
       expect(err).toBeNull();
@@ -294,7 +294,7 @@ describe('Content.Highlighter', () => {
   describe('followLinkUnderFocus', () => {
     test('clicks the ancestor anchor of the currently highlighted element', () => {
       document.body.innerHTML =
-                '<a id="link-1" href="#dest"><span id="inner"><em class="find-ext-index-highlight">quick</em></span></a>';
+        '<a id="link-1" href="#dest"><span id="inner"><em class="find-ext-index-highlight">quick</em></span></a>';
 
       const clickSpy = jest.fn();
       document.getElementById('link-1').addEventListener('click', clickSpy);

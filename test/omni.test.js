@@ -94,14 +94,14 @@ describe('Background.Omni', () => {
       capturedListeners.onInputChanged('quick');
 
       const passedOptions = global.Find.Background.updateSearch.mock.calls[0][0].options;
-      expect(passedOptions.find_by_regex).toBe(true);
-      expect(passedOptions.match_case).toBe(true);
-      expect(passedOptions.max_results).toBe(0);
-      expect(passedOptions.persistent_highlights).toBe(false);
+      expect(passedOptions.findByRegex).toBe(true);
+      expect(passedOptions.matchCase).toBe(true);
+      expect(passedOptions.maxResults).toBe(0);
+      expect(passedOptions.persistentHighlights).toBe(false);
     });
 
     test('uses stored options as-is, without falling back to defaults', async () => {
-      const customOptions = { find_by_regex: false, match_case: false, max_results: 5 };
+      const customOptions = { findByRegex: false, matchCase: false, maxResults: 5 };
       await loadOmniWithStoredOptions({ options: customOptions });
       capturedListeners.onInputChanged('quick');
 

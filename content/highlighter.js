@@ -18,7 +18,7 @@ Find.register('Content.Highlighter', function (self) {
      * @param {object} options - The search and highlight options
      * */
     self.highlightAll = function (occurrenceMap, regex, options) {
-        if (options && options.scroll_markers) {
+        if (options && options.scrollMarkers) {
             Find.Content.ScrollbarHighlightMaker.init(options);
         }
 
@@ -33,7 +33,7 @@ Find.register('Content.Highlighter', function (self) {
 
                     //If reached max number of occurrences to show, don't highlight text
                     if (this.maxIndex == null || this.occIndex <= this.maxIndex) {
-                        const style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + '; color: black;';
+                        const style = 'all: unset; background-color: ' + options.allHighlightColor.hexColor + '; color: black;';
                         const classList = 'find-ext-occr' + index + ' ' + allHighlight;
                         this.openingMarkup = '<span style="' + style + '" class="' + classList + '">';
                         this.closingMarkup = '</span>';
@@ -45,14 +45,14 @@ Find.register('Content.Highlighter', function (self) {
             }
         };
 
-        if (options && options.max_results !== 0) {
-            tags.maxIndex = options.max_results - 1;
+        if (options && options.maxResults !== 0) {
+            tags.maxIndex = options.maxResults - 1;
         } else {
             tags.maxIndex = null;
         }
 
         regex = regex.replace(/ /g, '\\s');
-        if (!options || options.match_case) {
+        if (!options || options.matchCase) {
             regex = new RegExp(regex, 'm');
         } else {
             regex = new RegExp(regex, 'mi');
@@ -185,7 +185,7 @@ Find.register('Content.Highlighter', function (self) {
                         inMatch = charMap[key].matched;
                         matchGroup.text += tags.openingMarkup;
                     }
-                    if (options && options.scroll_markers) {
+                    if (options && options.scrollMarkers) {
                         Find.Content.ScrollbarHighlightMaker.addOccurrence(occIndex,
                             document.getElementById(matchGroup.groupUUID));
                     }
@@ -222,7 +222,7 @@ Find.register('Content.Highlighter', function (self) {
             }
         }
 
-        if (options && options.scroll_markers) {
+        if (options && options.scrollMarkers) {
             Find.Content.ScrollbarHighlightMaker.mount();
             Find.Content.ScrollbarHighlightMaker.createMarkers();
         }
@@ -243,7 +243,7 @@ Find.register('Content.Highlighter', function (self) {
         const previousIndex = Array.from(document.querySelectorAll('.' + indexHighlight));
         if (previousIndex && previousIndex.length) {
             for (let elsIndex = 0; elsIndex < previousIndex.length; elsIndex++) {
-                const style = 'all: unset; background-color: ' + options.all_highlight_color.hexColor + '; color: black;';
+                const style = 'all: unset; background-color: ' + options.allHighlightColor.hexColor + '; color: black;';
                 previousIndex[elsIndex].classList.remove(indexHighlight);
                 previousIndex[elsIndex].setAttribute('style', style);
             }
@@ -255,7 +255,7 @@ Find.register('Content.Highlighter', function (self) {
         }
 
         for (let elsIndex = 0; elsIndex < els.length; elsIndex++) {
-            const style = 'all: unset; background-color: ' + options.index_highlight_color.hexColor + '; color: black;';
+            const style = 'all: unset; background-color: ' + options.indexHighlightColor.hexColor + '; color: black;';
             els[elsIndex].classList.add(indexHighlight);
             els[elsIndex].setAttribute('style', style);
         }
@@ -272,7 +272,7 @@ Find.register('Content.Highlighter', function (self) {
             }
         }
 
-        if (options.scroll_markers) {
+        if (options.scrollMarkers) {
             Find.Content.ScrollbarHighlightMaker.setActive(index);
         }
     };

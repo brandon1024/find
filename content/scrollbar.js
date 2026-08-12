@@ -208,7 +208,7 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
         marker.id = 'find-ext-marker-' + occurrenceId;
         marker.className = 'find-ext-scroll-marker';
         marker.style.top = topPosition + 'px';
-        marker.style.backgroundColor = options.all_highlight_color.hexColor;
+        marker.style.backgroundColor = options.allHighlightColor.hexColor;
         return fragment;
     }
 
@@ -278,8 +278,8 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
             const isActive = index === occIndex;
             el.classList.toggle('find-ext-marker-active', isActive);
             el.style.backgroundColor = isActive
-                ? options.index_highlight_color.hexColor
-                : options.all_highlight_color.hexColor;
+                ? options.indexHighlightColor.hexColor
+                : options.allHighlightColor.hexColor;
         });
     };
 

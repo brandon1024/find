@@ -156,7 +156,7 @@ Find.register('Background', function (self) {
             let regex = message.regex;
 
             //If searching by string, escape all regex metacharacters
-            if (!self.options.find_by_regex) {
+            if (!self.options.findByRegex) {
                 regex = regex.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
             }
 
@@ -177,8 +177,8 @@ Find.register('Background', function (self) {
                 }
             }
 
-            if (self.options.max_results !== 0 && index >= self.options.max_results) {
-                index = self.options.max_results - 1;
+            if (self.options.maxResults !== 0 && index >= self.options.maxResults) {
+                index = self.options.maxResults - 1;
             }
 
             //Invoke update action
@@ -192,8 +192,8 @@ Find.register('Background', function (self) {
 
             //if occurrence map larger than max results, viewable total is max results
             let viewableTotal = regexOccurrenceMap.length;
-            if (self.options.max_results !== 0 && self.options.max_results <= regexOccurrenceMap.length) {
-                viewableTotal = self.options.max_results;
+            if (self.options.maxResults !== 0 && self.options.maxResults <= regexOccurrenceMap.length) {
+                viewableTotal = self.options.maxResults;
             }
 
             sendResponse({
@@ -218,7 +218,7 @@ Find.register('Background', function (self) {
      * */
     self.seekSearch = function (message, seekForward, tab, sendResponse) {
         self.options = message.options;
-        const indexCap = self.options.max_results !== 0;
+        const indexCap = self.options.maxResults !== 0;
 
         //If reached end, reset index
         if (seekForward) {
@@ -231,8 +231,8 @@ Find.register('Background', function (self) {
         Find.Background.ContentProxy.seekHighlight(tab, index, self.options);
 
         const viewableIndex = regexOccurrenceMap.length === 0 ? 0 : index + 1;
-        const viewableTotal = (indexCap && self.options.max_results <= regexOccurrenceMap.length) ?
-            self.options.max_results : regexOccurrenceMap.length;
+        const viewableTotal = (indexCap && self.options.maxResults <= regexOccurrenceMap.length) ?
+            self.options.maxResults : regexOccurrenceMap.length;
         sendResponse({
             action: 'index_update',
             index: viewableIndex,
@@ -349,7 +349,7 @@ Find.register('Background', function (self) {
      *     1: {
      *         uuids: [...],
      *         count: _number of matches in this group_,
-     *         preformated: _whether or not the text node in the DOM is preformatted_
+     *         preformatted: _whether or not the text node in the DOM is preformatted_
      *     }, ...
      * }
      *
@@ -365,7 +365,7 @@ Find.register('Background', function (self) {
         let groupIndex = 0;
 
         regex = regex.replace(/ /g, '\\s');
-        regex = (options.match_case) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
+        regex = (options.matchCase) ? new RegExp(regex, 'gm') : new RegExp(regex, 'gmi');
 
         //Loop over all text nodes in documentRepresentation
         for (const key in documentRepresentation) {
@@ -402,7 +402,7 @@ Find.register('Background', function (self) {
             groupIndex++;
 
             //If reached maxIndex, exit
-            if (options.max_results !== 0 && count >= options.max_results) {
+            if (options.maxResults !== 0 && count >= options.maxResults) {
                 break;
             }
         }
@@ -423,8 +423,8 @@ Find.register('Background', function (self) {
      * */
     function computeSubsequentIndex(index, regexOccurrenceMap, options) {
         //If reached end, reset index
-        const indexCap = self.options.max_results !== 0;
-        if (index >= regexOccurrenceMap.length - 1 || (indexCap && index >= options.max_results - 1)) {
+        const indexCap = self.options.maxResults !== 0;
+        if (index >= regexOccurrenceMap.length - 1 || (indexCap && index >= options.maxResults - 1)) {
             return 0;
         }
 
@@ -442,10 +442,10 @@ Find.register('Background', function (self) {
      * */
     function computePrecedingIndex(index, regexOccurrenceMap, options) {
         //If reached start, set index to last occurrence
-        const indexCap = self.options.max_results !== 0;
+        const indexCap = self.options.maxResults !== 0;
         if (index <= 0) {
-            if (indexCap && options.max_results <= regexOccurrenceMap.length) {
-                return options.max_results - 1;
+            if (indexCap && options.maxResults <= regexOccurrenceMap.length) {
+                return options.maxResults - 1;
             }
 
             return regexOccurrenceMap.length - 1;

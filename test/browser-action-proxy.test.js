@@ -161,7 +161,7 @@ describe('Background.BrowserActionProxy - actionDispatch routing', () => {
 
   describe('onDisconnect', () => {
     test('restores and clears highlights when persistent_highlights is not set', () => {
-      global.Find.Background.options = { persistent_highlights: false };
+      global.Find.Background.options = { persistentHighlights: false };
 
       port._listeners.onDisconnect();
 
@@ -169,7 +169,7 @@ describe('Background.BrowserActionProxy - actionDispatch routing', () => {
     });
 
     test('restores page state without clearing highlights when persistent_highlights is true', () => {
-      global.Find.Background.options = { persistent_highlights: true };
+      global.Find.Background.options = { persistentHighlights: true };
 
       port._listeners.onDisconnect();
 

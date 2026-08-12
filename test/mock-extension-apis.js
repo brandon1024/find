@@ -18,7 +18,7 @@ const browserMock = {
   },
   runtime: {
     getURL: jest.fn((path) => `chrome-extension://mock-id/${path}`),
-    getManifest: jest.fn(() => ({ content_scripts: [{ js: [] }] })),
+    getManifest: jest.fn(() => ({ contentScripts: [{ js: [] }] })),
     onInstalled: { addListener: jest.fn() },
     sendMessage: jest.fn()
   },

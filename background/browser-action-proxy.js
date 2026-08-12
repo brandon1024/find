@@ -32,7 +32,7 @@ Find.register('Background.BrowserActionProxy', function () {
 
             // handle extension close
             browserActionPort.onDisconnect.addListener(() => {
-                if (!Find.Background.options || !Find.Background.options.persistent_highlights) {
+                if (!Find.Background.options || !Find.Background.options.persistentHighlights) {
                     Find.Background.restorePageState(activeTab);
                 } else {
                     Find.Background.restorePageState(activeTab, false);

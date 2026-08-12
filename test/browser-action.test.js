@@ -46,7 +46,7 @@ describe('Popup.BrowserAction', () => {
       OptionsPane: {
         toggle: jest.fn(),
         show: jest.fn(),
-        getOptions: jest.fn(() => ({ match_case: true }))
+        getOptions: jest.fn(() => ({ matchCase: true }))
       },
       ReplacePane: {
         toggle: jest.fn(),
@@ -277,7 +277,7 @@ describe('Popup.BrowserAction', () => {
       expect(global.Find.Popup.BackgroundProxy.postMessage).toHaveBeenCalledWith({
         action: 'update',
         regex: 'quick',
-        options: { match_case: true }
+        options: { matchCase: true }
       });
       expect(global.Find.Popup.History.saveForHost).toHaveBeenCalledWith('quick');
     });
@@ -300,7 +300,7 @@ describe('Popup.BrowserAction', () => {
 
       expect(global.Find.Popup.BackgroundProxy.postMessage).toHaveBeenCalledWith({
         action: 'next',
-        options: { match_case: true }
+        options: { matchCase: true }
       });
       expect(global.Find.Popup.SearchPane.focusSearchField).toHaveBeenCalled();
     });
@@ -313,7 +313,7 @@ describe('Popup.BrowserAction', () => {
 
       expect(global.Find.Popup.BackgroundProxy.postMessage).toHaveBeenCalledWith({
         action: 'previous',
-        options: { match_case: true }
+        options: { matchCase: true }
       });
     });
   });
@@ -328,7 +328,7 @@ describe('Popup.BrowserAction', () => {
         action: 'replace_next',
         index: 2,
         replaceWith: 'replacement',
-        options: { match_case: true }
+        options: { matchCase: true }
       });
     });
 
@@ -338,7 +338,7 @@ describe('Popup.BrowserAction', () => {
       expect(global.Find.Popup.BackgroundProxy.postMessage).toHaveBeenCalledWith({
         action: 'replace_all',
         replaceWith: 'replacement',
-        options: { match_case: true }
+        options: { matchCase: true }
       });
     });
   });
@@ -360,7 +360,7 @@ describe('Popup.BrowserAction', () => {
 
       expect(global.Find.Popup.BackgroundProxy.postMessage).toHaveBeenCalledWith({
         action: 'follow_link',
-        options: { match_case: true }
+        options: { matchCase: true }
       });
     });
   });

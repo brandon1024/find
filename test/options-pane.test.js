@@ -105,9 +105,9 @@ describe('Popup.OptionsPane', () => {
   describe('init', () => {
     test('retrieves stored options and applies them to the toggle controls', () => {
       global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({
-        find_by_regex: false,
-        match_case: false,
-        persistent_highlights: true
+        findByRegex: false,
+        matchCase: false,
+        persistentHighlights: true
       }));
 
       OptionsPane.init();
@@ -118,13 +118,13 @@ describe('Popup.OptionsPane', () => {
     });
 
     test('fills in missing fields with defaults when stored options are incomplete', () => {
-      global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({ match_case: false }));
+      global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({ matchCase: false }));
 
       OptionsPane.init();
 
-      // match_case explicitly overridden
+      // matchCase explicitly overridden
       expect(document.getElementById('regex-option-case-insensitive-toggle').checked).toBe(false);
-      // find_by_regex falls back to DEFAULT_OPTIONS (true)
+      // findByRegex falls back to DEFAULT_OPTIONS (true)
       expect(document.getElementById('regex-option-regex-disable-toggle').checked).toBe(true);
     });
 
@@ -134,14 +134,14 @@ describe('Popup.OptionsPane', () => {
       OptionsPane.init();
 
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ find_by_regex: true, match_case: true })
+        expect.objectContaining({ findByRegex: true, matchCase: true })
       );
     });
 
-    test('locks storage based on persistent_storage_incognito when running in incognito', () => {
+    test('locks storage based on persistentStorageIncognito when running in incognito', () => {
       global.Find.incognito = true;
       global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({
-        persistent_storage_incognito: true
+        persistentStorageIncognito: true
       }));
 
       OptionsPane.init();
@@ -157,16 +157,16 @@ describe('Popup.OptionsPane', () => {
       expect(global.Find.Popup.Storage.lockStorage).not.toHaveBeenCalled();
     });
 
-    test('renders the max results slider value as infinity symbol when max_results is 0', () => {
-      global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({ max_results: 0 }));
+    test('renders the max results slider value as infinity symbol when maxResults is 0', () => {
+      global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({ maxResults: 0 }));
 
       OptionsPane.init();
 
       expect(document.getElementById('max-results-slider-value').innerText).toBe('∞');
     });
 
-    test('renders the max results slider value as a number when max_results is nonzero', () => {
-      global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({ max_results: 50 }));
+    test('renders the max results slider value as a number when maxResults is nonzero', () => {
+      global.Find.Popup.Storage.retrieveOptions.mockImplementation((cb) => cb({ maxResults: 50 }));
 
       OptionsPane.init();
 
@@ -187,57 +187,57 @@ describe('Popup.OptionsPane', () => {
       jest.clearAllMocks();
     });
 
-    test('find_by_regex toggle saves options and triggers a search update', () => {
+    test('findByRegex toggle saves options and triggers a search update', () => {
       fireChange('regex-option-regex-disable-toggle', false);
 
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ find_by_regex: false })
+        expect.objectContaining({ findByRegex: false })
       );
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
     });
 
-    test('match_case toggle saves options and triggers a search update', () => {
+    test('matchCase toggle saves options and triggers a search update', () => {
       fireChange('regex-option-case-insensitive-toggle', false);
 
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ match_case: false })
+        expect.objectContaining({ matchCase: false })
       );
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
     });
 
-    test('persistent_highlights toggle saves options and triggers a search update', () => {
+    test('persistentHighlights toggle saves options and triggers a search update', () => {
       fireChange('regex-option-persistent-highlights-toggle', true);
 
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ persistent_highlights: true })
+        expect.objectContaining({ persistentHighlights: true })
       );
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
     });
 
-    test('persistent_storage_incognito toggle unlocks, saves, then relocks storage', () => {
+    test('persistentStorageIncognito toggle unlocks, saves, then relocks storage', () => {
       fireChange('regex-option-persistent-storage-incognito-toggle', true);
 
       expect(global.Find.Popup.Storage.lockStorage).toHaveBeenNthCalledWith(1, false);
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ persistent_storage_incognito: true })
+        expect.objectContaining({ persistentStorageIncognito: true })
       );
       expect(global.Find.Popup.Storage.lockStorage).toHaveBeenNthCalledWith(2, false);
     });
 
-    test('hide_options_button toggle saves options and updates the search pane button visibility', () => {
+    test('hideOptionsButton toggle saves options and updates the search pane button visibility', () => {
       fireChange('hide-option-pane-toggle-option-toggle', true);
 
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ hide_options_button: true })
+        expect.objectContaining({ hideOptionsButton: true })
       );
       expect(global.Find.Popup.SearchPane.hideOptionsPaneToggleButton).toHaveBeenCalledWith(true);
     });
 
-    test('scroll_markers toggle saves options and triggers a search update', () => {
+    test('scrollMarkers toggle saves options and triggers a search update', () => {
       fireChange('scroll-markers-enable-toggle', true);
 
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ scroll_markers: true })
+        expect.objectContaining({ scrollMarkers: true })
       );
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
     });
@@ -249,11 +249,11 @@ describe('Popup.OptionsPane', () => {
       jest.clearAllMocks();
     });
 
-    test('"change" maps the slider index to the correct max_results value and persists it', () => {
+    test('"change" maps the slider index to the correct maxResults value and persists it', () => {
       fireChange('max-results-slider', '3'); // rangeValues[3] === 50
 
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ max_results: 50 })
+        expect.objectContaining({ maxResults: 50 })
       );
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
     });
@@ -280,8 +280,8 @@ describe('Popup.OptionsPane', () => {
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
 
       const savedOptions = global.Find.Popup.Storage.saveOptions.mock.calls[0][0];
-      expect(savedOptions.index_highlight_color.hue).toBe('120');
-      expect(savedOptions.index_highlight_color.hexColor).toMatch(/^#[0-9a-f]{6}$/);
+      expect(savedOptions.indexHighlightColor.hue).toBe('120');
+      expect(savedOptions.indexHighlightColor.hexColor).toMatch(/^#[0-9a-f]{6}$/);
     });
 
     test('typing a valid hex code into the hex field updates hue/saturation/value and persists', () => {
@@ -290,7 +290,7 @@ describe('Popup.OptionsPane', () => {
       field.dispatchEvent(new window.Event('input', { bubbles: true }));
 
       const savedOptions = global.Find.Popup.Storage.saveOptions.mock.calls[0][0];
-      expect(savedOptions.index_highlight_color.hexColor).toBe('#00ff00');
+      expect(savedOptions.indexHighlightColor.hexColor).toBe('#00ff00');
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
     });
 
@@ -314,8 +314,8 @@ describe('Popup.OptionsPane', () => {
       fireChange('all-highlight-saturation-slider', '0.5');
 
       const savedOptions = global.Find.Popup.Storage.saveOptions.mock.calls[0][0];
-      expect(savedOptions.all_highlight_color.saturation).toBe('0.5');
-      expect(savedOptions.all_highlight_color.hexColor).toMatch(/^#[0-9a-f]{6}$/);
+      expect(savedOptions.allHighlightColor.saturation).toBe('0.5');
+      expect(savedOptions.allHighlightColor.hexColor).toMatch(/^#[0-9a-f]{6}$/);
     });
 
     test('typing a valid hex code into the hex field updates the stored color', () => {
@@ -324,7 +324,7 @@ describe('Popup.OptionsPane', () => {
       field.dispatchEvent(new window.Event('input', { bubbles: true }));
 
       const savedOptions = global.Find.Popup.Storage.saveOptions.mock.calls[0][0];
-      expect(savedOptions.all_highlight_color.hexColor).toBe('#123456');
+      expect(savedOptions.allHighlightColor.hexColor).toBe('#123456');
     });
   });
 
@@ -339,7 +339,7 @@ describe('Popup.OptionsPane', () => {
 
       expect(document.getElementById('regex-option-case-insensitive-toggle').checked).toBe(true);
       expect(global.Find.Popup.Storage.saveOptions).toHaveBeenCalledWith(
-        expect.objectContaining({ match_case: true, find_by_regex: true })
+        expect.objectContaining({ matchCase: true, findByRegex: true })
       );
       expect(global.Find.Popup.BrowserAction.updateSearch).toHaveBeenCalled();
     });
@@ -398,9 +398,9 @@ describe('Popup.OptionsPane', () => {
       const options = OptionsPane.getOptions();
 
       expect(options).toEqual(expect.objectContaining({
-        find_by_regex: true,
-        match_case: true,
-        max_results: 0
+        findByRegex: true,
+        matchCase: true,
+        maxResults: 0
       }));
     });
 
@@ -409,7 +409,7 @@ describe('Popup.OptionsPane', () => {
 
       fireChange('regex-option-case-insensitive-toggle', false);
 
-      expect(OptionsPane.getOptions().match_case).toBe(false);
+      expect(OptionsPane.getOptions().matchCase).toBe(false);
     });
   });
 });

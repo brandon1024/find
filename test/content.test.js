@@ -86,7 +86,7 @@ describe('Content', () => {
           options: {}
         },
         sender,
-        () => {}
+        () => { }
       );
 
       const response = capturedMessageListener({ action: 'fetch' }, sender, sendResponse);
@@ -103,10 +103,10 @@ describe('Content', () => {
 
     test('restore clears selection and calls Parser.restoreWebPage', () => {
       // First init to set selection
-      capturedMessageListener({ action: 'init' }, sender, () => {});
+      capturedMessageListener({ action: 'init' }, sender, () => { });
 
       const uuids = ['uuid-1', 'uuid-2'];
-      const response = capturedMessageListener({ action: 'restore', uuids }, sender, () => {});
+      const response = capturedMessageListener({ action: 'restore', uuids }, sender, () => { });
 
       expect(global.Find.Content.Parser.restoreWebPage).toHaveBeenCalledWith(uuids);
       expect(response).toBe(false);
@@ -118,7 +118,7 @@ describe('Content', () => {
       const occurrenceMap = { 1: [10, 20] };
       const regex = 'test';
       const index = 0;
-      const options = { match_case: true };
+      const options = { matchCase: true };
 
       capturedMessageListener(
         {
@@ -129,7 +129,7 @@ describe('Content', () => {
           options
         },
         sender,
-        () => {}
+        () => { }
       );
 
       expect(global.Find.Content.Highlighter.restore).toHaveBeenCalled();
@@ -143,7 +143,7 @@ describe('Content', () => {
 
     test('seek updates index and calls seekHighlight', () => {
       const index = 2;
-      const options = { match_case: false };
+      const options = { matchCase: false };
 
       capturedMessageListener(
         {
@@ -152,14 +152,14 @@ describe('Content', () => {
           options
         },
         sender,
-        () => {}
+        () => { }
       );
 
       expect(global.Find.Content.Highlighter.seekHighlight).toHaveBeenCalledWith(index, options);
     });
 
     test('highlight_restore calls Highlighter.restore', () => {
-      capturedMessageListener({ action: 'highlight_restore' }, sender, () => {});
+      capturedMessageListener({ action: 'highlight_restore' }, sender, () => { });
 
       expect(global.Find.Content.Highlighter.restore).toHaveBeenCalled();
     });
@@ -175,7 +175,7 @@ describe('Content', () => {
           replaceWith
         },
         sender,
-        () => {}
+        () => { }
       );
 
       expect(global.Find.Content.Highlighter.replace).toHaveBeenCalledWith(index, replaceWith);
@@ -190,14 +190,14 @@ describe('Content', () => {
           replaceWith
         },
         sender,
-        () => {}
+        () => { }
       );
 
       expect(global.Find.Content.Highlighter.replaceAll).toHaveBeenCalledWith(replaceWith);
     });
 
     test('follow_link calls Highlighter.followLinkUnderFocus', () => {
-      capturedMessageListener({ action: 'follow_link' }, sender, () => {});
+      capturedMessageListener({ action: 'follow_link' }, sender, () => { });
 
       expect(global.Find.Content.Highlighter.followLinkUnderFocus).toHaveBeenCalled();
     });

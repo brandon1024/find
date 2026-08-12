@@ -56,13 +56,13 @@ describe('Popup.Storage', () => {
 
   describe('retrieveOptions', () => {
     test('reads from the "options" key and passes the value to the callback', () => {
-      global.Find.browser.storage.local.get.mockImplementation((key, cb) => cb({ options: { match_case: true } }));
+      global.Find.browser.storage.local.get.mockImplementation((key, cb) => cb({ options: { matchCase: true } }));
 
       const callback = jest.fn();
       Storage.retrieveOptions(callback);
 
       expect(global.Find.browser.storage.local.get).toHaveBeenCalledWith('options', expect.any(Function));
-      expect(callback).toHaveBeenCalledWith({ match_case: true });
+      expect(callback).toHaveBeenCalledWith({ matchCase: true });
     });
 
     test('returns null immediately without touching storage when locked', () => {
@@ -136,7 +136,7 @@ describe('Popup.Storage', () => {
 
   describe('saveOptions', () => {
     test('writes the data under the "options" key', () => {
-      const data = { match_case: false };
+      const data = { matchCase: false };
       const callback = jest.fn();
 
       Storage.saveOptions(data, callback);
@@ -148,7 +148,7 @@ describe('Popup.Storage', () => {
       Storage.lockStorage(true);
       const callback = jest.fn();
 
-      Storage.saveOptions({ match_case: false }, callback);
+      Storage.saveOptions({ matchCase: false }, callback);
 
       expect(global.Find.browser.storage.local.set).not.toHaveBeenCalled();
       expect(callback).toHaveBeenCalled();
@@ -157,7 +157,7 @@ describe('Popup.Storage', () => {
     test('does not persist options when locked, even without a callback', () => {
       Storage.lockStorage(true);
 
-      Storage.saveOptions({ match_case: false });
+      Storage.saveOptions({ matchCase: false });
 
       expect(global.Find.browser.storage.local.set).not.toHaveBeenCalled();
     });
@@ -225,12 +225,12 @@ describe('Popup.Storage', () => {
       Storage.lockStorage(true);
       Storage.lockStorage(false);
 
-      global.Find.browser.storage.local.get.mockImplementation((key, cb) => cb({ options: { match_case: true } }));
+      global.Find.browser.storage.local.get.mockImplementation((key, cb) => cb({ options: { matchCase: true } }));
       const callback = jest.fn();
       Storage.retrieveOptions(callback);
 
       expect(global.Find.browser.storage.local.get).toHaveBeenCalled();
-      expect(callback).toHaveBeenCalledWith({ match_case: true });
+      expect(callback).toHaveBeenCalledWith({ matchCase: true });
     });
   });
 });

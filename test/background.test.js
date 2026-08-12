@@ -111,7 +111,7 @@ describe('Background', () => {
     test('literal search escapes regex metacharacters without breaking the match', () => {
       const message = {
         regex: 'a.b*c',
-        options: { find_by_regex: false, match_case: true, max_results: 0 }
+        options: { findByRegex: false, matchCase: true, maxResults: 0 }
       };
 
       const { error } = debugError(() => {
@@ -125,7 +125,7 @@ describe('Background', () => {
     test('regex mode leaves metacharacters intact for pattern matching', () => {
       const message = {
         regex: 'a.b*c',
-        options: { find_by_regex: true, match_case: true, max_results: 0 }
+        options: { findByRegex: true, matchCase: true, maxResults: 0 }
       };
 
       const { error } = debugError(() => {
@@ -141,7 +141,7 @@ describe('Background', () => {
       const metacharacters = '-[]/{}()*+?.\\^$|';
       const message = {
         regex: metacharacters,
-        options: { find_by_regex: false, match_case: true, max_results: 0 }
+        options: { findByRegex: false, matchCase: true, maxResults: 0 }
       };
 
       const { error } = debugError(() => {
@@ -155,7 +155,7 @@ describe('Background', () => {
     test('an actual literal match against page text returns a real occurrence, not empty_regex or invalid_regex', () => {
       const message = {
         regex: 'quick',
-        options: { find_by_regex: false, match_case: true, max_results: 0 }
+        options: { findByRegex: false, matchCase: true, maxResults: 0 }
       };
 
       global.Find.Background.updateSearch(message, tab, sendResponse);
@@ -168,7 +168,7 @@ describe('Background', () => {
     test('empty search string sends the empty_regex action and clears highlights', () => {
       const message = {
         regex: '',
-        options: { find_by_regex: false, match_case: true, max_results: 0 }
+        options: { findByRegex: false, matchCase: true, maxResults: 0 }
       };
 
       global.Find.Background.updateSearch(message, tab, sendResponse);
@@ -180,7 +180,7 @@ describe('Background', () => {
     test('an invalid regex pattern (unbalanced group) is caught and reported as invalid_regex', () => {
       const message = {
         regex: 'a(b',
-        options: { find_by_regex: true, match_case: true, max_results: 0 }
+        options: { findByRegex: true, matchCase: true, maxResults: 0 }
       };
 
       global.Find.Background.updateSearch(message, tab, sendResponse);
@@ -193,7 +193,7 @@ describe('Background', () => {
     test('lazily initializes the page via ContentProxy when documentRepresentation is not yet set', () => {
       const message = {
         regex: 'quick',
-        options: { find_by_regex: false, match_case: true, max_results: 0 }
+        options: { findByRegex: false, matchCase: true, maxResults: 0 }
       };
 
       global.Find.Background.updateSearch(message, tab, sendResponse);
@@ -229,7 +229,7 @@ describe('Background', () => {
     test('clears highlights and restores the web page by default', () => {
       // Seed documentRepresentation via a search first
       global.Find.Background.updateSearch(
-        { regex: 'quick', options: { find_by_regex: false, match_case: true, max_results: 0 } },
+        { regex: 'quick', options: { findByRegex: false, matchCase: true, maxResults: 0 } },
         tab,
         sendResponse
       );
@@ -245,7 +245,7 @@ describe('Background', () => {
 
     test('does not clear highlights when restoreHighlights is explicitly false', () => {
       global.Find.Background.updateSearch(
-        { regex: 'quick', options: { find_by_regex: false, match_case: true, max_results: 0 } },
+        { regex: 'quick', options: { findByRegex: false, matchCase: true, maxResults: 0 } },
         tab,
         sendResponse
       );
@@ -261,7 +261,7 @@ describe('Background', () => {
     test('advances the index forward after a prior search and reports index_update', () => {
       seedIndex();
       global.Find.Background.updateSearch(
-        { regex: 'o', options: { find_by_regex: false, match_case: true, max_results: 0 } },
+        { regex: 'o', options: { findByRegex: false, matchCase: true, maxResults: 0 } },
         tab,
         sendResponse
       ); // "the quick brown fox" - two occurrences of "o": brown, fox
@@ -269,7 +269,7 @@ describe('Background', () => {
 
       const { error } = debugError(() => {
         global.Find.Background.seekSearch(
-          { options: { find_by_regex: false, match_case: true, max_results: 0 } },
+          { options: { findByRegex: false, matchCase: true, maxResults: 0 } },
           true,
           tab,
           sendResponse
@@ -290,7 +290,7 @@ describe('Background', () => {
       // way the real popup-init flow does.
       seedIndex();
       global.Find.Background.updateSearch(
-        { regex: 'quick', options: { find_by_regex: false, match_case: true, max_results: 0 } },
+        { regex: 'quick', options: { findByRegex: false, matchCase: true, maxResults: 0 } },
         tab,
         sendResponse
       );
@@ -309,7 +309,7 @@ describe('Background', () => {
 
     test('returns a newline-joined list of all occurrences when cardinality is "all"', () => {
       global.Find.Background.updateSearch(
-        { regex: 'o', options: { find_by_regex: false, match_case: true, max_results: 0 } },
+        { regex: 'o', options: { findByRegex: false, matchCase: true, maxResults: 0 } },
         tab,
         sendResponse
       );
@@ -330,7 +330,7 @@ describe('Background', () => {
   describe('replaceNext / replaceAll / followLinkUnderFocus', () => {
     test('replaceNext delegates to ContentProxy.replaceOccurrence with a zero-based index and invalidates', () => {
       global.Find.Background.updateSearch(
-        { regex: 'quick', options: { find_by_regex: false, match_case: true, max_results: 0 } },
+        { regex: 'quick', options: { findByRegex: false, matchCase: true, maxResults: 0 } },
         tab,
         sendResponse
       );
@@ -346,7 +346,7 @@ describe('Background', () => {
 
     test('replaceAll delegates to ContentProxy.replaceAllOccurrences and invalidates', () => {
       global.Find.Background.updateSearch(
-        { regex: 'quick', options: { find_by_regex: false, match_case: true, max_results: 0 } },
+        { regex: 'quick', options: { findByRegex: false, matchCase: true, maxResults: 0 } },
         tab,
         sendResponse
       );
@@ -371,12 +371,12 @@ describe('Background', () => {
   describe('max_results option', () => {
     test('caps the reported total when max_results is set below the real match count', () => {
       global.Find.Background.ContentProxy.buildDocumentRepresentation =
-                jest.fn((t, cb) => cb(buildModel({ 'node-1': 'o o o o o' })));
+        jest.fn((t, cb) => cb(buildModel({ 'node-1': 'o o o o o' })));
       loadScript('background/background.js');
 
       const message = {
         regex: 'o',
-        options: { find_by_regex: false, match_case: true, max_results: 2 }
+        options: { findByRegex: false, matchCase: true, maxResults: 2 }
       };
 
       global.Find.Background.updateSearch(message, tab, sendResponse);
