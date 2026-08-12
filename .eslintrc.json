@@ -143,6 +143,11 @@
         "no-mixed-spaces-and-tabs": "error",
         "no-new-object": "error",
         "no-tabs": "error",
+        "constructor-super": "error",
+        "no-this-before-super": "error",
+        "prefer-rest-params": "error",
+        "prefer-spread": "error",
+        "rest-spread-spacing": "error",
         "padded-blocks": [
             "error",
             "never"
