@@ -503,7 +503,7 @@ Find.register('Popup.OptionsPane', function (self) {
         };
 
         this.getHexColorCode = function () {
-            const rgbColor = hsvToRGB(hue, saturation, value);
+            const rgbColor = hsvToRgb(hue, saturation, value);
             return rgbToHexColorCode(rgbColor.red, rgbColor.green, rgbColor.blue);
         };
 
@@ -516,7 +516,7 @@ Find.register('Popup.OptionsPane', function (self) {
          * @return {object} an object with three fields, red green and blue, where each are integers between 0
          * and 255 (inclusive)
          * */
-        function hsvToRGB(hue, saturation, value) {
+        function hsvToRgb(hue, saturation, value) {
             const chroma = value * saturation;
             const intermediate = chroma * (1 - Math.abs((hue / 60) % 2 - 1));
             const match = value - chroma;
