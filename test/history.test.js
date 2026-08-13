@@ -163,6 +163,7 @@ describe('Popup.History', () => {
       for (let i = 0; i < 99; i++) {
         existingHistory[`host${i}.com`] = { expression: 'x', timestamp: i };
       }
+
       global.Find.Popup.Storage.retrieveHistory.mockImplementation((cb) => cb(existingHistory));
       global.Find.Popup.Storage.saveHistory.mockImplementation((history, cb) => cb());
 
@@ -178,6 +179,7 @@ describe('Popup.History', () => {
       for (let i = 0; i < 100; i++) {
         existingHistory[`host${i}.com`] = { expression: 'x', timestamp: i };
       }
+
       global.Find.Popup.Storage.retrieveHistory.mockImplementation((cb) => cb(existingHistory));
       global.Find.Popup.Storage.saveHistory.mockImplementation((history, cb) => cb());
 

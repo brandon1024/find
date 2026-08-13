@@ -27,6 +27,7 @@ function fireChange(id, checkedOrValue) {
   } else {
     el.value = checkedOrValue;
   }
+
   el.dispatchEvent(new window.Event('change', { bubbles: true }));
 }
 

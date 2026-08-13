@@ -94,6 +94,7 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
             thumb.style.display = 'none';
             return;
         }
+
         thumb.style.display = 'block';
 
         const thumbHeight = Math.max(MIN_THUMB_HEIGHT, (viewHeight / docHeight) * viewHeight);
@@ -293,12 +294,15 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
             window.removeEventListener('scroll', scrollListener);
             scrollListener = null;
         }
+
         if (overlay && overlay.parentNode) {
             overlay.parentNode.removeChild(overlay);
         }
+
         if (globalStyle && globalStyle.parentNode) {
             globalStyle.parentNode.removeChild(globalStyle);
         }
+
         overlay = null;
         track = null;
         thumb = null;

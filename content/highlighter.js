@@ -89,8 +89,9 @@ Find.register('Content.Highlighter', function (self) {
                         boundary: false
                     };
                 }
-                charMap.length = count;
             }
+
+            charMap.length = count;
 
             /* Format text nodes (whitespaces) whilst keeping references to their
             * nodes in the DOM, updating charMap ignorable characters
@@ -112,9 +113,11 @@ Find.register('Content.Highlighter', function (self) {
                     for (let currIndex = 0; currIndex < len; currIndex++) {
                         charMap[charIndexMap[offset + currIndex]].ignorable = true;
                     }
+
                     for (let currIndex = 0; currIndex < len - 1; currIndex++) {
                         charIndexMap.splice(offset, 1);
                     }
+
                     groupText = groupText.replace(/ {2,}/, ' ');
                 }
 
@@ -126,9 +129,11 @@ Find.register('Content.Highlighter', function (self) {
                     for (let currIndex = 0; currIndex < len; currIndex++) {
                         charMap[charIndexMap[offset + currIndex]].ignorable = true;
                     }
+
                     for (let currIndex = 0; currIndex < len; currIndex++) {
                         charIndexMap.splice(offset, 1);
                     }
+
                     groupText = groupText.replace(/^ | $/, '');
                 }
             }
@@ -151,9 +156,11 @@ Find.register('Content.Highlighter', function (self) {
                         charMap[currIndex].boundary = true;
                     }
                 }
+
                 for (let currIndex = 0; currIndex < offset + len; currIndex++) {
                     charIndexMap.splice(0, 1);
                 }
+
                 groupText = groupText.substring(offset + len);
             }
 
@@ -184,6 +191,7 @@ Find.register('Content.Highlighter', function (self) {
                         inMatch = charMap[key].matched;
                         matchGroup.text += tags.openingMarkup;
                     }
+
                     if (options && options.scrollMarkers) {
                         Find.Content.ScrollbarHighlightMaker.addOccurrence(occIndex,
                             document.getElementById(matchGroup.groupUUID));

@@ -371,6 +371,7 @@ Find.register('Background', function (self) {
             if (!Object.prototype.hasOwnProperty.call(documentRepresentation, key)) {
                 continue;
             }
+
             const textNodes = documentRepresentation[key].group;
             const preformatted = documentRepresentation[key].preformatted;
             let textGroup = '';

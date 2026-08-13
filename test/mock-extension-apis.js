@@ -44,6 +44,7 @@ global.Find = {
       if (typeof parent[key] === 'undefined') {
         parent[key] = {};
       }
+
       parent = parent[key];
     }
 

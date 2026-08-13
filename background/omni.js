@@ -60,6 +60,7 @@ Find.register('Background.Omni', function (self) {
                 delete migrated[oldKey];
             }
         }
+
         return migrated;
     }
 
@@ -77,6 +78,7 @@ Find.register('Background.Omni', function (self) {
             if (!options) {
                 return callback(JSON.parse(JSON.stringify(DEFAULT_OPTIONS)));
             }
+
             const migrated = migrateOptionKeys(options);
             Find.browser.storage.local.set({ options: migrated });
             callback(migrated);
