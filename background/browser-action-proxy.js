@@ -1,26 +1,25 @@
-"use strict";
+'use strict';
 
 /**
  * Create the Background ContentProxy namespace. Serves as mediator between the background scripts
  * and the browser action popup.
  * */
-Find.register("Background.BrowserActionProxy", function() {
-
+Find.register('Background.BrowserActionProxy', function () {
     /**
      * Initialize the port connection with the browser action popup.
      * */
     Find.browser.runtime.onConnect.addListener((browserActionPort) => {
-        if(browserActionPort.name !== 'popup_to_background_port') {
+        if (browserActionPort.name !== 'popup_to_background_port') {
             return;
         }
 
-        if(Find.Background.installationDetails) {
-            browserActionPort.postMessage({action: 'install', details: Find.Background.installationDetails});
+        if (Find.Background.installationDetails) {
+            browserActionPort.postMessage({ action: 'install', details: Find.Background.installationDetails });
             Find.Background.installationDetails = null;
         }
 
         let activeTab = null;
-        Find.browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        Find.browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             activeTab = tabs[0];
 
             // invoke action on message from popup script
@@ -32,7 +31,7 @@ Find.register("Background.BrowserActionProxy", function() {
 
             // handle extension close
             browserActionPort.onDisconnect.addListener(() => {
-                if(!Find.Background.options || !Find.Background.options.persistent_highlights) {
+                if (!Find.Background.options || !Find.Background.options.persistentHighlights) {
                     Find.Background.restorePageState(activeTab);
                 } else {
                     Find.Background.restorePageState(activeTab, false);
@@ -53,8 +52,8 @@ Find.register("Background.BrowserActionProxy", function() {
      * @param {function} sendResponse - Function used to issue a response back to the popup.
      * */
     function actionDispatch(message, tab, sendResponse) {
-        let action = message.action;
-        switch(action) {
+        const action = message.action;
+        switch (action) {
             case 'update':
                 Find.Background.updateSearch(message, tab, sendResponse);
                 break;

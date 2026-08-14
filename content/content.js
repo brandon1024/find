@@ -4,8 +4,7 @@
  * Create the Content namespace. This component is injected into the
  * page and delegates messages to the parser or highlighter.
  * */
-Find.register('Content', function(self) {
-
+Find.register('Content', function (self) {
     /**
      * State variables, used to recover the extension state if the extension
      * is closed accidentally.
@@ -21,7 +20,7 @@ Find.register('Content', function(self) {
         switch (message.action) {
             case 'init':
                 selected = window.getSelection().toString();
-                sendResponse({model: Find.Content.Parser.buildDOMReferenceObject()});
+                sendResponse({ model: Find.Content.Parser.buildDOMReferenceObject() });
                 return true;
             case 'fetch':
                 sendResponse({
@@ -38,8 +37,8 @@ Find.register('Content', function(self) {
                 return false;
         }
 
-        //Highlighter Actions
-        switch(message.action) {
+        // Highlighter Actions
+        switch (message.action) {
             case 'update':
                 regex = message.regex;
                 index = message.index;

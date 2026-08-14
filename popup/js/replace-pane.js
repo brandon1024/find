@@ -4,11 +4,10 @@
  * Create the Popup ReplacePane namespace.
  * */
 Find.register('Popup.ReplacePane', function (self) {
-
     /**
      * Register event handlers.
      * */
-    self.init = function() {
+    self.init = function () {
         document.getElementById('replace-next-button').addEventListener('click', () => {
             Find.Popup.BrowserAction.replaceNext();
         });
@@ -23,9 +22,9 @@ Find.register('Popup.ReplacePane', function (self) {
      *
      * @param {boolean} value - True to show the pane, false to hide the pane.
      * */
-    self.show = function(value) {
-        let el = document.getElementById('replace-body');
-        if(value === undefined || value) {
+    self.show = function (value) {
+        const el = document.getElementById('replace-body');
+        if (value === undefined || value) {
             el.style.display = 'inherit';
         } else {
             el.style.display = 'none';
@@ -35,9 +34,9 @@ Find.register('Popup.ReplacePane', function (self) {
     /**
      * Toggle the options pane.
      * */
-    self.toggle = function() {
-        let el = document.getElementById('replace-body');
-        if(el.style.display === 'none' || el.style.display === '') {
+    self.toggle = function () {
+        const el = document.getElementById('replace-body');
+        if (el.style.display === 'none' || el.style.display === '') {
             self.show(true);
         } else {
             self.show(false);
@@ -49,7 +48,7 @@ Find.register('Popup.ReplacePane', function (self) {
      *
      * @return {string} the text in the replace field.
      * */
-    self.getReplaceFieldText = function() {
+    self.getReplaceFieldText = function () {
         return document.getElementById('replace-field').value;
     };
 
@@ -58,21 +57,21 @@ Find.register('Popup.ReplacePane', function (self) {
      *
      * @param {string} text - The text to place in the replace field.
      * */
-    self.setReplaceFieldText = function(text) {
+    self.setReplaceFieldText = function (text) {
         document.getElementById('replace-field').value = text;
     };
 
     /**
      * Place focus on the replace field.
      * */
-    self.focusSearchField = function() {
+    self.focusSearchField = function () {
         document.getElementById('replace-field').focus();
     };
 
     /**
      * Select all the text in the replace field.
      * */
-    self.selectReplaceField = function() {
+    self.selectReplaceField = function () {
         document.getElementById('replace-field').select();
     };
 
@@ -81,8 +80,8 @@ Find.register('Popup.ReplacePane', function (self) {
      *
      * @param {boolean} enable - Undefined or true to enable the buttons, false to disable the buttons.
      * */
-    self.enableButtons = function(enable) {
+    self.enableButtons = function (enable) {
         document.getElementById('replace-next-button').disabled = enable !== undefined && !enable;
         document.getElementById('replace-all-button').disabled = enable !== undefined && !enable;
-    }
+    };
 });

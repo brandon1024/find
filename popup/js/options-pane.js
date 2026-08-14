@@ -4,7 +4,6 @@
  * Create the Popup OptionsPane namespace.
  * */
 Find.register('Popup.OptionsPane', function (self) {
-
     /**
      * Default options. This object and all of it's properties are immutable.
      * To use this object, it must be cloned into a mutable object.
@@ -13,22 +12,23 @@ Find.register('Popup.OptionsPane', function (self) {
      * let mutableOptions = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
      * */
     const DEFAULT_OPTIONS = Object.freeze({
-        find_by_regex: true,
-        match_case: true,
-        persistent_highlights: false,
-        persistent_storage_incognito: false,
-        hide_options_button: false,
-        hide_saved_expressions_button: false,
-        hide_clipboard_button: true,
-        hide_find_replace_button: true,
-        max_results: 0,
-        index_highlight_color: Object.freeze({
+        findByRegex: true,
+        matchCase: true,
+        persistentHighlights: false,
+        persistentStorageIncognito: false,
+        hideOptionsButton: false,
+        hideSavedExpressionsButton: false,
+        hideClipboardButton: true,
+        hideFindReplaceButton: true,
+        scrollMarkers: false,
+        maxResults: 0,
+        indexHighlightColor: Object.freeze({
             hue: 34,
             saturation: 0.925,
             value: 1,
             hexColor: '#ff9813'
         }),
-        all_highlight_color: Object.freeze({
+        allHighlightColor: Object.freeze({
             hue: 56,
             saturation: 1,
             value: 1,
@@ -41,203 +41,208 @@ Find.register('Popup.OptionsPane', function (self) {
     /**
      * Register event handlers and initialize options pane.
      * */
-    self.init = function() {
+    self.init = function () {
         Find.Popup.Storage.retrieveOptions((data) => {
             options = adaptOptions(data);
             applyOptions();
 
             Find.Popup.Storage.saveOptions(options);
-            if(Find.incognito) {
-                Find.Popup.Storage.lockStorage(!options.persistent_storage_incognito);
+            if (Find.incognito) {
+                Find.Popup.Storage.lockStorage(!options.persistentStorageIncognito);
             }
         });
 
-        //Add toggle switches event listeners
+        // Add toggle switches event listeners
         document.getElementById('regex-option-regex-disable-toggle').addEventListener('change', (e) => {
-            options.find_by_regex = e.target.checked;
+            options.findByRegex = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         document.getElementById('regex-option-case-insensitive-toggle').addEventListener('change', (e) => {
-            options.match_case = e.target.checked;
+            options.matchCase = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         document.getElementById('regex-option-persistent-highlights-toggle').addEventListener('change', (e) => {
-            options.persistent_highlights = e.target.checked;
+            options.persistentHighlights = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         document.getElementById('regex-option-persistent-storage-incognito-toggle').addEventListener('change', (e) => {
-            options.persistent_storage_incognito = e.target.checked;
+            options.persistentStorageIncognito = e.target.checked;
 
             Find.Popup.Storage.lockStorage(false);
             Find.Popup.Storage.saveOptions(options);
-            Find.Popup.Storage.lockStorage(!options.persistent_storage_incognito);
+            Find.Popup.Storage.lockStorage(!options.persistentStorageIncognito);
         });
         document.getElementById('hide-option-pane-toggle-option-toggle').addEventListener('change', (e) => {
-            options.hide_options_button = e.target.checked;
+            options.hideOptionsButton = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
-            Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
+            Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hideOptionsButton);
         });
         document.getElementById('hide-saved-expressions-pane-toggle-option-toggle').addEventListener('change', (e) => {
-            options.hide_saved_expressions_button = e.target.checked;
+            options.hideSavedExpressionsButton = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
-            Find.Popup.SearchPane.hideSavedExpressionsPaneToggleButton(options.hide_saved_expressions_button);
+            Find.Popup.SearchPane.hideSavedExpressionsPaneToggleButton(options.hideSavedExpressionsButton);
         });
         document.getElementById('hide-copy-to-clipboard-option-toggle').addEventListener('change', (e) => {
-            options.hide_clipboard_button = e.target.checked;
+            options.hideClipboardButton = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
-            Find.Popup.SearchPane.hideCopyOccurrencesToClipboardButton(options.hide_clipboard_button);
+            Find.Popup.SearchPane.hideCopyOccurrencesToClipboardButton(options.hideClipboardButton);
         });
         document.getElementById('find-replace-toggle-option-toggle').addEventListener('change', (e) => {
-            options.hide_find_replace_button = e.target.checked;
+            options.hideFindReplaceButton = e.target.checked;
             Find.Popup.Storage.saveOptions(options);
-            Find.Popup.SearchPane.hideFindReplacePaneToggleButton(options.hide_find_replace_button);
+            Find.Popup.SearchPane.hideFindReplacePaneToggleButton(options.hideFindReplaceButton);
+        });
+        document.getElementById('scroll-markers-enable-toggle').addEventListener('change', (e) => {
+            options.scrollMarkers = e.target.checked;
+            Find.Popup.Storage.saveOptions(options);
+            Find.Popup.BrowserAction.updateSearch();
         });
 
-        //Add max results slider event listeners
-        let maxResultsSlider = document.getElementById('max-results-slider');
+        // Add max results slider event listeners
+        const maxResultsSlider = document.getElementById('max-results-slider');
         maxResultsSlider.addEventListener('change', (e) => {
-            const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-            let sliderValue = e.target.value;
-            options.max_results = rangeValues[sliderValue];
+            const rangeValues = [1, 10, 25, 50, 75, 100, 150, 200, 300, 400, 0];
+            const sliderValue = e.target.value;
+            options.maxResults = rangeValues[sliderValue];
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         maxResultsSlider.addEventListener('input', (e) => {
-            const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-            let sliderValue = e.target.value;
-            options.max_results = rangeValues[sliderValue];
+            const rangeValues = [1, 10, 25, 50, 75, 100, 150, 200, 300, 400, 0];
+            const sliderValue = e.target.value;
+            options.maxResults = rangeValues[sliderValue];
 
             applyMaxResultsSliderOptions();
         });
 
-        //Add index highlight color slider listeners
-        let indexHighlightHueSlider = document.getElementById('index-highlight-hue-slider');
+        // Add indexHighlightColor slider listeners
+        const indexHighlightHueSlider = document.getElementById('index-highlight-hue-slider');
         indexHighlightHueSlider.addEventListener('change', (e) => {
-            options.index_highlight_color.hue = e.target.value;
-            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+            options.indexHighlightColor.hue = e.target.value;
+            options.indexHighlightColor.hexColor = getIndexHighlightColorCode();
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         indexHighlightHueSlider.addEventListener('input', (e) => {
-            options.index_highlight_color.hue = e.target.value;
-            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+            options.indexHighlightColor.hue = e.target.value;
+            options.indexHighlightColor.hexColor = getIndexHighlightColorCode();
 
             applyIndexHighlightColorSliderOptions();
         });
-        let indexHighlightSaturationSlider = document.getElementById('index-highlight-saturation-slider');
+        const indexHighlightSaturationSlider = document.getElementById('index-highlight-saturation-slider');
         indexHighlightSaturationSlider.addEventListener('change', (e) => {
-            options.index_highlight_color.saturation = e.target.value;
-            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+            options.indexHighlightColor.saturation = e.target.value;
+            options.indexHighlightColor.hexColor = getIndexHighlightColorCode();
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         indexHighlightSaturationSlider.addEventListener('input', (e) => {
-            options.index_highlight_color.saturation = e.target.value;
-            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+            options.indexHighlightColor.saturation = e.target.value;
+            options.indexHighlightColor.hexColor = getIndexHighlightColorCode();
 
             applyIndexHighlightColorSliderOptions();
         });
-        let indexHighlightValueSlider = document.getElementById('index-highlight-value-slider');
+        const indexHighlightValueSlider = document.getElementById('index-highlight-value-slider');
         indexHighlightValueSlider.addEventListener('change', (e) => {
-            options.index_highlight_color.value = e.target.value;
-            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+            options.indexHighlightColor.value = e.target.value;
+            options.indexHighlightColor.hexColor = getIndexHighlightColorCode();
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         indexHighlightValueSlider.addEventListener('input', (e) => {
-            options.index_highlight_color.value = e.target.value;
-            options.index_highlight_color.hexColor = getIndexHighlightColorCode();
+            options.indexHighlightColor.value = e.target.value;
+            options.indexHighlightColor.hexColor = getIndexHighlightColorCode();
 
             applyIndexHighlightColorSliderOptions();
         });
-        let indexHighlightColorHexCodeField = document.getElementById('index-highlight-color-value');
+        const indexHighlightColorHexCodeField = document.getElementById('index-highlight-color-value');
         indexHighlightColorHexCodeField.addEventListener('input', (e) => {
-            let hexColor = e.target.innerText;
-            if(!hexColor.match(/#[0-9a-f]{6}/)) {
+            const hexColor = e.target.innerText;
+            if (!hexColor.match(/#[0-9a-f]{6}/)) {
                 return;
             }
 
-            let color = new SimpleColor({hexCode: hexColor});
-            options.index_highlight_color.hue = color.getHue();
-            options.index_highlight_color.saturation = color.getSaturation();
-            options.index_highlight_color.value = color.getValue();
-            options.index_highlight_color.hexColor = hexColor;
+            const color = new SimpleColor({ hexCode: hexColor });
+            options.indexHighlightColor.hue = color.getHue();
+            options.indexHighlightColor.saturation = color.getSaturation();
+            options.indexHighlightColor.value = color.getValue();
+            options.indexHighlightColor.hexColor = hexColor;
 
             applyIndexHighlightColorSliderOptions();
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
 
-        //Add all highlight color slider listeners
-        let allHighlightHueSlider = document.getElementById('all-highlight-hue-slider');
+        // Add all highlight color slider listeners
+        const allHighlightHueSlider = document.getElementById('all-highlight-hue-slider');
         allHighlightHueSlider.addEventListener('change', (e) => {
-            options.all_highlight_color.hue = e.target.value;
-            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+            options.allHighlightColor.hue = e.target.value;
+            options.allHighlightColor.hexColor = getAllHighlightColorCode();
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         allHighlightHueSlider.addEventListener('input', (e) => {
-            options.all_highlight_color.hue = e.target.value;
-            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+            options.allHighlightColor.hue = e.target.value;
+            options.allHighlightColor.hexColor = getAllHighlightColorCode();
 
             applyAllHighlightColorSliderOptions();
         });
-        let allHighlightSaturationSlider = document.getElementById('all-highlight-saturation-slider');
+        const allHighlightSaturationSlider = document.getElementById('all-highlight-saturation-slider');
         allHighlightSaturationSlider.addEventListener('change', (e) => {
-            options.all_highlight_color.saturation = e.target.value;
-            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+            options.allHighlightColor.saturation = e.target.value;
+            options.allHighlightColor.hexColor = getAllHighlightColorCode();
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         allHighlightSaturationSlider.addEventListener('input', (e) => {
-            options.all_highlight_color.saturation = e.target.value;
-            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+            options.allHighlightColor.saturation = e.target.value;
+            options.allHighlightColor.hexColor = getAllHighlightColorCode();
 
             applyAllHighlightColorSliderOptions();
         });
-        let allHighlightValueSlider = document.getElementById('all-highlight-value-slider');
+        const allHighlightValueSlider = document.getElementById('all-highlight-value-slider');
         allHighlightValueSlider.addEventListener('change', (e) => {
-            options.all_highlight_color.saturation = e.target.value;
-            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+            options.allHighlightColor.value = e.target.value;
+            options.allHighlightColor.hexColor = getAllHighlightColorCode();
 
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
         allHighlightValueSlider.addEventListener('input', (e) => {
-            options.all_highlight_color.value = e.target.value;
-            options.all_highlight_color.hexColor = getAllHighlightColorCode();
+            options.allHighlightColor.value = e.target.value;
+            options.allHighlightColor.hexColor = getAllHighlightColorCode();
 
             applyAllHighlightColorSliderOptions();
         });
-        let allHighlightColorHexCodeField = document.getElementById('all-highlight-color-value');
+        const allHighlightColorHexCodeField = document.getElementById('all-highlight-color-value');
         allHighlightColorHexCodeField.addEventListener('input', (e) => {
-            let hexColor = e.target.innerText;
-            if(!hexColor.match(/#[0-9a-f]{6}/)) {
+            const hexColor = e.target.innerText;
+            if (!hexColor.match(/#[0-9a-f]{6}/)) {
                 return;
             }
 
-            let color = new SimpleColor({hexCode: hexColor});
-            options.all_highlight_color.hue = color.getHue();
-            options.all_highlight_color.saturation = color.getSaturation();
-            options.all_highlight_color.value = color.getValue();
-            options.all_highlight_color.hexColor = hexColor;
+            const color = new SimpleColor({ hexCode: hexColor });
+            options.allHighlightColor.hue = color.getHue();
+            options.allHighlightColor.saturation = color.getSaturation();
+            options.allHighlightColor.value = color.getValue();
+            options.allHighlightColor.hexColor = hexColor;
 
             applyAllHighlightColorSliderOptions();
             Find.Popup.Storage.saveOptions(options);
             Find.Popup.BrowserAction.updateSearch();
         });
 
-        //Add reset all options button listener
-        let resetAllOptionsButton = document.getElementById('reset-options-button');
+        // Add reset all options button listener
+        const resetAllOptionsButton = document.getElementById('reset-options-button');
         resetAllOptionsButton.addEventListener('click', () => {
             options = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
             applyOptions();
@@ -252,9 +257,9 @@ Find.register('Popup.OptionsPane', function (self) {
      *
      * @param {boolean} value - Undefined or true to display the options pane, false to hide.
      * */
-    self.show = function(value) {
-        let el = document.getElementById('options-body');
-        if(value === undefined || value) {
+    self.show = function (value) {
+        const el = document.getElementById('options-body');
+        if (value === undefined || value) {
             el.style.display = 'inherit';
         } else {
             el.style.display = 'none';
@@ -264,9 +269,9 @@ Find.register('Popup.OptionsPane', function (self) {
     /**
      * Toggle the options pane.
      * */
-    self.toggle = function() {
-        let el = document.getElementById('options-body');
-        if(el.style.display === 'none' || el.style.display === '') {
+    self.toggle = function () {
+        const el = document.getElementById('options-body');
+        if (el.style.display === 'none' || el.style.display === '') {
             self.show(true);
         } else {
             self.show(false);
@@ -278,7 +283,7 @@ Find.register('Popup.OptionsPane', function (self) {
      *
      * @return {object} an options object.
      * */
-    self.getOptions = function() {
+    self.getOptions = function () {
         return options;
     };
 
@@ -313,146 +318,147 @@ Find.register('Popup.OptionsPane', function (self) {
     }
 
     /**
-     * Build a SimpleColor to get the hex color code for the index_highlight_color option.
+     * Build a SimpleColor to get the hex color code for the indexHighlightColor option.
      *
      * @private
-     * @returns {string} A hex color code for the index_highlight_color option.
+     * @returns {string} A hex color code for the indexHighlightColor option.
      * */
     function getIndexHighlightColorCode() {
         return new SimpleColor({
-            hue: options.index_highlight_color.hue,
-            saturation: options.index_highlight_color.saturation,
-            value: options.index_highlight_color.value
+            hue: options.indexHighlightColor.hue,
+            saturation: options.indexHighlightColor.saturation,
+            value: options.indexHighlightColor.value
         }).getHexColorCode();
     }
 
     /**
-     * Build a SimpleColor to get the hex color code for the all_highlight_color option.
+     * Build a SimpleColor to get the hex color code for the allHighlightColor option.
      *
      * @private
-     * @returns {string} A hex color code for the all_highlight_color option.
+     * @returns {string} A hex color code for the allHighlightColor option.
      * */
     function getAllHighlightColorCode() {
         return new SimpleColor({
-            hue: options.all_highlight_color.hue,
-            saturation: options.all_highlight_color.saturation,
-            value: options.all_highlight_color.value
+            hue: options.allHighlightColor.hue,
+            saturation: options.allHighlightColor.saturation,
+            value: options.allHighlightColor.value
         }).getHexColorCode();
     }
 
     /**
-     * Apply the options for find_by_regex, match_case and persistent_highlights to the various related components.
+     * Apply the options for findByRegex, matchCase and persistentHighlights to the various related components.
      *
      * @private
      * */
     function applyToggleOptions() {
-        document.getElementById('regex-option-regex-disable-toggle').checked = options.find_by_regex;
-        document.getElementById('regex-option-case-insensitive-toggle').checked = options.match_case;
-        document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistent_highlights;
-        document.getElementById('regex-option-persistent-storage-incognito-toggle').checked = options.persistent_storage_incognito;
-        document.getElementById('hide-option-pane-toggle-option-toggle').checked = options.hide_options_button;
-        document.getElementById('hide-saved-expressions-pane-toggle-option-toggle').checked = options.hide_saved_expressions_button;
-        document.getElementById('hide-copy-to-clipboard-option-toggle').checked = options.hide_clipboard_button;
-        document.getElementById('find-replace-toggle-option-toggle').checked = options.hide_find_replace_button;
+        document.getElementById('regex-option-regex-disable-toggle').checked = options.findByRegex;
+        document.getElementById('regex-option-case-insensitive-toggle').checked = options.matchCase;
+        document.getElementById('regex-option-persistent-highlights-toggle').checked = options.persistentHighlights;
+        document.getElementById('regex-option-persistent-storage-incognito-toggle').checked = options.persistentStorageIncognito;
+        document.getElementById('hide-option-pane-toggle-option-toggle').checked = options.hideOptionsButton;
+        document.getElementById('hide-saved-expressions-pane-toggle-option-toggle').checked = options.hideSavedExpressionsButton;
+        document.getElementById('hide-copy-to-clipboard-option-toggle').checked = options.hideClipboardButton;
+        document.getElementById('find-replace-toggle-option-toggle').checked = options.hideFindReplaceButton;
+        document.getElementById('scroll-markers-enable-toggle').checked = options.scrollMarkers;
 
-        Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hide_options_button);
-        Find.Popup.SearchPane.hideSavedExpressionsPaneToggleButton(options.hide_saved_expressions_button);
-        Find.Popup.SearchPane.hideCopyOccurrencesToClipboardButton(options.hide_clipboard_button);
-        Find.Popup.SearchPane.hideFindReplacePaneToggleButton(options.hide_find_replace_button);
+        Find.Popup.SearchPane.hideOptionsPaneToggleButton(options.hideOptionsButton);
+        Find.Popup.SearchPane.hideSavedExpressionsPaneToggleButton(options.hideSavedExpressionsButton);
+        Find.Popup.SearchPane.hideCopyOccurrencesToClipboardButton(options.hideClipboardButton);
+        Find.Popup.SearchPane.hideFindReplacePaneToggleButton(options.hideFindReplaceButton);
     }
 
     /**
-     * Apply the options for max_results to the various related components.
+     * Apply the options for maxResults to the various related components.
      *
      * @private
      * */
     function applyMaxResultsSliderOptions() {
-        const rangeValues = [1,10,25,50,75,100,150,200,300,400,0];
-        document.getElementById('max-results-slider').value = rangeValues.indexOf(options.max_results);
-        if(options.max_results === 0) {
+        const rangeValues = [1, 10, 25, 50, 75, 100, 150, 200, 300, 400, 0];
+        document.getElementById('max-results-slider').value = rangeValues.indexOf(options.maxResults);
+        if (options.maxResults === 0) {
             document.getElementById('max-results-slider-value').innerText = '∞';
         } else {
-            document.getElementById('max-results-slider-value').innerText = options.max_results.toString();
+            document.getElementById('max-results-slider-value').innerText = options.maxResults.toString();
         }
     }
 
     /**
-     * Apply the options for index_highlight_color to the various related components.
+     * Apply the options for indexHighlightColor to the various related components.
      *
      * @private
      * */
     function applyIndexHighlightColorSliderOptions() {
-        //Index Highlight Color Options
-        document.getElementById('index-highlight-hue-slider').value = options.index_highlight_color.hue;
-        document.getElementById('index-highlight-saturation-slider').value = options.index_highlight_color.saturation;
-        document.getElementById('index-highlight-value-slider').value = options.index_highlight_color.value;
-        document.getElementById('index-highlight-color-value').innerText = options.index_highlight_color.hexColor;
-        document.getElementById('index-highlight-color-indicator').setAttribute("style", "background: " + options.index_highlight_color.hexColor + ";");
+        // Index Highlight Color Options
+        document.getElementById('index-highlight-hue-slider').value = options.indexHighlightColor.hue;
+        document.getElementById('index-highlight-saturation-slider').value = options.indexHighlightColor.saturation;
+        document.getElementById('index-highlight-value-slider').value = options.indexHighlightColor.value;
+        document.getElementById('index-highlight-color-value').innerText = options.indexHighlightColor.hexColor;
+        document.getElementById('index-highlight-color-indicator').setAttribute('style', 'background: ' + options.indexHighlightColor.hexColor + ';');
 
-        let indexLowerSaturationColor = new SimpleColor({
-            hue: options.index_highlight_color.hue,
+        const indexLowerSaturationColor = new SimpleColor({
+            hue: options.indexHighlightColor.hue,
             saturation: 0,
-            value: options.index_highlight_color.value
+            value: options.indexHighlightColor.value
         });
-        let indexUpperSaturationColor = new SimpleColor({
-            hue: options.index_highlight_color.hue,
+        const indexUpperSaturationColor = new SimpleColor({
+            hue: options.indexHighlightColor.hue,
             saturation: 1,
-            value: options.index_highlight_color.value
+            value: options.indexHighlightColor.value
         });
-        document.getElementById('index-highlight-saturation-slider').setAttribute("style",
-            "background: linear-gradient(to right," + indexLowerSaturationColor.getHexColorCode() + "," + indexUpperSaturationColor.getHexColorCode() + ");");
+        document.getElementById('index-highlight-saturation-slider').setAttribute('style',
+            'background: linear-gradient(to right,' + indexLowerSaturationColor.getHexColorCode() + ',' + indexUpperSaturationColor.getHexColorCode() + ');');
 
-        let indexLowerValueColor = new SimpleColor({
-            hue: options.index_highlight_color.hue,
-            saturation: options.index_highlight_color.saturation,
+        const indexLowerValueColor = new SimpleColor({
+            hue: options.indexHighlightColor.hue,
+            saturation: options.indexHighlightColor.saturation,
             value: 0
         });
-        let indexUpperValueColor = new SimpleColor({
-            hue: options.index_highlight_color.hue,
-            saturation: options.index_highlight_color.saturation,
+        const indexUpperValueColor = new SimpleColor({
+            hue: options.indexHighlightColor.hue,
+            saturation: options.indexHighlightColor.saturation,
             value: 1
         });
-        document.getElementById('index-highlight-value-slider').setAttribute("style",
-            "background: linear-gradient(to right," + indexLowerValueColor.getHexColorCode() + "," + indexUpperValueColor.getHexColorCode() + ");");
+        document.getElementById('index-highlight-value-slider').setAttribute('style',
+            'background: linear-gradient(to right,' + indexLowerValueColor.getHexColorCode() + ',' + indexUpperValueColor.getHexColorCode() + ');');
     }
 
     /**
-     * Apply the options for all_highlight_color to the various related components.
+     * Apply the options for allHighlightColor to the various related components.
      *
      * @private
      * */
     function applyAllHighlightColorSliderOptions() {
-        document.getElementById('all-highlight-hue-slider').value = options.all_highlight_color.hue;
-        document.getElementById('all-highlight-saturation-slider').value = options.all_highlight_color.saturation;
-        document.getElementById('all-highlight-value-slider').value = options.all_highlight_color.value;
-        document.getElementById('all-highlight-color-value').innerText = options.all_highlight_color.hexColor;
-        document.getElementById('all-highlight-color-indicator').setAttribute("style", "background: " + options.all_highlight_color.hexColor + ";");
+        document.getElementById('all-highlight-hue-slider').value = options.allHighlightColor.hue;
+        document.getElementById('all-highlight-saturation-slider').value = options.allHighlightColor.saturation;
+        document.getElementById('all-highlight-value-slider').value = options.allHighlightColor.value;
+        document.getElementById('all-highlight-color-value').innerText = options.allHighlightColor.hexColor;
+        document.getElementById('all-highlight-color-indicator').setAttribute('style', 'background: ' + options.allHighlightColor.hexColor + ';');
 
-        let allLowerSaturationColor = new SimpleColor({
-            hue: options.all_highlight_color.hue,
+        const allLowerSaturationColor = new SimpleColor({
+            hue: options.allHighlightColor.hue,
             saturation: 0,
-            value: options.all_highlight_color.value
+            value: options.allHighlightColor.value
         });
-        let allUpperSaturationColor = new SimpleColor({
-            hue: options.all_highlight_color.hue,
+        const allUpperSaturationColor = new SimpleColor({
+            hue: options.allHighlightColor.hue,
             saturation: 1,
-            value: options.all_highlight_color.value
+            value: options.allHighlightColor.value
         });
-        document.getElementById('all-highlight-saturation-slider').setAttribute("style",
-            "background: linear-gradient(to right," + allLowerSaturationColor.getHexColorCode() + "," + allUpperSaturationColor.getHexColorCode() + ");");
+        document.getElementById('all-highlight-saturation-slider').setAttribute('style',
+            'background: linear-gradient(to right,' + allLowerSaturationColor.getHexColorCode() + ',' + allUpperSaturationColor.getHexColorCode() + ');');
 
-        let allLowerValueColor = new SimpleColor({
-            hue: options.all_highlight_color.hue,
-            saturation: options.all_highlight_color.saturation,
+        const allLowerValueColor = new SimpleColor({
+            hue: options.allHighlightColor.hue,
+            saturation: options.allHighlightColor.saturation,
             value: 0
         });
-        let allUpperValueColor = new SimpleColor({
-            hue: options.all_highlight_color.hue,
-            saturation: options.all_highlight_color.saturation,
+        const allUpperValueColor = new SimpleColor({
+            hue: options.allHighlightColor.hue,
+            saturation: options.allHighlightColor.saturation,
             value: 1
         });
-        document.getElementById('all-highlight-value-slider').setAttribute("style",
-            "background: linear-gradient(to right," + allLowerValueColor.getHexColorCode() + "," + allUpperValueColor.getHexColorCode() + ");");
+        document.getElementById('all-highlight-value-slider').setAttribute('style',
+            'background: linear-gradient(to right,' + allLowerValueColor.getHexColorCode() + ',' + allUpperValueColor.getHexColorCode() + ');');
     }
 
     /**
@@ -462,43 +468,43 @@ Find.register('Popup.OptionsPane', function (self) {
      * @param {object} [properties] - Properties used to initialize the color object. If the properties object does not
      * take any of the forms above, it will by default use hue 0, saturation 0 and value 0.
      * */
-    let SimpleColor = function(properties) {
+    const SimpleColor = function (properties) {
         let hue = 0;
         let saturation = 0;
         let value = 0;
 
-        if('hue' in properties && 'saturation' in properties && 'value' in properties) {
+        if ('hue' in properties && 'saturation' in properties && 'value' in properties) {
             hue = properties.hue;
             saturation = properties.saturation;
             value = properties.value;
-        } else if('red' in properties && 'green' in properties && 'blue' in properties) {
-            let HSVColor = RGBToHSV(properties.red, properties.green, properties.blue);
-            hue = HSVColor.hue;
-            saturation = HSVColor.saturation;
-            value = HSVColor.value;
-        } else if('hexCode' in properties) {
-            let RGBColor = hexColorCodeToRGB(properties.hexCode);
-            let HSVColor = RGBToHSV(RGBColor.red, RGBColor.green, RGBColor.blue);
-            hue = HSVColor.hue;
-            saturation = HSVColor.saturation;
-            value = HSVColor.value;
+        } else if ('red' in properties && 'green' in properties && 'blue' in properties) {
+            const hsvColor = rgbToHsv(properties.red, properties.green, properties.blue);
+            hue = hsvColor.hue;
+            saturation = hsvColor.saturation;
+            value = hsvColor.value;
+        } else if ('hexCode' in properties) {
+            const rgbColor = hexColorCodeToRGB(properties.hexCode);
+            const hsvColor = rgbToHsv(rgbColor.red, rgbColor.green, rgbColor.blue);
+            hue = hsvColor.hue;
+            saturation = hsvColor.saturation;
+            value = hsvColor.value;
         }
 
-        this.getHue = function() {
+        this.getHue = function () {
             return hue;
         };
 
-        this.getSaturation = function() {
+        this.getSaturation = function () {
             return saturation;
         };
 
-        this.getValue = function() {
+        this.getValue = function () {
             return value;
         };
 
-        this.getHexColorCode = function() {
-            let RGBColor = HSVToRGB(hue, saturation, value);
-            return RGBToHexColorCode(RGBColor.red, RGBColor.green, RGBColor.blue);
+        this.getHexColorCode = function () {
+            const rgbColor = hsvToRgb(hue, saturation, value);
+            return rgbToHexColorCode(rgbColor.red, rgbColor.green, rgbColor.blue);
         };
 
         /**
@@ -510,12 +516,12 @@ Find.register('Popup.OptionsPane', function (self) {
          * @return {object} an object with three fields, red green and blue, where each are integers between 0
          * and 255 (inclusive)
          * */
-        function HSVToRGB(hue, saturation, value) {
-            let chroma = value * saturation;
-            let intermediate = chroma * (1 - Math.abs((hue / 60) % 2 - 1));
-            let match = value - chroma;
+        function hsvToRgb(hue, saturation, value) {
+            const chroma = value * saturation;
+            const intermediate = chroma * (1 - Math.abs((hue / 60) % 2 - 1));
+            const match = value - chroma;
 
-            let rgb = {};
+            const rgb = {};
             if (hue >= 0 && hue < 60) {
                 rgb.red = chroma;
                 rgb.green = intermediate;
@@ -557,23 +563,23 @@ Find.register('Popup.OptionsPane', function (self) {
          * @param {number} blue - An integer between 0 and 255 (inclusive)
          * @return {object} an object with three keys, hue saturation and value.
          * */
-        function RGBToHSV(red, green, blue) {
+        function rgbToHsv(red, green, blue) {
             red = red / 255;
             green = green / 255;
             blue = blue / 255;
 
-            let maxChroma = Math.max(red, green, blue);
-            let minChroma = Math.min(red, green, blue);
-            let delta = maxChroma - minChroma;
+            const maxChroma = Math.max(red, green, blue);
+            const minChroma = Math.min(red, green, blue);
+            const delta = maxChroma - minChroma;
 
             let hue;
-            if(delta === 0) {
+            if (delta === 0) {
                 hue = 0;
-            } else if(maxChroma === red) {
+            } else if (maxChroma === red) {
                 hue = 60 * (((green - blue) / delta) % 6);
-            } else if(maxChroma === green) {
+            } else if (maxChroma === green) {
                 hue = 60 * (((blue - red) / delta) + 2);
-            } else if(maxChroma === blue) {
+            } else if (maxChroma === blue) {
                 hue = 60 * (((red - green) / delta) + 4);
             }
 
@@ -583,7 +589,7 @@ Find.register('Popup.OptionsPane', function (self) {
                 hue: hue < 0 ? hue + 360 : hue,
                 saturation: maxChroma !== 0 ? delta / maxChroma : 0,
                 value: maxChroma
-            }
+            };
         }
 
         /**
@@ -593,12 +599,12 @@ Find.register('Popup.OptionsPane', function (self) {
          * @return {object} An object with red green and blue keys, or undefined if the hex code is not valid.
          * */
         function hexColorCodeToRGB(hexCode) {
-            hexCode = hexCode.replace('#','');
-            if(!hexCode.match(/[0-9a-f]{6}/)) {
+            hexCode = hexCode.replace('#', '');
+            if (!hexCode.match(/[0-9a-f]{6}/)) {
                 return undefined;
             }
 
-            let bigint = parseInt(hexCode, 16);
+            const bigint = parseInt(hexCode, 16);
             return {
                 red: (bigint >> 16) & 255,
                 green: (bigint >> 8) & 255,
@@ -614,8 +620,8 @@ Find.register('Popup.OptionsPane', function (self) {
          * @param {red} blue - An integer between 0 and 255 inclusive
          * @return {string} hex color code from RGB values.
          * */
-        function RGBToHexColorCode(red, green, blue) {
-            return "#" + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
+        function rgbToHexColorCode(red, green, blue) {
+            return '#' + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
         }
     };
 });
