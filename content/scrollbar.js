@@ -21,7 +21,6 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
     let overlay = null;
     let track = null;
     let thumb = null;
-    let markerContainer = null;
 
     let currentScrollY = 0;
     let docInvisibleHeight = 0;
@@ -75,8 +74,6 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
         thumb = track.appendChild(document.createElement('div'));
         thumb.id = 'find-ext-scroll-thumb';
 
-        markerContainer = track.appendChild(document.createElement('div'));
-        markerContainer.id = 'find-ext-scroll-marker-container';
     }
 
     /**
@@ -220,7 +217,6 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
      * @param {object} newOptions - The search and highlight options
      * */
     self.init = function (newOptions) {
-        self.destroy();
         options = newOptions;
         occTopPositionMap = new Map();
     };
@@ -262,7 +258,7 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
      * */
     self.createMarkers = function () {
         occTopPositionMap.forEach(function (markerTop, occIndex) {
-            markerContainer.appendChild(createMarker(occIndex, markerTop));
+            track.appendChild(createMarker(occIndex, markerTop));
         });
     };
 
@@ -274,7 +270,7 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
      * @param {number} occIndex - The occurrence index to mark active
      * */
     self.setActive = function (occIndex) {
-        Array.from(markerContainer.children).forEach(function (el, index) {
+        Array.from(track.querySelectorAll('.find-ext-scroll-marker')).forEach(function (el, index) {
             const isActive = index === occIndex;
             el.classList.toggle('find-ext-marker-active', isActive);
             el.style.backgroundColor = isActive

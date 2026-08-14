@@ -55,14 +55,6 @@
     background: #888888;
 }
 
-#find-ext-scroll-marker-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-}
-
 .find-ext-scroll-marker {
     display: block;
     position: absolute;
