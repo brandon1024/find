@@ -18,6 +18,10 @@ Find.register('Content.Highlighter', function(self) {
      * @param {object} options - The search and highlight options
      * */
     self.highlightAll = function(occurrenceMap, regex, options) {
+        if (options && options.scroll_markers) {
+            Find.Content.ScrollbarHighlightMaker.init(options);
+        }
+
         const tags = {
             occIndex: null,
             maxIndex: null,
@@ -185,6 +189,10 @@ Find.register('Content.Highlighter', function(self) {
                         inMatch = charMap[key].matched;
                         matchGroup.text += tags.openingMarkup;
                     }
+
+                    if (options && options.scroll_markers) {
+                        Find.Content.ScrollbarHighlightMaker.addOccurrence(occIndex, document.getElementById(matchGroup.groupUUID));
+                    }
                 } else {
                     if (inMatch) {
                         inMatch = charMap[key].matched;
@@ -216,6 +224,11 @@ Find.register('Content.Highlighter', function(self) {
                     document.getElementById(matchGroup.groupUUID).innerHTML = matchGroup.text;
                 }
             }
+        }
+
+        if (options && options.scroll_markers) {
+            Find.Content.ScrollbarHighlightMaker.mount();
+            Find.Content.ScrollbarHighlightMaker.createMarkers();
         }
     };
 
@@ -260,6 +273,10 @@ Find.register('Content.Highlighter', function(self) {
             if (bottomScrollPos + 100 < docHeight) {
                 window.scrollBy(0, -100);
             }
+        }
+
+        if (options.scroll_markers) {
+            Find.Content.ScrollbarHighlightMaker.setActive(index);
         }
     };
 
@@ -331,6 +348,8 @@ Find.register('Content.Highlighter', function(self) {
      * @private
      * */
     self.restore = function() {
+        Find.Content.ScrollbarHighlightMaker.destroy();
+
         let classes = [indexHighlight, allHighlight];
         for (let classIndex = 0; classIndex < classes.length; classIndex++) {
             let els = Array.from(document.querySelectorAll('.' + classes[classIndex]));
