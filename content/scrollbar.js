@@ -22,6 +22,7 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
     let overlay = null;
     let track = null;
     let thumb = null;
+    let markerContainer = null;
     let currentScrollY = 0;
     let docInvisibleHeight = 0;
     let scrollListener = null;
@@ -73,6 +74,9 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
 
         thumb = track.appendChild(document.createElement('div'));
         thumb.id = 'find-ext-scroll-thumb';
+        
+        markerContainer = track.appendChild(document.createElement('div'));
+        markerContainer.id = 'find-ext-scroll-marker-container';
 
     }
 
@@ -209,8 +213,8 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
     }
 
     /**
-     * Initialize the component with the given search options, discarding
-     * any previously mounted overlay. Must be called before mount().
+     * Initialize the component with the given search options.
+     * Must be called before mount().
      *
      * @private
      * @param {object} newOptions - The search and highlight options
@@ -257,7 +261,7 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
      * */
     self.createMarkers = function () {
         occTopPositionMap.forEach(function (markerTop, occIndex) {
-            track.appendChild(createMarker(occIndex, markerTop));
+            markerContainer.appendChild(createMarker(occIndex, markerTop));
         });
     };
 
@@ -269,7 +273,8 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
      * @param {number} occIndex - The occurrence index to mark active
      * */
     self.setActive = function (occIndex) {
-        Array.from(track.querySelectorAll('.find-ext-scroll-marker')).forEach(function (el, index) {
+        if (!markerContainer) return;
+        Array.from(markerContainer.children).forEach(function (el, index) {
             const isActive = index === occIndex;
             el.classList.toggle('find-ext-marker-active', isActive);
             el.style.backgroundColor = isActive
@@ -298,6 +303,7 @@ Find.register('Content.ScrollbarHighlightMaker', function (self) {
         overlay = null;
         track = null;
         thumb = null;
+        markerContainer = null;
         globalStyle = null;
     };
 });
