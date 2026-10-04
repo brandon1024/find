@@ -197,6 +197,14 @@
     "message": "Hide Find and Replace Pane Toggle Button",
     "description": "Text displayed beside the hide find and replace toggle button option."
   },
+  "extension_option_scroll_markers_text": {
+    "message": "Show Scroll Markers",
+    "description": "Text displayed beside the scroll markers toggle option."
+  },
+  "extension_option_scroll_markers_title": {
+    "message": "If enabled, scroll markers will appear on the right edge of the page indicating the position of all matches in the document.",
+    "description": "Tooltip text for the scroll markers option description icon."
+  },
   "search_option_max_results_text": {
     "message": "Max Highlighted Results",
     "description": "Text displayed above the max highlighted results option."
